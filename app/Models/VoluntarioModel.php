@@ -1,0 +1,196 @@
+<?php
+
+namespace App\Models;
+
+use CodeIgniter\Model;
+
+class VoluntarioModel extends Model
+{
+    protected $table = 'voluntario';
+    protected $primaryKey = 'id_voluntario';
+
+    // *************************************************************************************************************************
+    //    Definir las propiedades para las operaciones de la base de datos:
+    protected $allowedFields = [
+        'id_persona',
+        'email',
+        'departamento_residencia',
+        'municipio_residencia',
+        'direccion',
+        'fecha_creacion'
+    ];
+
+    // *************************************************************************************************************************
+    //    OBTIENE Y GENERA EL ID MAXIMO DE LA TABLA "PERSONA":
+    public function maxPersona()
+    {
+        $maxID = $this->db->table('persona')
+                          ->selectMax('id_persona')
+                          ->get()
+                          ->getRowArray();
+        return $maxID['id_persona'] ? $maxID['id_persona'] + 1 : 1;
+    }
+
+    // *************************************************************************************************************************
+    //    OBTIENE Y GENERA EL ID MAXIMO DE LA TABLA "VOLUNTARIO":
+    public function maxVoluntario()
+    {
+        $maxID = $this->db->table('voluntario')
+                          ->selectMax('id_voluntario')
+                          ->get()
+                          ->getRowArray();
+        return $maxID['id_voluntario'] ? $maxID['id_voluntario'] + 1 : 1;
+    }
+
+    // *************************************************************************************************************************
+    //    OBTIENE Y GENERA EL ID MAXIMO DE LA TABLA "REFERENCIA PERSONAL":
+    public function maxReferenciaPersonal()
+    {
+        $maxID = $this->db->table('referencia_personal')
+                          ->selectMax('id_referencia')
+                          ->get()
+                          ->getRowArray();
+        return $maxID['id_referencia'] ? $maxID['id_referencia'] + 1 : 1;
+    }
+
+    // *************************************************************************************************************************
+    //    OBTIENE TODOS LOS DEPARTAMENTOS:
+    public function getDepartamentos()
+    {
+        return $this->db->table('departamento')
+                        ->get()
+                        ->getResultArray();
+    }
+
+    // *************************************************************************************************************************
+    //    OBTIENE TODOS LOS MUNICIPIOS DE CADA DEPARTAMENTO (DINAMICO):
+    public function getMunicipios($id_departamento)
+    {
+        return $this->db->table('municipio')
+                        ->where('id_departamento', $id_departamento)
+                        ->get()
+                        ->getResultArray();
+    }
+
+    // *************************************************************************************************************************
+    //    BUCAR REGISTRO DE UN DUI PARA VALIDAR EN LA TABLA "PERSONA":
+    public function findDUI($valor)
+    {
+        return $this->db->table('persona')
+                        ->where('DUI', $valor)
+                        ->get()
+                        ->getResult();
+    }
+
+    // *************************************************************************************************************************
+    //    BUCAR REGISTRO DE UN TELEFONO PARA VALIDAR EN LA TABLA "PERSONA":
+    public function findTel($valor)
+    {
+        return $this->db->table('persona')
+                        ->where('telefono', $valor)
+                        ->get()
+                        ->getResult();
+    }
+
+    // *************************************************************************************************************************
+    //    BUCAR REGISTRO DE UN CORREO PARA VALIDAR EN LA TABLA "VOLUNTARIO":
+    public function findEmail($valor)
+    {
+        return $this->db->table('voluntario')
+                        ->where('email', $valor)
+                        ->get()
+                        ->getResult();
+    }
+
+    // *************************************************************************************************************************
+    //    CREAR UN REGISTRO EN LA TABLA "PERSONA":
+    public function insertPersona($data)
+    {
+        return $this->db->table('persona')->insert($data);
+    }
+
+    // *************************************************************************************************************************
+    //    CREAR UN REGISTRO EN LA TABLA "VOLUNTARIO":
+    public function insertVoluntario($data)
+    {
+        return $this->db->table('voluntario')->insert($data);
+    }
+
+    // *************************************************************************************************************************
+    //    CREAR UN REGISTRO EN LA TABLA "SOLICITUD":
+    public function insertSolicitud($data)
+    {
+        return $this->db->table('solicitud')->insert($data);
+    }
+
+    // *************************************************************************************************************************
+    //    CREAR UN REGISTRO EN LA TABLA "REFERENCIA PERSONAL":
+    public function insertReferencia($data)
+    {
+        return $this->db->table('referencia_personal')->insert($data);
+    }
+
+    // *************************************************************************************************************************
+    //    OBTIENE VOLUNTARIO MAYOR DE EDAD:
+    public function getVoluntarioMayor($dui, $telefono)
+    {
+        return $this->select('v.id_voluntario, p.nombres, p.apellidos, s.fecha_ingreso, s.fecha_finalizacion')
+                    ->from('voluntario v')
+                    ->join('persona p', 'v.id_persona = p.id_persona')
+                    ->join('solicitud s', 's.id_voluntario = v.id_voluntario')
+                    ->where('p.DUI', $dui)
+                    ->where('p.telefono', $telefono)
+                    ->get()
+                    ->getRowArray();
+    }
+
+    // *************************************************************************************************************************
+    //    OBTIENE VOLUNTARIO MENOR DE EDAD:
+    public function getVoluntarioMenor($dui, $telefono)
+    {
+        return $this->select('v.id_voluntario, pv.nombres, pv.apellidos, pr.nombres AS nombre_parantesco,
+	                        pr.apellidos AS apellido_parantesco, pr.DUI AS dui_refe, s.fecha_ingreso, s.fecha_finalizacion')
+                    ->from('solicitud s')
+                    ->join('voluntario v', 's.id_voluntario = v.id_voluntario')
+                    ->join('referencia_personal rp', 'rp.id_referencia = s.id_referencia')
+                    ->join('persona pv', 'pv.id_persona = v.id_persona')
+                    ->join('persona pr', 'pr.id_persona = rp.id_persona')
+                    ->where('pr.DUI', $dui)
+                    ->where('pr.telefono', $telefono)
+                    ->get()
+                    ->getRowArray();
+    }
+
+    // *************************************************************************************************************************
+    //    OBTIENE LAS SOLICITUDES DE LOS VOLUNTARIOS MAYORES DE EDAD:
+    public function mostrarSolicitudMayor()
+    {
+        return $this->select('v.id_voluntario, p.nombres, p.apellidos, d.nombre_departamento, s.fecha_ingreso, s.fecha_finalizacion')
+                    ->from('voluntario v')
+                    ->join('persona p', 'v.id_persona = p.id_persona')
+                    ->join('solicitud s', 's.id_voluntario = v.id_voluntario')
+                    ->join('departamento d', 'd.id_departamento = v.departamento_residencia')
+                    ->where('p.edad >=', 18)
+                    ->get()
+                    ->getResultArray();
+    }
+
+    // *************************************************************************************************************************
+    //    OBTIENE LAS SOLICITUDES DE LOS VOLUNTARIOS MENORES DE EDAD:
+    public function mostrarSolicitudMenor()
+    {
+        return $this->select('v.id_voluntario, p.nombres, p.apellidos, pe.nombres as nombre_parantesco, 
+                              pe.apellidos as apellido_parantesco, pe.DUI as dui_refe, d.nombre_departamento, 
+                              s.fecha_ingreso, s.fecha_finalizacion')
+                    ->from('voluntario v')
+                    ->join('persona p', 'v.id_persona = p.id_persona')
+                    ->join('solicitud s', 's.id_voluntario = v.id_voluntario')
+                    ->join('referencia_personal rp', 'rp.id_referencia = s.id_referencia')
+                    ->join('persona pe', 'pe.id_persona = rp.id_persona')
+                    ->join('departamento d', 'd.id_departamento = v.departamento_residencia')
+                    ->where('p.edad <', 18)
+                    ->get()
+                    ->getResultArray();
+    }
+
+}
