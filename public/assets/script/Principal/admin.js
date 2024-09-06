@@ -108,21 +108,18 @@ $(document).ready(function() {
         "processing": true,
         "serverSide": true,
         "ajax": {
-            "url": url + "usuario/tblUsuariosNuevo",
+            "url": url + "usuario/tblUsuarios",
             "type": "POST",
             "beforeSend": function() {
-                console.log('dataTables_processing: Iniciado')
+                // console.log('dataTables_processing: Iniciado')
                 $('.dataTables_wrapper .dataTables_processing').css({'display': 'flex'});
             },
             "complete": function() {
-                console.log('dataTables_processing: Terminado')
+                // console.log('dataTables_processing: Terminado')
             }
         },
         "order": [],
-        "language": {
-            idioma_espanol,
-            "processing": 'Cargando datos, por favor espera...'
-        }
+        "language": idioma_espanol,
     });
 
     $('#galeria').DataTable({
@@ -132,18 +129,11 @@ $(document).ready(function() {
             "url": url + "galeria/tblGaleria",
             "type": "GET",
             "beforeSend": function() {
-                console.log('dataTables_processing: Iniciado')
                 $('.dataTables_wrapper .dataTables_processing').css({'display': 'flex'});
-            },
-            "complete": function() {
-                console.log('dataTables_processing: Terminado')
             }
         },
         "order": [],
-        "language": {
-            idioma_espanol,
-            "processing": 'Cargando datos, por favor espera...'
-        }
+        "language": idioma_espanol,
     });
 
     $('#productos').DataTable({
@@ -153,18 +143,11 @@ $(document).ready(function() {
             "url": url + "productos/tblProductos",
             "type": "GET",
             "beforeSend": function() {
-                console.log('dataTables_processing: Iniciado')
                 $('.dataTables_wrapper .dataTables_processing').css({'display': 'flex'});
-            },
-            "complete": function() {
-                console.log('dataTables_processing: Terminado')
             }
         },
         "order": [],
-        "language": {
-            idioma_espanol,
-            "processing": 'Cargando datos, por favor espera...'
-        }
+        "language": idioma_espanol,
     });
 
     $('#solimayores').DataTable({
@@ -174,18 +157,11 @@ $(document).ready(function() {
             "url": url + "solicitudes/verSolicitudMayores",
             "type": "GET",
             "beforeSend": function() {
-                console.log('dataTables_processing: Iniciado')
                 $('.dataTables_wrapper .dataTables_processing').css({'display': 'flex'});
-            },
-            "complete": function() {
-                console.log('dataTables_processing: Terminado')
             }
         },
         "order": [],
-        "language": {
-            idioma_espanol,
-            "processing": 'Cargando datos, por favor espera...'
-        }
+        "language": idioma_espanol,
     });
 
     $('#solim').DataTable({
@@ -195,18 +171,11 @@ $(document).ready(function() {
             "url": url + "solicitudes/verSolicitudMenores",
             "type": "GET",
             "beforeSend": function() {
-                console.log('dataTables_processing: Iniciado')
                 $('.dataTables_wrapper .dataTables_processing').css({'display': 'flex'});
             },
-            "complete": function() {
-                console.log('dataTables_processing: Terminado')
-            }
         },
         "order": [],
-        "language": {
-            idioma_espanol,
-            "processing": 'Cargando datos, por favor espera...'
-        }
+        "language": idioma_espanol,
     });
 
     $('#tbl-menores').css('visibility', 'collapse');
@@ -241,7 +210,7 @@ function loadRoles() {
     });
 }
 
-// COMPARAR CONTRASEÑA 
+// COMPARAR CONTRASEÑA
 var password = $('#password');
 var rePassword = $('#re_password');
 $('#password').change(function() {
@@ -481,35 +450,80 @@ function cambiarEstadoProducto(producto) {
 ****************************************************************************/
 function cambiarEstadoUsuario(usuario) {
     $.ajax({
-        url: url + 'usuario/cambiarEstado/' + usuario,
+        url: url + 'usuario/cambiarEstado',
         data: { 'id_usuario': usuario },
         type: 'POST',
-        async: false,
         dataType: 'json',
-        success: function() {
+        success: function(response) {
             Swal.fire({
                 toast: true,
                 icon: 'success',
                 iconColor: 'white',
                 position: 'top-end',
                 background: 'dodgerblue',
-                title: '<p style="color: white; font-size: 1.18em;">Estado cambiado!</p>',
+                title: '<p style="color: white; font-size: 1.18em;">' + response.message + '</p>',
                 showConfirmButton: false,
                 timerProgressBar: true,
                 timer: 2500
             });
             $('#usuarios').DataTable().ajax.reload(null, false);
         },
-        error: function() {
+        error: function(jqXHR, textStatus, errorThrown) {
+            console.error(`Error en la solicitud AJAX:\nStatus: ${textStatus}\nError Thrown: ${errorThrown}\nMessage: ${jqXHR.responseJSON.message}`);
+
+            // Mensaje amigable para el usuario basado en el mensaje del servidor
+            let errorMessage = 'Ocurrió un problema al procesar su solicitud. Por favor, inténtelo de nuevo más tarde.';
+            if (jqXHR.responseJSON && jqXHR.responseJSON.message) {
+                errorMessage = jqXHR.responseJSON.message;
+            }
+
             Swal.fire({
                 toast: true,
                 icon: 'error',
                 iconColor: '#fff',
                 position: 'top-end',
                 background: '#f00',
-                title: '<p style="color: #fff; font-size: 1.27em;">Error al cambiar estado!</p>',
+                title: '<p style="color: #fff; font-size: 1.27em;">' + errorMessage + '</p>',
                 confirmButtonColor: "#343a40"
             });
         }
     });
 }
+
+// function cambiarEstadoUsuario(usuario) {
+//     console.log('ID Usuario:', usuario); // Verifica que el valor sea correcto
+
+//     $.ajax({
+//         url: url + 'usuario/cambiarEstado/' + usuario,
+//         type: 'GET',
+//         async: false,
+//         dataType: 'json',
+//         success: function(response) {
+//             console.log('Respuesta del servidor:', response.success); // Verifica la respuesta
+//             Swal.fire({
+//                 toast: true,
+//                 icon: 'success',
+//                 iconColor: 'white',
+//                 position: 'top-end',
+//                 background: 'dodgerblue',
+//                 title: '<p style="color: white; font-size: 1.18em;">Estado cambiado!</p>',
+//                 showConfirmButton: false,
+//                 timerProgressBar: true,
+//                 timer: 2500
+//             });
+//             $('#usuarios').DataTable().ajax.reload(null, false);
+//         },
+//         error: function(jqXHR, textStatus, errorThrown) {
+//             console.error('Error en la solicitud AJAX:', textStatus, errorThrown); // Mensajes de error
+//             Swal.fire({
+//                 toast: true,
+//                 icon: 'error',
+//                 iconColor: '#fff',
+//                 position: 'top-end',
+//                 background: '#f00',
+//                 title: '<p style="color: #fff; font-size: 1.27em;">Error al cambiar estado!</p>',
+//                 confirmButtonColor: "#343a40"
+//             });
+//         }
+//     });
+// }

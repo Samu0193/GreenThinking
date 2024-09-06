@@ -47,10 +47,10 @@ $routes->get('usuario', 'UsuarioController::index');
 $routes->post('usuario/validarEmail', 'UsuarioController::validarEmail');
 $routes->post('usuario/validarUser', 'UsuarioController::validarUser');
 $routes->get('usuario/setRoles', 'UsuarioController::setRoles');
-$routes->get('usuario/tblUsuarios', 'UsuarioController::tblUsuarios');
-$routes->post('usuario/tblUsuariosNuevo', 'UsuarioController::tblUsuariosNuevo');
+$routes->post('usuario/tblUsuarios', 'UsuarioController::tblUsuarios');
 
 $routes->post('usuario/guardar', 'UsuarioController::guardar');
+$routes->get('usuario/cambiarEstado/(:num)', 'UsuarioController::cambiarEstadoNuevo/$1');
 $routes->post('usuario/cambiarEstado', 'UsuarioController::cambiarEstado');
 
 // GALERIA CONTROLLER

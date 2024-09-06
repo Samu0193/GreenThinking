@@ -1103,6 +1103,12 @@ table thead th {
     opacity: 0.8;
 }
 
+/* PARA EL TOOLTIP */
+body.swal2-toast-shown .swal2-container {
+    height: auto;
+    width: 375px;
+}
+
 /* Estilo para centrar el mensaje de "processing" */
 .dataTables_wrapper .dataTables_processing {
     display: flex;

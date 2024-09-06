@@ -78,38 +78,10 @@ class UsuarioModel extends Model
                         ->getResultArray();
     }
 
-    public function getUsuariosPaginados($start, $length, $searchValue = '')
+    public function getTotalUsuarios($searchValue)
     {
-        // Consulta base
-        $builder = $this->db->table('usuario AS u')
-                            ->select('u.id_usuario, u.id_persona, u.id_rol, u.usuario, u.email, u.fecha_creacion, u.estado, p.nombres, p.apellidos, p.telefono, r.rol')
-                            ->join('persona AS p', 'p.id_persona = u.id_persona')
-                            ->join('roles AS r', 'r.id_rol = u.id_rol')
-                            ->where('u.id_rol', 2);
-
-        // Filtro de búsqueda
-        if ($searchValue) {
-            $builder->groupStart()
-                    ->like('p.nombres', $searchValue)
-                    ->orLike('p.apellidos', $searchValue)
-                    ->orLike('u.usuario', $searchValue)
-                    ->orLike('u.email', $searchValue)
-                    ->groupEnd();
-        }
-
-        // Aplicar paginación
-        return $builder->limit($length, $start)
-                    ->get()
-                    ->getResultArray();
-    }
-
-    public function getTotalUsuarios($searchValue = '')
-    {
-        // Consulta base
-        $builder = $this->db->table('usuario AS u')
-                            ->join('persona AS p', 'p.id_persona = u.id_persona')
-                            ->join('roles AS r', 'r.id_rol = u.id_rol')
-                            ->where('u.id_rol', 2);
+        // Consulta base desde la vista
+        $builder = $this->db->table('vw_usuarios');
 
         // Total sin filtro
         $totalRecords = $builder->countAllResults(false); // Evita reiniciar el builder
@@ -117,18 +89,41 @@ class UsuarioModel extends Model
         // Total filtrado (si existe búsqueda)
         if ($searchValue) {
             $builder->groupStart()
-                    ->like('p.nombres', $searchValue)
-                    ->orLike('p.apellidos', $searchValue)
-                    ->orLike('u.usuario', $searchValue)
-                    ->orLike('u.email', $searchValue)
+                    ->like('nombre_apellido', $searchValue)
+                    ->orLike('nombre_rol', $searchValue)
+                    ->orLike('usuario', $searchValue)
+                    ->orLike('telefono', $searchValue)
+                    ->orLike('email', $searchValue)
+                    ->orLike('fecha_creacion', $searchValue)
+                    ->orLike('estado', $searchValue) // Búsqueda de estado "Activo" o "Inactivo"
                     ->groupEnd();
         }
 
         $totalFiltered = $builder->countAllResults();
-        
         return ['totalRecords' => $totalRecords, 'totalFiltered' => $totalFiltered];
     }
 
+    public function getUsuariosPaginados($start, $length, $searchValue)
+    {
+        // Consulta base desde la vista
+        $builder = $this->db->table('vw_usuarios');
+
+        // Filtro de búsqueda
+        if ($searchValue) {
+            $builder->groupStart()
+                    ->like('nombre_apellido', $searchValue)
+                    ->orLike('nombre_rol', $searchValue)
+                    ->orLike('usuario', $searchValue)
+                    ->orLike('telefono', $searchValue)
+                    ->orLike('email', $searchValue)
+                    ->orLike('fecha_creacion', $searchValue)
+                    ->orLike('estado', $searchValue) // Búsqueda de estado "Activo" o "Inactivo"
+                    ->groupEnd();
+        }
+
+        // Aplicar paginación
+        return $builder->limit($length, $start)->get()->getResultArray();
+    }
 
 
 
@@ -142,9 +137,9 @@ class UsuarioModel extends Model
 
     // *************************************************************************************************************************
     //    CAMBIAR EL ESTADO DE UN USUARIO EN LA TABLA "USUARIOS":
-    public function cambiarEstadoModel($data, $where)
+    public function cambiarEstadoModel($id_usuario, $estado)
     {
-        return $this->update($where, $data);
+        return $this->set('estado', $estado)->where('id_usuario', $id_usuario)->update();
     }
 
     // *************************************************************************************************************************
