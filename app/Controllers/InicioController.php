@@ -18,8 +18,18 @@ class InicioController extends BaseController
     // VISTA PRINCIPAL
     public function index()
     {
-        return view('Inicio/index');
+        // Usa FCPATH para obtener la ruta física completa al directorio de imágenes
+        $galeryDirectory = FCPATH . 'assets/img/galery';
+        $galeryFiles = array_diff(scandir($galeryDirectory), array('.', '..'));
+        $productsDirectory = FCPATH . 'assets/img/galery';
+        $productsFiles = array_diff(scandir($galeryDirectory), array('.', '..'));
+        
+        // dd($files); // Mostrar los archivos
+
+        // Envía los archivos como un array asociativo a la vista
+        return view('Inicio/index', ['galeryFiles' => $galeryFiles]);
     }
+
 
     /*************************************************************************************************************************
         METODOS NORMALES:

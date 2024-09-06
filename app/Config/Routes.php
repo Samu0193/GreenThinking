@@ -43,19 +43,19 @@ $routes->get('login/password', 'LoginController::password');
 $routes->post('login/password', 'LoginController::password');
 
 // USUARIO CONTROLLER
+$routes->post('usuario/tblUsuarios', 'UsuarioController::tblUsuarios');
 $routes->get('usuario', 'UsuarioController::index');
 $routes->post('usuario/validarEmail', 'UsuarioController::validarEmail');
 $routes->post('usuario/validarUser', 'UsuarioController::validarUser');
 $routes->get('usuario/setRoles', 'UsuarioController::setRoles');
-$routes->post('usuario/tblUsuarios', 'UsuarioController::tblUsuarios');
-
 $routes->post('usuario/guardar', 'UsuarioController::guardar');
-$routes->get('usuario/cambiarEstado/(:num)', 'UsuarioController::cambiarEstadoNuevo/$1');
 $routes->post('usuario/cambiarEstado', 'UsuarioController::cambiarEstado');
 
 // GALERIA CONTROLLER
 $routes->get('galeria', 'GaleriaController::index');
+$routes->get('galeria/printImgGalery', 'GaleriaController::printImgGalery');
 $routes->post('galeria/cargarImg', 'GaleriaController::cargarImg');
+$routes->post('galeria/cambiarImg', 'GaleriaController::cambiarImg');
 $routes->get('galeria/tblGaleria', 'GaleriaController::tblGaleria');
 
 // PRODUCTOS CONTROLLER

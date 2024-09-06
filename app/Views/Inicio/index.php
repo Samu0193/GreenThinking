@@ -620,6 +620,21 @@
     <!-- URL PARA METODOS -->
     <script type="text/javascript">
         var url = '<?= site_url(); ?>';
+
+        // Convierte el array PHP $galeryFiles a un JSON válido para usar en JavaScript
+        var galeryFiles = <?= json_encode($galeryFiles); ?>;
+
+        // Verifica el contenido de galeryFiles en la consola
+        console.log(galeryFiles);
+
+        // Ahora puedes usar galeryFiles en tu JavaScript
+        // galeryFiles.forEach(function(index, data) {
+        //     console.log("Archivo de galería:", data);
+        // });
+
+        $.each(galeryFiles, function(index, galeria) {
+            console.log(index, galeria);
+        });
     </script>
 
     <!-- ALERTAS JS -->

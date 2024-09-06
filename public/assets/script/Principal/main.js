@@ -1,7 +1,7 @@
 /****************************************************************************
                                 NAVEGACION
 ****************************************************************************/
-$(document).ready(function() {
+$(document).ready(function () {
     let arriba = $(window).scrollTop();
     if (arriba >= 250) {
         navbar.addClass('bg-white');
@@ -22,7 +22,7 @@ $(document).ready(function() {
     }
 });
 
-$(window).on('scroll', function() {
+$(window).on('scroll', function () {
     let top = $(window).scrollTop();
     if (top >= 250) {
         navbar.addClass('bg-white');
@@ -55,9 +55,9 @@ function loadDepartamentos() {
         type: 'GET',
         dataType: 'json',
         cache: false,
-        success: function(data) {
+        success: function (data) {
             var options = "<option selected disabled value=''>Seleccionar... </option>";
-            $.each(data, function(index, object) {
+            $.each(data, function (index, object) {
                 options += '<option value="' + object.id_departamento + '">' + object.nombre_departamento + '</option>';
             });
             $("[name='departamento_residencia']").html(options);
@@ -66,23 +66,23 @@ function loadDepartamentos() {
 }
 
 // LLENAR SELECT MUNICIPIOS
-jQuery(document).ready(function() {
-    $("[name='departamento_residencia']").on('change', function() {
+jQuery(document).ready(function () {
+    $("[name='departamento_residencia']").on('change', function () {
         event.preventDefault();
         var id_departamento = $(this).val();
         if (id_departamento == '') {
             $("[name='municipio_residencia']").prop('disabled', true);
         }
-        
+
         $("[name='municipio_residencia']").prop('disabled', false);
         $.ajax({
             url: url + "inicio/setMunicipios",
             type: 'POST',
             data: { id_departamento: id_departamento },
-            success: function(data) {
+            success: function (data) {
                 $("[name='municipio_residencia']").html(data);
             },
-            error: function() {
+            error: function () {
                 alert('error ocurio..!');
             }
         });
@@ -97,7 +97,7 @@ let form_menores = $('#form-menores');
 let title_form = $('#title-form');
 form_mayores.hide();
 form_menores.hide();
-$(".mostrar-modal").on('click', function() {
+$(".mostrar-modal").on('click', function () {
     loadDepartamentos();
     $("[name='municipio_residencia']").html("<option selected disabled value=''>Seleccionar... </option>");
     modal.fadeIn();
@@ -105,7 +105,7 @@ $(".mostrar-modal").on('click', function() {
     title_form.html('Únete a nosotros');
 });
 
-$("#btn-mayores").on('click', function() {
+$("#btn-mayores").on('click', function () {
     form_mayores.fadeIn();
     opciones.hide();
     title_form.html('Voluntario Mayor');
@@ -116,7 +116,7 @@ $("#btn-mayores").on('click', function() {
     $('label[class="error"]').css('display', 'none');
 });
 
-$("#btn-menores").on('click', function() {
+$("#btn-menores").on('click', function () {
     form_menores.fadeIn();
     opciones.hide();
     title_form.html('Voluntario Menor');
@@ -128,11 +128,11 @@ $("#btn-menores").on('click', function() {
 });
 
 $('#form-mayores .input-field .info-fecha').hide()
-$('#info-fecha1').on('click', function() {
+$('#info-fecha1').on('click', function () {
     $('#form-mayores .input-field .info-fecha').slideToggle(300);
 });
 $('#form-menores .form-section-content .input-field .info-fecha').hide()
-$('#info-fecha2').on('click', function() {
+$('#info-fecha2').on('click', function () {
     $('#form-menores .form-section-content .input-field .info-fecha').slideToggle(300);
 });
 
@@ -141,7 +141,7 @@ let form_acordeon = $('.form-section');
 // input_form.eq(0).fadeIn();
 var contador = 0;
 input_form.eq(1).hide();
-form_acordeon.eq(1).on('click', function() {
+form_acordeon.eq(1).on('click', function () {
     contador++;
     input_form.eq(1).slideToggle(300);
     if (contador % 2 == 0) {
@@ -151,7 +151,7 @@ form_acordeon.eq(1).on('click', function() {
     }
 });
 
-$("#close").on('click', function() {
+$("#close").on('click', function () {
     modal.hide(300);
     form_mayores.hide(300);
     form_menores.hide(300);
@@ -159,7 +159,7 @@ $("#close").on('click', function() {
     input_form.eq(1).hide();
 });
 
-$(window).on('click', function(e) {
+$(window).on('click', function (e) {
     if (e.target === $("#modal-flex")[0]) {
         modal.hide(300);
         form_mayores.hide(300);
@@ -169,7 +169,7 @@ $(window).on('click', function(e) {
     }
 });
 
-$(window).on('keyup', function(e) {
+$(window).on('keyup', function (e) {
     if (e.key === 'Escape') {
         modal.hide(300);
         form_mayores.hide(300);
@@ -182,7 +182,7 @@ $(window).on('keyup', function(e) {
 /****************************************************************************
                         INSERTAR VOLUNTARIO MAYOR
 ****************************************************************************/
-$(function() {
+$(function () {
     $('#form-mayores').validate({
         rules: {
             nombres: { required: true, alfaOespacio: true },
@@ -216,7 +216,7 @@ $(function() {
                 maxFin: 'Debe ser menor o igual a: ' + f_MaxFin(0)
             }
         },
-        invalidHandler: function(error, element) {
+        invalidHandler: function (error, element) {
             Swal.fire({
                 icon: 'error',
                 iconColor: '#fff',
@@ -225,7 +225,7 @@ $(function() {
                 confirmButtonColor: "#343a40"
             });
         },
-        submitHandler: function(form, e) {
+        submitHandler: function (form, e) {
             e.preventDefault();
             $.ajax({
                 url: url + 'inicio/guardar1',
@@ -233,7 +233,7 @@ $(function() {
                 type: 'POST',
                 async: false,
                 dataType: 'json',
-                success: function(msg) {
+                success: function (msg) {
                     Swal.fire({
                         toast: true,
                         icon: 'success',
@@ -262,7 +262,7 @@ $(function() {
 /****************************************************************************
                         INSERTAR VOLUNTARIO MENOR
 ****************************************************************************/
-$(function() {
+$(function () {
     $("#form-menores").validate({
         rules: {
             parentesco: { required: true, alfaOespacio: true },
@@ -310,7 +310,7 @@ $(function() {
                 maxFin: 'Debe ser menor o igual a: ' + f_MaxFin(0)
             }
         },
-        invalidHandler: function(error, element) {
+        invalidHandler: function (error, element) {
             Swal.fire({
                 icon: 'error',
                 iconColor: '#fff',
@@ -319,7 +319,7 @@ $(function() {
                 confirmButtonColor: "#343a40"
             });
         },
-        submitHandler: function(form, e) {
+        submitHandler: function (form, e) {
             e.preventDefault();
             $.ajax({
                 url: url + 'inicio/guardar2',
@@ -327,7 +327,7 @@ $(function() {
                 type: 'POST',
                 async: false,
                 dataType: 'json',
-                success: function(msg) {
+                success: function (msg) {
                     Swal.fire({
                         toast: true,
                         icon: 'success',
@@ -358,7 +358,7 @@ $(function() {
 /****************************************************************************
                         GALERÍA DE IMAGENES CON GSAP
 ****************************************************************************/
-$(document).ready(function() {
+$(document).ready(function () {
     let mainBoxesAncho,
         mainBoxesTop = '50%',
         cantFotos,
@@ -421,17 +421,35 @@ $(document).ready(function() {
         delayedPlay;
 
     // $.ajax({
-    //     url: url + 'Galeria/printImgGalery',
-    //     type: 'get',
+    //     url: url + 'galeria/printImgGalery',
+    //     type: 'GET',
     //     dataType: 'json',
     //     cache: false,
     //     success: function(data) {
-    //         $.each(data, function(index, object) {
-    //             console.log(index, object.ruta_archivo);
-    //             $('#galeria' + (index + 1)).val(object.ruta_archivo);
+    //         $.each(data, function(index, galeria) {
+    //             console.log(index, galeria.ruta_archivo);
+    //             // $('#galeria' + (index + 1)).val(galeria.ruta_archivo);
     //         });
     //     }
     // });
+
+    // async function fetchGaleria() {
+    //     let galeriaData = await $.ajax({
+    //         url: url + 'galeria/printImgGalery',
+    //         type: 'GET',
+    //         dataType: 'json',
+    //         cache: false
+    //     });
+    
+    //     // Aquí puedes usar el for
+    //     for (var i = 0; i < galeriaData.length; i++) {
+    //         console.log("Imagen", i + 1, galeriaData[i].ruta_archivo);
+    //     }
+    // }
+
+    // fetchGaleria(); // Llamas a la función para que ejecute el AJAX
+    // console.log(galeriaData);
+
     // $.ajax({
     //     url: url + 'Galeria/printImgGalery/' + i,
     //     method: 'POST',
@@ -497,6 +515,61 @@ $(document).ready(function() {
     //     scale: 0.5,
     //     zIndex: 1
     // });
+
+    // $.ajax({
+    //     url: url + 'galeria/printImgGalery',
+    //     type: 'GET',
+    //     dataType: 'json',
+    //     cache: false,
+    //     success: function(data) {
+    //         // Recorre los datos de la galería hasta el número de cantFotos
+    //         for (var i = 1; i <= cantFotos; i++) {
+    //             if ((i - 1) % 4 == 0) column++;
+    
+    //             // Crea el div dinámicamente
+    //             var b = document.createElement('div');
+    //             $('.mainBoxes').append(b);
+    
+    //             // Establece las propiedades con GSAP
+    //             gsap.set(b, {
+    //                 attr: {
+    //                     id: 'b' + i,
+    //                     class: 'photoBox pb-col' + column
+    //                 },
+    //                 backgroundImage: 'url(' + url + data[i - 1].ruta_archivo + ')',
+    //                 backgroundSize: 'cover',
+    //                 backgroundPosition: 'center',
+    //                 overflow: 'hidden',
+    //                 x: photoBoxMargin[column],
+    //                 width: photoBoxWidth,
+    //                 height: photoBoxHeight,
+    //                 borderRadius: 20,
+    //                 scale: 0.5,
+    //                 zIndex: 1
+    //             });
+    
+    //             // Configura la animación con GSAP
+    //             var tl = gsap.timeline({
+    //                 repeat: -1 // Repetir indefinidamente
+    //             });
+    
+    //             tl.fromTo(b, {
+    //                 y: photoBoxTranslateY1[column],
+    //                 rotation: -0.05
+    //             }, {
+    //                 duration: [40, 35, 30, 25, 20][column],
+    //                 y: photoBoxTranslateY2[column],
+    //                 rotation: 0.05,
+    //                 ease: 'none'
+    //             }).progress(i % 4 / 4);
+    
+    //             // Inicia la animación para cada elemento
+    //             tl.play();
+    //         }
+    //     }
+    // });
+
+
     for (var i = 1; i <= cantFotos; i++) {
         if ((i - 1) % 4 == 0) column++;
         var b = document.createElement('div');
@@ -533,7 +606,6 @@ $(document).ready(function() {
                 ease: 'none'
             })
             .progress(i % 4 / 4)
-
     }
 
     function pauseBoxes(b) {
@@ -564,10 +636,10 @@ $(document).ready(function() {
         }
     }
 
-    window.onload = function() {
+    window.onload = function () {
         var _tl = gsap.timeline({
-                onStart: playBoxes
-            })
+            onStart: playBoxes
+        })
             .set('.main', {
                 perspective: 800
             })
@@ -602,7 +674,7 @@ $(document).ready(function() {
                 autoAlpha: 1
             }, 0.2)
 
-        $('.photoBox').on('mouseenter', function(e) {
+        $('.photoBox').on('mouseenter', function (e) {
             //console.log($(e.currentTarget).hasClass('pb-col1'));
             if (currentImg) return;
             if (delayedPlay) delayedPlay.kill();
@@ -611,7 +683,7 @@ $(document).ready(function() {
             gsap.to('.photoBox', {
                 duration: 0.2,
                 overwrite: 'auto',
-                opacity: function(i, t) {
+                opacity: function (i, t) {
                     return (t == _t) ? 1 : 0.33
                 }
             });
@@ -625,7 +697,7 @@ $(document).ready(function() {
             });
         });
 
-        $('.photoBox').on('mouseleave', function(e) {
+        $('.photoBox').on('mouseleave', function (e) {
             if (currentImg) return;
             var _t = e.currentTarget;
 
@@ -652,7 +724,7 @@ $(document).ready(function() {
                 }, 0);
         });
 
-        $('.photoBox').on('click', function(e) {
+        $('.photoBox').on('click', function (e) {
             if (!isZooming) {
                 isZooming = true;
                 gsap.timeline({
@@ -664,17 +736,17 @@ $(document).ready(function() {
                     yPercent: 0,
                     overwrite: true
                 }, 0)
-                gsap.delayedCall(0.8, function() {
+                gsap.delayedCall(0.8, function () {
                     isZooming = false
                 });
 
                 if (currentImg) {
                     playBoxes();
                     gsap.timeline({
-                            defaults: {
-                                ease: 'expo.inOut'
-                            }
-                        })
+                        defaults: {
+                            ease: 'expo.inOut'
+                        }
+                    })
                         .to('.mainClose', {
                             duration: 0.1,
                             autoAlpha: 0,
@@ -718,11 +790,11 @@ $(document).ready(function() {
                     currentImgProps.y = gsap.getProperty(currentImg, 'y');
 
                     gsap.timeline({
-                            defaults: {
-                                duration: 0.6,
-                                ease: 'expo.inOut'
-                            }
-                        })
+                        defaults: {
+                            duration: 0.6,
+                            ease: 'expo.inOut'
+                        }
+                    })
                         .set(currentImg, {
                             zIndex: 100
                         })
@@ -774,16 +846,16 @@ $(document).ready(function() {
 /****************************************************************************
                             TARJETAS DE PRODUCTOS
 ****************************************************************************/
-$(document).ready(function() {
+$(document).ready(function () {
     let productos = document.getElementById('products-container');
     $.ajax({
         url: url + "productos/verProductos",
         type: 'GET',
         dataType: 'json',
         cache: false,
-        success: function(data) {
+        success: function (data) {
             if (Array.isArray(data)) {
-                $.each(data, function(index, object) {
+                $.each(data, function (index, object) {
                     // products desktop
                     productos.innerHTML +=
                         `
@@ -798,7 +870,7 @@ $(document).ready(function() {
                                 </div>
                             </div>
                         `;
-                    
+
                     // products mobile
                     productos.innerHTML +=
                         `
@@ -817,7 +889,7 @@ $(document).ready(function() {
                 console.error("Error: Datos inesperados");
             }
         },
-        error: function(xhr, status, error) {
+        error: function (xhr, status, error) {
             console.error("Error en la solicitud AJAX:", status, error);
         }
     });

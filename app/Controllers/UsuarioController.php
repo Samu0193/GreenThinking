@@ -183,34 +183,19 @@ class UsuarioController extends BaseController
 
     // *************************************************************************************************************************
     //    CAMBIAR EL ESTADO DE UN USUARIO:
-    public function cambiarEstadoViejo($where)
-    {
-        $estado_p = $this->usuarioModel->getEstadoModel($where);
-        $estado = ($estado_p[0]['estado'] == 0) ? 1 : 0;
-
-        $editar = $this->usuarioModel->cambiarEstadoModel('usuario', ['estado' => $estado], ['id_usuario' => $where]);
-        echo $editar ? "true" : "false";
-    }
-
     public function cambiarEstado()
     {
         try {
             $id_usuario = $this->request->getPost('id_usuario');
             if (!$id_usuario) {
                 $jsonResponse = ResponseUtil::setResponse(400, "error", 'ID de usuario no proporcionado.', $id_usuario);
-                ResponseUtil::logWithContext($jsonResponse);
-                return $this->response
-                    ->setStatusCode(400)
-                    ->setJSON($jsonResponse);
+                return $this->response->setStatusCode(400)->setJSON($jsonResponse);
             }
 
             $estado = $this->usuarioModel->getEstadoModel($id_usuario);
             if (!$estado) {
                 $jsonResponse = ResponseUtil::setResponse(404, "not_found", 'Usuario no encontrado.', $id_usuario);
-                ResponseUtil::logWithContext($jsonResponse);
-                return $this->response
-                    ->setStatusCode(404)
-                    ->setJSON($jsonResponse);
+                return $this->response->setStatusCode(404)->setJSON($jsonResponse);
             }
 
             // Cambia el estado
@@ -221,60 +206,18 @@ class UsuarioController extends BaseController
             if ($editar) {
                 $message = $estado['estado'] == true ? 'Deshabilitado exitosamente!' : 'Habilitado exitosamente!';
                 $jsonResponse = ResponseUtil::setResponse(201, "success", $message, $editar);
-                ResponseUtil::logWithContext($jsonResponse);
-                return $this->response
-                    ->setStatusCode(201)
-                    ->setJSON($jsonResponse);
+                return $this->response->setStatusCode(201)->setJSON($jsonResponse);
             }
 
             $jsonResponse = ResponseUtil::setResponse(500, "server_error", 'Error al cambiar el estado.', $editar);
-            ResponseUtil::logWithContext($jsonResponse);
-            return $this->response
-                    ->setStatusCode(500)
-                    ->setJSON($jsonResponse);
+            return $this->response->setStatusCode(500)->setJSON($jsonResponse);
 
         } catch (\Exception $e) {
             $jsonResponse = ResponseUtil::setResponse(500, "server_error", 'Error inesperado.', []);
             ResponseUtil::logWithContext(ResponseUtil::setResponse(500, "server_error", 'Exception: ' . $e->getMessage(), []));
-            return $this->response
-                    ->setStatusCode(500)
-                    ->setJSON($jsonResponse);
+            return $this->response->setStatusCode(500)->setJSON($jsonResponse);
         }
-    }
-
-    public function cambiarEstadoNuevo($id)
-    {
-        log_message('debug', 'ID Usuario: ' . $id);
-
-        if (!$id) {
-            return $this->response
-                ->setStatusCode(400) // Código de estado 400 para solicitud incorrecta
-                ->setJSON(['success' => false, 'message' => 'ID de usuario no proporcionado']);
-        }
-
-        $estado_p = $this->usuarioModel->getEstadoModel($id);
-        if (!$estado_p) {
-            return $this->response
-                ->setStatusCode(404) // Código de estado 404 para no encontrado
-                ->setJSON(['success' => false, 'message' => 'Usuario no encontrado']);
-        }
-
-        log_message('debug', 'Estado Usuario: ' . $estado_p['estado']);
-
-        $nuevo_estado = ($estado_p['estado'] == 0) ? 1 : 0;
-        log_message('debug', 'Nuevo Estado Usuario: ' . $nuevo_estado);
-
-        $editar = $this->usuarioModel->cambiarEstadoModel($id, $nuevo_estado);
-
-        if ($editar) {
-            return $this->response
-                ->setStatusCode(200) // Código de estado 200 para éxito
-                ->setJSON(['success' => true, 'message' => 'Estado cambiado']);
-        } else {
-            return $this->response
-                ->setStatusCode(500) // Código de estado 500 para error interno del servidor
-                ->setJSON(['success' => false, 'message' => 'Error al cambiar estado']);
-        }
+        
     }
 
 

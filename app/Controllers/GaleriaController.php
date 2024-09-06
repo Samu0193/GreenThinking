@@ -38,8 +38,8 @@ class GaleriaController extends BaseController
     // IMPRIMIR GALERIA
     public function printImgGalery()
     {
-        $resultData = $this->galeriaModel->printImgGaleryModel();
-        return $this->response->setJSON($resultData);
+        $galeria = $this->galeriaModel->printImgGaleryModel();
+        return $this->response->setJSON(json_encode($galeria));
     }
 
     public function tblGaleria()

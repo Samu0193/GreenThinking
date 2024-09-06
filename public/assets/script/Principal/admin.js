@@ -43,7 +43,7 @@ $(document).ready(function() {
     });
 
     let pagina = window.location.href;
-    if (pagina === (url + 'Productos') || pagina === (url + 'Galeria')) {
+    if (pagina === (url + 'productos') || pagina === (url + 'galeria')) {
         // Cargar imagen
         var img = document.getElementById('upload'),
             nombre = document.getElementById('nombre_imagen');
@@ -97,7 +97,6 @@ $(document).ready(function() {
             }
 
         });
-
 
     }
 

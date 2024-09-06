@@ -39,7 +39,7 @@
                                 </div>
                                 <input type="text" name="nombre_imagen" id="nombre_imagen" style="position: absolute; transform: translateY(-100%);">
                                 <label for="upload" class="btn"><i class="fas fa-upload"></i> Cargar</label>
-                                <input type="file" name="upload" id="upload" accept=".jpg" style="display: none;" required>
+                                <input type="file" name="upload" id="upload" accept=".jpg,.jpeg,.png" style="display: none;" required>
                             </div>
                             <button class="btn" type="submit" id="insert-producto" style="width: 100%;">
                                 <i class="far fa-images"></i> Actualizar
