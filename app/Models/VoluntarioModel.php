@@ -20,6 +20,86 @@ class VoluntarioModel extends Model
         'fecha_creacion'
     ];
 
+    /*************************************************************************************************************************
+    *!*     VALIDATOR:
+     *************************************************************************************************************************/
+    public $validatorMayor = [
+        'nombres' => [
+            'rules'  => 'required|alfaOespacio',
+            'errors' => [
+                'required'     => 'Nombres requeridos.',
+                'alfaOespacio' => 'Nombres sólo pueden contener letras y espacios.'
+            ]
+        ],
+        'apellidos' => [
+            'rules'  => 'required|alfaOespacio',
+            'errors' => [
+                'required'     => 'Apellidos requeridos.',
+                'alfaOespacio' => 'Apellidos sólo pueden contener letras y espacios.'
+            ]
+        ],
+        'f_nacimiento_mayor' => [
+            'rules'  => 'required|valid_date|minEdadMay|maxEdadMay',
+            'errors' => [
+                'required'   => 'Fecha de nacimiento requerida.',
+                'valid_date' => 'Fecha de finalización debe ser una fecha válida.',
+                'minEdadMay' => 'Edad máxima 40 años.',
+                'maxEdadMay' => 'Edad mínima 18 años.',
+            ]
+        ],
+        'DUI' => [
+            'rules'  => 'required|isDUI|is_unique[persona.DUI]',
+            'errors' => [
+                'required'  => 'DUI requerido.',
+                'isDUI'     => 'DUI inválido.',
+                'is_unique' => 'Este DUI ya está registrado.'
+            ]
+        ],
+        'telefono' => [
+            'rules'  => 'required|telefono|is_unique[persona.telefono]',
+            'errors' => [
+                'required'  => 'Teléfono requerido.',
+                'telefono'  => 'Teléfono inválido.',
+                'is_unique' => 'Este teléfono ya está registrado.'
+            ]
+        ],
+        'email' => [
+            'rules'  => 'required|valid_email|is_unique[usuario.email]',
+            'errors' => [
+                'required'    => 'Email requerido.',
+                'valid_email' => 'Ingrese un email válido.',
+                'is_unique'   => 'Este email ya está registrado.'
+            ]
+        ],
+        'departamento_residencia' => [
+            'rules'  => 'required|integer',
+            'errors' => [
+                'required' => 'Departamento requerido.',
+                'integer'  => 'Departamento debe ser un número entero.'
+            ]
+        ],
+        'municipio_residencia' => [
+            'rules'  => 'required|integer',
+            'errors' => [
+                'required' => 'Municipio requerido.',
+                'integer'  => 'Municipio debe ser un número entero.'
+            ]
+        ],
+        'direccion' => [
+            'rules'  => 'required',
+            'errors' => [
+                'required' => 'Dirección requerida.'
+            ]
+        ],
+        'fecha_finalizacion' => [
+            'rules'  => 'required|valid_date',
+            'errors' => [
+                'required'   => 'Fecha de finalización requerida.',
+                'valid_date' => 'Fecha de finalización debe ser una fecha válida.'
+            ]
+        ]
+    ];
+
     // *************************************************************************************************************************
     //    OBTIENE Y GENERA EL ID MAXIMO DE LA TABLA "PERSONA":
     public function maxPersona()

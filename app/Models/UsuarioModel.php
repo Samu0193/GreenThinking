@@ -21,73 +21,80 @@ class UsuarioModel extends Model
         'fecha_creacion'
     ];
 
-    // Puedes definir las reglas como una propiedad en el modelo
-    public $validator = [
+    /*************************************************************************************************************************
+    *!*     VALIDATOR:
+     *************************************************************************************************************************/
+    public $validatorUser = [
         'nombres' => [
-            'rules' => 'required|alfaOespacio',
+            'rules'  => 'required|alfaOespacio',
             'errors' => [
-                'required' => 'Nombres requeridos.',
+                'required'     => 'Nombres requeridos.',
                 'alfaOespacio' => 'Nombres sólo pueden contener letras y espacios.'
             ]
         ],
         'apellidos' => [
-            'rules' => 'required|alfaOespacio',
+            'rules'  => 'required|alfaOespacio',
             'errors' => [
-                'required' => 'Apellidos requeridos.',
+                'required'     => 'Apellidos requeridos.',
                 'alfaOespacio' => 'Apellidos sólo pueden contener letras y espacios.'
             ]
         ],
         'f_nacimiento_mayor' => [
-            'rules' => 'required|minEdadMay|maxEdadMay',
+            'rules'  => 'required|valid_date|minEdadMayor|maxEdadMayor',
             'errors' => [
-                'required' => 'Fecha de nacimiento requerida.',
-                'minEdadMay' => 'Edad máxima 40 años.',
-                'maxEdadMay' => 'Edad mínima 18 años.',
+                'required'     => 'Fecha de nacimiento requerida.',
+                'valid_date'   => 'Fecha de nacimiento debe ser una fecha válida.',
+                'minEdadMayor' => 'Edad máxima 40 años.',
+                'maxEdadMayor' => 'Edad mínima 18 años.',
             ]
         ],
         'DUI' => [
-            'rules' => 'required|isDUI',
+            'rules'  => 'required|isDUI|is_unique[persona.DUI]',
             'errors' => [
-                'required' => 'DUI requerido.',
-                'isDUI' => 'DUI inválido.'
+                'required'  => 'DUI requerido.',
+                'isDUI'     => 'DUI inválido.',
+                'is_unique' => 'Este DUI ya está registrado.'
             ]
         ],
         'telefono' => [
-            'rules' => 'required|telefono',
+            'rules'  => 'required|telefono|is_unique[persona.telefono]',
             'errors' => [
-                'required' => 'Teléfono requerido.',
-                'telefono' => 'Teléfono inválido.'
+                'required'  => 'Teléfono requerido.',
+                'telefono'  => 'Teléfono inválido.',
+                'is_unique' => 'Este teléfono ya está registrado.'
             ]
         ],
         'email' => [
-            'rules' => 'required|valid_email',
+            'rules'  => 'required|valid_email|is_unique[usuario.email]',
             'errors' => [
-                'required' => 'Email requerido.',
-                'valid_email' => 'Ingrese un email válido.'
+                'required'    => 'Email requerido.',
+                'valid_email' => 'Ingrese un email válido.',
+                'is_unique'   => 'Este email ya está registrado.'
             ]
         ],
         'nombre_usuario' => [
-            'rules' => 'required',
+            'rules'  => 'required|is_unique[usuario.usuario]',
             'errors' => [
-                'required' => 'Usuario requerido.'
+                'required'  => 'Usuario requerido.',
+                'is_unique' => 'Este usuario ya está registrado.'
             ]
         ],
         'password' => [
-            'rules' => 'required|passwordMatch[re_password]',
+            'rules'  => 'required|passwordMatch[re_password]',
             'errors' => [
-                'required' => 'Contraseña requerida.',
+                'required'      => 'Contraseña requerida.',
                 'passwordMatch' => 'Las contraseñas no coinciden.'
             ]
         ],
         're_password' => [
-            'rules' => 'required|passwordMatch[password]',
+            'rules'  => 'required|passwordMatch[password]',
             'errors' => [
-                'required' => 'Repetir contraseña requerido.',
+                'required'      => 'Repetir contraseña requerido.',
                 'passwordMatch' => 'Las contraseñas no coinciden.'
             ]
         ]
         // 're_password' => [
-        //     'rules' => 'required|matches[password]',
+        //     'rules'  => 'required|matches[password]',
         //     'errors' => [
         //         'required' => 'Repetir contraseña requerido.',
         //         'matches'  => 'Las contraseñas no coinciden.'
@@ -122,14 +129,14 @@ class UsuarioModel extends Model
     //    BUCAR REGISTRO DE UN CORREO PARA VALIDAR EN LA TABLA "USUARIO":
     public function findEmail($valor)
     {
-        return $this->where('email', $valor)->findAll();
+        return $this->where('email', $valor)->first();
     }
 
     // *************************************************************************************************************************
     //    BUCAR REGISTRO DE UN USUARIO PARA VALIDAR EN LA TABLA "USUARIO":
     public function findUser($valor)
     {
-        return $this->where('usuario', $valor)->findAll();
+        return $this->where('usuario', $valor)->first();
     }
 
     // *************************************************************************************************************************

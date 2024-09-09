@@ -4,15 +4,14 @@ namespace App\Controllers;
 
 use App\Controllers\BaseController;
 use App\Models\UsuarioModel;
-use App\Utils\ResponseUtil;
 
 class UsuarioController extends BaseController
 {
-    protected $usuarioModel;
+    protected $modelUsuario;
 
     public function __construct()
     {
-        $this->usuarioModel = new UsuarioModel();
+        $this->modelUsuario = new UsuarioModel();
     }
 
     public function index()
@@ -43,9 +42,30 @@ class UsuarioController extends BaseController
     public function validarEmail()
     {
         if ($this->request->isAJAX()) {
-            $valor = $this->request->getPost('email');
-            $resultado = $this->usuarioModel->findEmail($valor);
-            return $this->response->setJSON(['result' => $resultado ? 1 : 0]);
+
+            try {
+
+                $email = $this->request->getPost('email');
+                if (!$email) {
+                    $jsonResponse = $this->responseUtil->setResponse(400, "error", 'Email no proporcionado.', []);
+                    return $this->response->setStatusCode(400)->setJSON($jsonResponse);
+                }
+
+                $resultado = $this->modelUsuario->findEmail($email);
+                if (!$resultado) {
+                    $jsonResponse = $this->responseUtil->setResponse(200, "success", 'Email disponible.', true);
+                    return $this->response->setStatusCode(200)->setJSON($jsonResponse);
+                }
+
+                $jsonResponse = $this->responseUtil->setResponse(200, "success", 'Este email ya está registrado.', false);
+                return $this->response->setStatusCode(200)->setJSON($jsonResponse);
+
+            } catch (\Exception $e) {
+                $jsonResponse = $this->responseUtil->setResponse(500, "server_error", 'Error inesperado.', []);
+                $this->responseUtil->logWithContext($this->responseUtil->setResponse(500, "server_error", 'Exception: ' . $e->getMessage(), []));
+                return $this->response->setStatusCode(500)->setJSON($jsonResponse);
+            }
+
         }
 
         return redirect()->back();
@@ -54,9 +74,30 @@ class UsuarioController extends BaseController
     public function validarUser()
     {
         if ($this->request->isAJAX()) {
-            $valor = $this->request->getPost('nombre_usuario');
-            $resultado = $this->usuarioModel->findUser($valor);
-            return $this->response->setJSON(['result' => $resultado ? 1 : 0]);
+
+            try {
+
+                $usuario = $this->request->getPost('nombre_usuario');
+                if (!$usuario) {
+                    $jsonResponse = $this->responseUtil->setResponse(400, "error", 'Usuario no proporcionado.', []);
+                    return $this->response->setStatusCode(400)->setJSON($jsonResponse);
+                }
+
+                $resultado = $this->modelUsuario->findUser($usuario);
+                if (!$resultado) {
+                    $jsonResponse = $this->responseUtil->setResponse(200, "success", 'Usuario disponible.', true);
+                    return $this->response->setStatusCode(200)->setJSON($jsonResponse);
+                }
+
+                $jsonResponse = $this->responseUtil->setResponse(200, "success", 'Este usuario ya está registrado.', false);
+                return $this->response->setStatusCode(200)->setJSON($jsonResponse);
+
+            } catch (\Exception $e) {
+                $jsonResponse = $this->responseUtil->setResponse(500, "server_error", 'Error inesperado.', []);
+                $this->responseUtil->logWithContext($this->responseUtil->setResponse(500, "server_error", 'Exception: ' . $e->getMessage(), []));
+                return $this->response->setStatusCode(500)->setJSON($jsonResponse);
+            }
+
         }
 
         return redirect()->back();
@@ -65,7 +106,7 @@ class UsuarioController extends BaseController
     public function setRoles()
     {
         if ($this->request->isAJAX()) {
-            $datos = $this->usuarioModel->getRolesModel();
+            $datos = $this->modelUsuario->getRolesModel();
             return $this->response->setJSON($datos);
         }
 
@@ -82,18 +123,13 @@ class UsuarioController extends BaseController
     public function guardar()
     {
         try {
-            // Obtener datos del POST
-            $data = $this->request->getPost();
-            log_message('debug', json_encode($data));
 
-            // Validar usando las reglas definidas en el modelo
-            if (!$this->validate($this->usuarioModel->validator)) {
-                // Obtiene todos los errores
+            $data = $this->request->getPost();
+            if (!$this->validate($this->modelUsuario->validatorUser)) {
+
                 $errors = $this->validator->getErrors();
-                
-                // Obtener el primer mensaje de error
-                $firstError = reset($errors); // reset() devuelve el primer valor del array
-                $jsonResponse = ResponseUtil::setResponse(400, "error", $errors, []);
+                $firstError = reset($errors);
+                $jsonResponse = $this->responseUtil->setResponse(400, "error", $errors, []);
                 return $this->response->setStatusCode(400)->setJSON($jsonResponse);
             }
 
@@ -103,7 +139,7 @@ class UsuarioController extends BaseController
             $edad = $date1->diff($date2);
 
             $datosPersona = [
-                'id_persona' => $this->usuarioModel->maxPersona(),
+                'id_persona' => $this->modelUsuario->maxPersona(),
                 'nombres' => $this->request->getPost('nombres'),
                 'apellidos' => $this->request->getPost('apellidos'),
                 'DUI' => $this->request->getPost('DUI'),
@@ -113,7 +149,7 @@ class UsuarioController extends BaseController
             ];
 
             $datosUsuario = [
-                'id_usuario' => $this->usuarioModel->maxUsuario(),
+                'id_usuario' => $this->modelUsuario->maxUsuario(),
                 'id_persona' => $datosPersona['id_persona'],
                 'id_rol' => 2,
                 'usuario' => $this->request->getPost('nombre_usuario'),
@@ -123,13 +159,13 @@ class UsuarioController extends BaseController
                 'fecha_creacion' => date('Y-m-d H:i:s')
             ];
 
-            $persona = $this->usuarioModel->insertPersona($datosPersona);
-            $usuario = $this->usuarioModel->insertUsuario($datosUsuario);
+            $persona = $this->modelUsuario->insertPersona($datosPersona);
+            $usuario = $this->modelUsuario->insertUsuario($datosUsuario);
             return $this->response->setBody($persona && $usuario ? 'true' : 'false');
 
         } catch (\Exception $e) {
-            $jsonResponse = ResponseUtil::setResponse(500, "server_error", 'Error inesperado.', []);
-            ResponseUtil::logWithContext(ResponseUtil::setResponse(500, "server_error", 'Exception: ' . $e->getMessage(), []));
+            $jsonResponse = $this->responseUtil->setResponse(500, "server_error", 'Error inesperado.', []);
+            $this->responseUtil->logWithContext($this->responseUtil->setResponse(500, "server_error", 'Exception: ' . $e->getMessage(), []));
             return $this->response->setStatusCode(500)->setJSON($jsonResponse);
         }
     }
@@ -151,12 +187,12 @@ class UsuarioController extends BaseController
         $searchValue = $request['search']['value'] ?? '';
 
         // Obtener totales (con y sin filtro) en una sola llamada
-        $totals = $this->usuarioModel->getTotalUsuarios($searchValue);
+        $totals = $this->modelUsuario->getTotalUsuarios($searchValue);
         $totalRecords = $totals['totalRecords'];  // Número total de usuarios sin filtro
         $totalFiltered = $totals['totalFiltered']; // Número de usuarios filtrados
 
         // Obtener usuarios paginados con búsqueda (si hay)
-        $resultList = $this->usuarioModel->getUsuariosPaginados($start, $length, $searchValue);
+        $resultList = $this->modelUsuario->getUsuariosPaginados($start, $length, $searchValue);
 
         $data = [];
         $i = $start + 1;
@@ -197,33 +233,33 @@ class UsuarioController extends BaseController
         try {
             $id_usuario = $this->request->getPost('id_usuario');
             if (!$id_usuario) {
-                $jsonResponse = ResponseUtil::setResponse(400, "error", 'ID de usuario no proporcionado.', $id_usuario);
+                $jsonResponse = $this->responseUtil->setResponse(400, "error", 'ID de usuario no proporcionado.', $id_usuario);
                 return $this->response->setStatusCode(400)->setJSON($jsonResponse);
             }
 
-            $estado = $this->usuarioModel->getEstadoModel($id_usuario);
+            $estado = $this->modelUsuario->getEstadoModel($id_usuario);
             if (!$estado) {
-                $jsonResponse = ResponseUtil::setResponse(404, "not_found", 'Usuario no encontrado.', $id_usuario);
+                $jsonResponse = $this->responseUtil->setResponse(404, "not_found", 'Usuario no encontrado.', $id_usuario);
                 return $this->response->setStatusCode(404)->setJSON($jsonResponse);
             }
 
             // Cambia el estado
             $nuevo_estado = !$estado['estado'];
-            $editar = $this->usuarioModel->cambiarEstadoModel($id_usuario, $nuevo_estado);
+            $editar = $this->modelUsuario->cambiarEstadoModel($id_usuario, $nuevo_estado);
 
             // Devuelve la respuesta JSON
             if ($editar) {
                 $message = $estado['estado'] == true ? 'Deshabilitado exitosamente!' : 'Habilitado exitosamente!';
-                $jsonResponse = ResponseUtil::setResponse(201, "success", $message, $editar);
+                $jsonResponse = $this->responseUtil->setResponse(201, "success", $message, $editar);
                 return $this->response->setStatusCode(201)->setJSON($jsonResponse);
             }
 
-            $jsonResponse = ResponseUtil::setResponse(500, "server_error", 'Error al cambiar el estado.', $editar);
+            $jsonResponse = $this->responseUtil->setResponse(500, "server_error", 'Error al cambiar el estado.', $editar);
             return $this->response->setStatusCode(500)->setJSON($jsonResponse);
 
         } catch (\Exception $e) {
-            $jsonResponse = ResponseUtil::setResponse(500, "server_error", 'Error inesperado.', []);
-            ResponseUtil::logWithContext(ResponseUtil::setResponse(500, "server_error", 'Exception: ' . $e->getMessage(), []));
+            $jsonResponse = $this->responseUtil->setResponse(500, "server_error", 'Error inesperado.', []);
+            $this->responseUtil->logWithContext($this->responseUtil->setResponse(500, "server_error", 'Exception: ' . $e->getMessage(), []));
             return $this->response->setStatusCode(500)->setJSON($jsonResponse);
         }
         

@@ -12,8 +12,8 @@
 
     <p style="position: absolute;margin-top: 75px; left: 310px;"><b>Solicitud de Voluntariado</b></p>
     <?php
-        $fechaIngreso = strtotime($b['fecha_ingreso']);
-        $fechaFin =  strtotime($b['fecha_finalizacion']);
+        $fechaIngreso = strtotime($volMayor['fecha_ingreso']);
+        $fechaFin =  strtotime($volMayor['fecha_finalizacion']);
 
         $diaI = date('d', $fechaIngreso);
         $mesI = date('m', $fechaIngreso);
@@ -24,7 +24,7 @@
         $anioF = date('y', $fechaFin);
     ?>
     <p></p><br><br><br><br>
-    <p>Yo <b><?= $b['nombres'] ?> <?= $b['apellidos'] ?> </b>Estoy dispuest@ a formar parte del voluntariado de Green Thinking
+    <p>Yo <b><?= $volMayor['nombres'] ?> <?= $volMayor['apellidos'] ?> </b>Estoy dispuest@ a formar parte del voluntariado de Green Thinking
         desde la fecha de <b><?= $diaI ?></b> de <b> <?= $mesI; ?> </b> del <b><?= $anioI; ?> </b> hasta la fecha de
         <b><?= $diaF ?></b> de <b> <?= $mesF; ?> </b> del <b><?= $anioF; ?> </b>, el cual me ayudara para el desarrollo de
         habilidades para mi persona como conciencia ambiental, empatia con los demas y el medio ambiente y muchos otros

@@ -625,7 +625,7 @@
         var galeryFiles = <?= json_encode($galeryFiles); ?>;
 
         // Verifica el contenido de galeryFiles en la consola
-        console.log(galeryFiles);
+        // console.log(galeryFiles);
 
         // Ahora puedes usar galeryFiles en tu JavaScript
         // galeryFiles.forEach(function(index, data) {
@@ -633,7 +633,7 @@
         // });
 
         $.each(galeryFiles, function(index, galeria) {
-            console.log(index, galeria);
+            // console.log(index, galeria);
         });
     </script>
 

@@ -23,8 +23,8 @@ class InicioController extends BaseController
         $galeryFiles = array_diff(scandir($galeryDirectory), array('.', '..'));
         $productsDirectory = FCPATH . 'assets/img/galery';
         $productsFiles = array_diff(scandir($galeryDirectory), array('.', '..'));
-        
-        // dd($files); // Mostrar los archivos
+
+        // dd($galeryFiles); // Mostrar los archivos
 
         // Envía los archivos como un array asociativo a la vista
         return view('Inicio/index', ['galeryFiles' => $galeryFiles]);
@@ -48,7 +48,7 @@ class InicioController extends BaseController
             $mpdf->WriteHTML($stylesheet, 1);
 
             // Obtener datos
-            $datos['b'] = $this->modelVol->getVoluntarioMayor($this->request->getPost('DUI'), $this->request->getPost('telefono'));
+            $datos['volMayor'] = $this->modelVol->getVoluntarioMayor($this->request->getPost('DUI'), $this->request->getPost('telefono'));
 
             // Preparar datos para la vista
             $solicitud = [
@@ -63,15 +63,14 @@ class InicioController extends BaseController
             $mpdf->WriteHTML($html, 2);
 
             // Salida del archivo PDF directamente al navegador
-            $mpdf->Output('Solicitud ' . $solicitud['nombres'] . ' ' . $solicitud['apellidos'] . '.pdf', 'D');
+            $mpdf->Output('Solicitud ' . $solicitud['nombres'] . '_' . $solicitud['apellidos'] . '.pdf', 'D');
 
             // Terminar la ejecución
             exit;
         } catch (\Exception $e) {
-            // Manejo de errores
-            log_message('error', $e->getMessage());
-            return $this->response->setStatusCode(500)->setBody('Error al generar el PDF: ' . $e->getMessage());
-            // return $this->response->setJSON(['error' => 'Error al generar el PDF: ' . $e->getMessage()], 500);
+            $jsonResponse = $this->responseUtil->setResponse(500, "server_error", 'Error al generar el PDF.', []);
+            $this->responseUtil->logWithContext($this->responseUtil->setResponse(500, "server_error", 'Exception: ' . $e->getMessage(), []));
+            return $this->response->setStatusCode(500)->setJSON($jsonResponse);
         }
     }
 
@@ -94,7 +93,7 @@ class InicioController extends BaseController
             ];
 
             // Obtener datos del modelo
-            $datos['b'] = $this->modelVol->getVoluntarioMenor($this->request->getPost('DUI_ref'), $this->request->getPost('telefono_ref'));
+            $datos['volMenor'] = $this->modelVol->getVoluntarioMenor($this->request->getPost('DUI_ref'), $this->request->getPost('telefono_ref'));
 
             // Generar el HTML
             $html = view('GenerarPDF/GenerarPdfMenores', $datos);
@@ -103,14 +102,14 @@ class InicioController extends BaseController
             $mpdf->WriteHTML($html, 2);
 
             // Salida del archivo PDF directamente al navegador
-            $mpdf->Output('Solicitud ' . $dato['nombres'] . ' ' . $dato['apellidos'] . '.pdf', 'D');
+            $mpdf->Output('Solicitud ' . $dato['nombres'] . '_' . $dato['apellidos'] . '.pdf', 'D');
 
             // Terminar la ejecución
             exit;
         } catch (\Exception $e) {
-            // Manejo de errores
-            log_message('error', $e->getMessage());
-            return $this->response->setStatusCode(500)->setBody('Error al generar el PDF: ' . $e->getMessage());
+            $jsonResponse = $this->responseUtil->setResponse(500, "server_error", 'Error al generar el PDF.', []);
+            $this->responseUtil->logWithContext($this->responseUtil->setResponse(500, "server_error", 'Exception: ' . $e->getMessage(), []));
+            return $this->response->setStatusCode(500)->setJSON($jsonResponse);
         }
     }
 
@@ -125,8 +124,40 @@ class InicioController extends BaseController
     public function setDepartamentos()
     {
         if ($this->request->isAJAX()) {
-            $datos = $this->modelVol->getDepartamentos();
-            return $this->response->setJSON($datos);
+
+            try {
+                // // Si $departamentos puede ser null o false:
+                // if (!$departamentos) {
+                //     // Esto se ejecutará si $departamentos es null, false, 0, una cadena vacía o un array vacío.
+                // }
+                // // Si $departamentos siempre es un array o una colección y necesitas verificar que tenga elementos:
+                // if (is_array($departamentos) && count($departamentos) > 0) {
+                //     // Solo se ejecuta si $departamentos es un array y contiene elementos
+                // }
+                // // O, si estás usando un objeto tipo Collection
+                // if ($departamentos && count($departamentos) > 0) {
+                //     // Si $departamentos no es nulo y tiene elementos
+                // }
+                // // En resumen, puedes combinar las dos verificaciones si $departamentos puede no existir, ser null, o un array vacío:
+                // if (!$departamentos || count($departamentos) === 0) {
+                //     // Maneja el caso donde $departamentos es null, false, o está vacío
+                // }
+
+                $departamentos = $this->modelVol->getDepartamentos();
+                if (!$departamentos) {
+                    $jsonResponse = $this->responseUtil->setResponse(404, "not_found", 'No hay registros.', []);
+                    return $this->response->setStatusCode(404)->setJSON($jsonResponse);
+                }
+
+                $message = count($departamentos) . ' registros encontrados';
+                $jsonResponse = $this->responseUtil->setResponse(200, "success", $message, $departamentos);
+                return $this->response->setStatusCode(200)->setJSON($jsonResponse);
+
+            } catch (\Exception $e) {
+                $jsonResponse = $this->responseUtil->setResponse(500, "server_error", 'Error inesperado.', []);
+                $this->responseUtil->logWithContext($this->responseUtil->setResponse(500, "server_error", 'Exception: ' . $e->getMessage(), []));
+                return $this->response->setStatusCode(500)->setJSON($jsonResponse);
+            }
         }
 
         return redirect()->back();
@@ -138,15 +169,34 @@ class InicioController extends BaseController
     {
         if ($this->request->isAJAX()) {
 
-            $id_departamento = $this->request->getPost('id_departamento');
-            $municipio       = $this->modelVol->getMunicipios($id_departamento);
+            try {
 
-            if (count($municipio) > 0) {
-                $options = "<option selected disabled value=''>Seleccionar...</option>";
-                foreach ($municipio as $i) {
-                    $options .= "<option value='" . $i['id_municipio'] . "'>" . $i['nombre_municipio'] . "</option>";
+                $id_departamento = $this->request->getPost('id_departamento');
+                if (!$id_departamento) {
+                    $jsonResponse = $this->responseUtil->setResponse(400, "error", 'ID de departamento no proporcionado.', []);
+                    return $this->response->setStatusCode(400)->setJSON($jsonResponse);
                 }
-                return $this->response->setBody($options);
+
+                $municipio = $this->modelVol->getMunicipios($id_departamento);
+                if (!$municipio) {
+                    $jsonResponse = $this->responseUtil->setResponse(404, "not_found", 'No hay registros.', []);
+                    return $this->response->setStatusCode(404)->setJSON($jsonResponse);
+                }
+
+                $message = count($municipio) . ' registros encontrados';
+                $jsonResponse = $this->responseUtil->setResponse(200, "success", $message, $municipio);
+                return $this->response->setStatusCode(200)->setJSON($jsonResponse);
+
+                // $options = "<option selected disabled value=''>Seleccionar...</option>";
+                // foreach ($municipio as $i) {
+                //     $options .= "<option value='" . $i['id_municipio'] . "'>" . $i['nombre_municipio'] . "</option>";
+                // }
+                // return $this->response->setBody($options);
+
+            } catch (\Exception $e) {
+                $jsonResponse = $this->responseUtil->setResponse(500, "server_error", 'Error inesperado.', []);
+                $this->responseUtil->logWithContext($this->responseUtil->setResponse(500, "server_error", 'Exception: ' . $e->getMessage(), []));
+                return $this->response->setStatusCode(500)->setJSON($jsonResponse);
             }
         }
 
@@ -187,9 +237,31 @@ class InicioController extends BaseController
     public function validarDUI()
     {
         if ($this->request->isAJAX()) {
-            $valor     = $this->request->getPost('DUI');
-            $resultado = $this->modelVol->findDUI($valor);
-            return $this->response->setJSON(['result' => $resultado ? 1 : 0]);
+
+            try {
+
+                $dui = $this->request->getPost('DUI');
+                if (!$dui) {
+                    $jsonResponse = $this->responseUtil->setResponse(400, "error", 'DUI no proporcionado.', []);
+                    return $this->response->setStatusCode(400)->setJSON($jsonResponse);
+                }
+
+                $resultado = $this->modelVol->findDUI($dui);
+                if (!$resultado) {
+                    $jsonResponse = $this->responseUtil->setResponse(200, "success", 'DUI disponible.', true);
+                    return $this->response->setStatusCode(200)->setJSON($jsonResponse);
+                }
+
+                $jsonResponse = $this->responseUtil->setResponse(200, "success", 'Este DUI ya está registrado.', false);
+                return $this->response->setStatusCode(200)->setJSON($jsonResponse);
+                // return $this->response->setJSON(['result' => $resultado ? 1 : 0]);
+
+            } catch (\Exception $e) {
+                $jsonResponse = $this->responseUtil->setResponse(500, "server_error", 'Error inesperado.', []);
+                $this->responseUtil->logWithContext($this->responseUtil->setResponse(500, "server_error", 'Exception: ' . $e->getMessage(), []));
+                return $this->response->setStatusCode(500)->setJSON($jsonResponse);
+            }
+
         }
 
         return redirect()->back();
@@ -200,9 +272,30 @@ class InicioController extends BaseController
     public function validarTel()
     {
         if ($this->request->isAJAX()) {
-            $valor     = $this->request->getPost('telefono');
-            $resultado = $this->modelVol->findTel($valor);
-            return $this->response->setJSON(['result' => $resultado ? 1 : 0]);
+
+            try {
+
+                $telefono = $this->request->getPost('telefono');
+                if (!$telefono) {
+                    $jsonResponse = $this->responseUtil->setResponse(400, "error", 'Teléfono no proporcionado.', []);
+                    return $this->response->setStatusCode(400)->setJSON($jsonResponse);
+                }
+
+                $resultado = $this->modelVol->findTel($telefono);
+                if (!$resultado) {
+                    $jsonResponse = $this->responseUtil->setResponse(200, "success", 'Teléfono disponible.', true);
+                    return $this->response->setStatusCode(200)->setJSON($jsonResponse);
+                }
+                
+                $jsonResponse = $this->responseUtil->setResponse(200, "success", 'Este teléfono ya está registrado.', false);
+                return $this->response->setStatusCode(200)->setJSON($jsonResponse);
+
+            } catch (\Exception $e) {
+                $jsonResponse = $this->responseUtil->setResponse(500, "server_error", 'Error inesperado.', []);
+                $this->responseUtil->logWithContext($this->responseUtil->setResponse(500, "server_error", 'Exception: ' . $e->getMessage(), []));
+                return $this->response->setStatusCode(500)->setJSON($jsonResponse);
+            }
+
         }
 
         return redirect()->back();
@@ -213,9 +306,30 @@ class InicioController extends BaseController
     public function validarEmail()
     {
         if ($this->request->isAJAX()) {
-            $valor     = $this->request->getPost('email');
-            $resultado = $this->modelVol->findEmail($valor);
-            return $this->response->setJSON(['result' => $resultado ? 1 : 0]);
+
+            try {
+
+                $email = $this->request->getPost('email');
+                if (!$email) {
+                    $jsonResponse = $this->responseUtil->setResponse(400, "error", 'Email no proporcionado.', []);
+                    return $this->response->setStatusCode(400)->setJSON($jsonResponse);
+                }
+
+                $resultado = $this->modelVol->findEmail($email);
+                if (!$resultado) {
+                    $jsonResponse = $this->responseUtil->setResponse(200, "success", 'Email disponible.', true);
+                    return $this->response->setStatusCode(200)->setJSON($jsonResponse);
+                }
+
+                $jsonResponse = $this->responseUtil->setResponse(200, "success", 'Este email ya está registrado.', false);
+                return $this->response->setStatusCode(200)->setJSON($jsonResponse);
+
+            } catch (\Exception $e) {
+                $jsonResponse = $this->responseUtil->setResponse(500, "server_error", 'Error inesperado.', []);
+                $this->responseUtil->logWithContext($this->responseUtil->setResponse(500, "server_error", 'Exception: ' . $e->getMessage(), []));
+                return $this->response->setStatusCode(500)->setJSON($jsonResponse);
+            }
+
         }
 
         return redirect()->back();
@@ -228,6 +342,22 @@ class InicioController extends BaseController
         if ($this->request->isAJAX()) {
 
             try {
+
+                // Obtener datos del POST (PARA VALIDATOR)
+                $data = $this->request->getPost();
+
+                // Validar usando las reglas definidas en el modelo
+                if (!$this->validate($this->modelVol->validatorMayor)) {
+
+                    // Obtiene todos los errores
+                    $errors = $this->validator->getErrors();
+                    
+                    // Obtener el primer mensaje de error
+                    $firstError = reset($errors); // reset() devuelve el primer valor del array
+                    $jsonResponse = $this->responseUtil->setResponse(400, "error", $errors, []);
+                    return $this->response->setStatusCode(400)->setJSON($jsonResponse);
+                }
+
                 date_default_timezone_set("America/El_Salvador");
                 $f_nacimiento = new \DateTime($this->request->getPost('f_nacimiento_mayor'));
                 $f_hoy        = new \DateTime();
@@ -245,7 +375,6 @@ class InicioController extends BaseController
                 ];
                 $persona = $this->modelVol->insertPersona($persona_voluntario);
 
-
                 // DATOS TABLA VOLUNTARIO
                 $datos_per_voluntario = [
                     'id_voluntario'           => $this->modelVol->maxVoluntario(),
@@ -258,7 +387,6 @@ class InicioController extends BaseController
                 ];
                 $voluntario = $this->modelVol->insertVoluntario($datos_per_voluntario);
 
-
                 // DATOS TABLA SOLICITUD
                 $datos_solicitud = [
                     'id_voluntario'      => $datos_per_voluntario['id_voluntario'],
@@ -269,11 +397,13 @@ class InicioController extends BaseController
                 $solicitud  = $this->modelVol->insertSolicitud($datos_solicitud);
 
                 return $this->response->setBody($persona && $voluntario && $solicitud ? 'true' : 'false');
+
             } catch (\Exception $e) {
-                // Log the error message
-                log_message('error', $e->getMessage());
-                return $this->response->setJSON(['error' => $e->getMessage()], 500);
+                $jsonResponse = $this->responseUtil->setResponse(500, "server_error", 'Error inesperado.', []);
+                $this->responseUtil->logWithContext($this->responseUtil->setResponse(500, "server_error", 'Exception: ' . $e->getMessage(), []));
+                return $this->response->setStatusCode(500)->setJSON($jsonResponse);
             }
+
         }
 
         return redirect()->back();
@@ -305,7 +435,6 @@ class InicioController extends BaseController
                 ];
                 $insert_per_vol = $this->modelVol->insertPersona($persona_voluntario);
 
-
                 // DATOS TABLA PERSONA (REFERENCIA)
                 $persona_referencia = [
                     'id_persona'     => $this->modelVol->maxPersona() + 1,
@@ -317,7 +446,6 @@ class InicioController extends BaseController
                     'fecha_creacion' => date('Y-m-d H:i:s')
                 ];
                 $insert_per_ref = $this->modelVol->insertPersona($persona_referencia);
-
 
                 // DATOS TABLA VOLUNTARIO
                 $datos_per_voluntario = [
@@ -331,7 +459,6 @@ class InicioController extends BaseController
                 ];
                 $insert_vol = $this->modelVol->insertVoluntario($datos_per_voluntario);
 
-
                 // DATOS TABLA REFERENCIA
                 $datos_per_referencia = [
                     'id_referencia'  => $this->modelVol->maxReferenciaPersonal(),
@@ -340,7 +467,6 @@ class InicioController extends BaseController
                     'fecha_creacion' => date('Y-m-d H:i:s')
                 ];
                 $insert_referencia = $this->modelVol->insertReferencia($datos_per_referencia);
-
 
                 // DATOS TABLA SOLICITUD
                 $datos_solicitud = [
@@ -351,7 +477,6 @@ class InicioController extends BaseController
                     'fecha_creacion'     => date('Y-m-d H:i:s')
                 ];
                 $insert_soli = $this->modelVol->insertSolicitud($datos_solicitud);
-
 
                 // return $this->response->setBody($insert_per_vol && $insert_vol && $insert_soli ? 'true' : 'false');
                 return $this->response->setBody($insert_per_vol && $insert_per_ref && $insert_vol && $insert_referencia && $insert_soli ? 'true' : 'false');
@@ -366,9 +491,9 @@ class InicioController extends BaseController
                 //     ], 200);
 
             } catch (\Exception $e) {
-                // Log the error message
-                log_message('error', $e->getMessage());
-                return $this->response->setJSON(['error' => $e->getMessage()], 500);
+                $jsonResponse = $this->responseUtil->setResponse(500, "server_error", 'Error inesperado.', []);
+                $this->responseUtil->logWithContext($this->responseUtil->setResponse(500, "server_error", 'Exception: ' . $e->getMessage(), []));
+                return $this->response->setStatusCode(500)->setJSON($jsonResponse);
             }
         }
 

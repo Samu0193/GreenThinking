@@ -155,60 +155,60 @@ $("[name='telefono_ref']").mask("9999-9999");
 $("[name='telefono_menor']").mask("9999-9999");
 
 // VALIDAR DUI
-function valDui(valor) {
+function valDui(input) {
     $.ajax({
-        type: "POST",
+        type: 'POST',
         url: `${url}inicio/validarDUI`,
-        data: { DUI: valor.value },
-        success: function (response) {
-            if (response.result == 1) {
-                toastInfoMessage(`<p style="color: #fff; font-size: 1.18em;">Este DUI ya existe!</p>`);
-                valor.value = "";
+        data: { 'DUI': input.value },
+        success: function (jsonResponse) {
+            if (jsonResponse.data === false) {
+                // toastInfoMessage(`<p style="color: #fff; font-size: 1.18em;">${jsonResponse.message}</p>`);
+                // input.value = '';
             }
         },
     });
 }
 
 // VALIDAR TELEFONO
-function valTel(valor) {
+function valTel(input) {
     $.ajax({
-        type: "POST",
+        type: 'POST',
         url: `${url}inicio/validarTel`,        
-        data: { telefono: valor.value },
-        success: function (response) {
-            if (response.result == 1) {
-                toastInfoMessage(`<p style="color: #fff; font-size: 1.18em;">Este tel\u00e9fono ya existe!</p>`);
-                valor.value = "";
+        data: { 'telefono': input.value },
+        success: function (jsonResponse) {
+            if (jsonResponse.data === false) {
+                // toastInfoMessage(`<p style="color: #fff; font-size: 1.18em;">${jsonResponse.message}</p>`);
+                // input.value = '';
             }
         },
     });
 }
 
 // VALIDAR CORREO
-function valEmail(valor) {
+function valEmail(input) {
     $.ajax({
-        type: "POST",
+        type: 'POST',
         url: `${url}inicio/validarEmail`,
-        data: { email: valor.value },
-        success: function (response) {
-            if (response.result == 1) {
-                toastInfoMessage(`<p style="color: #fff; font-size: 1.18em;">Este correo ya existe!</p>`);
-                valor.value = "";
+        data: { 'email': input.value },
+        success: function (jsonResponse) {
+            if (jsonResponse.data === false) {
+                toastInfoMessage(`<p style="color: #fff; font-size: 1.18em;">${jsonResponse.message}</p>`);
+                input.value = '';
             }
         },
     });
 }
 
 // VALIDAR CORREO
-function valEmailUser(valor) {
+function valEmailUser(input) {
     $.ajax({
-        type: "POST",
+        type: 'POST',
         url: `${url}usuario/validarEmail`,
-        data: { email: valor.value },
-        success: function (response) {
-            if (response.result == 1) {
-                toastInfoMessage(`<p style="color: #fff; font-size: 1.18em;">Este correo ya existe!</p>`);
-                valor.value = "";
+        data: { 'email': input.value },
+        success: function (jsonResponse) {
+            if (jsonResponse.data === false) {
+                // toastInfoMessage(`<p style="color: #fff; font-size: 1.18em;">${jsonResponse.message}</p>`);
+                // input.value = '';
             }
         },
     });
@@ -217,13 +217,13 @@ function valEmailUser(valor) {
 // VALIDAR USUARIO
 $("[name='nombre_usuario']").change(function () {
     $.ajax({
-        type: "POST",
+        type: 'POST',
         url: `${url}usuario/validarUser`,
-        data: { nombre_usuario: $(this).val() },
-        success: function (response) {
-            if (response.result == 1) {
-                toastInfoMessage(`<p style="color: #fff; font-size: 1.18em;">Usuario ya existe!</p>`);
-                $("[name='nombre_usuario']").val("");
+        data: { 'nombre_usuario': $(this).val() },
+        success: function (jsonResponse) {
+            if (jsonResponse.data === false) {
+                // toastInfoMessage(`<p style="color: #fff; font-size: 1.18em;">${jsonResponse.message}</p>`);
+                // $("[name='nombre_usuario']").val('');
             }
         },
     });
@@ -375,7 +375,7 @@ $("#f_nacimiento_mayor").prop("max", f_MaxEdadMayor(1));
 $("#f_nacimiento_ref").prop("min", f_MinEdadResponsable(1));
 $("#f_nacimiento_ref").prop("max", f_MaxEdadResponsable(1));
 
-$("[name='f_nacimiento_menor']").prop("min", f_MinEdadMenor(1));
+$("[name='f_nacimiento_menor'1515-1155]").prop("min", f_MinEdadMenor(1));
 $("[name='f_nacimiento_menor']").prop("max", f_MaxEdadMenor(1));
 
 $("[name='fecha_finalizacion']").prop("min", f_MinFin(1));
@@ -383,44 +383,52 @@ $("[name='fecha_finalizacion']").prop("max", f_MaxFin(1));
 
 jQuery.validator.addMethod("minEdadMay", function (value, element) {
     return this.optional(element) || value >= f_MinEdadMayor(1);
-});
+}, `Edad m\u00e1xima 40 a\u00f1os.`);
 
 jQuery.validator.addMethod("maxEdadMay", function (value, element) {
     return this.optional(element) || value <= f_MaxEdadMayor(1);
-});
+}, `Edad m\u00ednima 18 a\u00f1os.`);
 
 jQuery.validator.addMethod("minEdadRes", function (value, element) {
     return this.optional(element) || value >= f_MinEdadResponsable(1);
-});
+}, `Edad m\u00e1xima 70 a\u00f1os.`);
 
 jQuery.validator.addMethod("maxEdadRes", function (value, element) {
     return this.optional(element) || value <= f_MaxEdadResponsable(1);
-});
+}, `Edad m\u00ednima 20 a\u00f1os.`);
 
 jQuery.validator.addMethod("minEdadMen", function (value, element) {
     return this.optional(element) || value >= f_MinEdadMenor(1);
-});
+}, `Edad m\u00e1xima 17 a\u00f1os.`);
 
 jQuery.validator.addMethod("maxEdadMen", function (value, element) {
     return this.optional(element) || value <= f_MaxEdadMenor(1);
-});
+}, `Edad m\u00ednima 12 a\u00f1os.`);
 
 jQuery.validator.addMethod("minFin", function (value, element) {
     return this.optional(element) || value >= f_MinFin(1);
-});
+}, `Debe ser mayor o igual a: ${f_MinFin(0)}`);
 
 jQuery.validator.addMethod("maxFin", function (value, element) {
     return this.optional(element) || value <= f_MaxFin(1);
-});
+}, `Debe ser menor o igual a: ${f_MaxFin(0)}`);
 
 jQuery.validator.addMethod("decimal", function (value, element) {
     return this.optional(element) || /^\d{1,2}(\.\d{1,2})?$/i.test(value);
-});
+}, `Precio inv\u00e1lido.`);
 
 // LETRAS Y ESPACIOS
 jQuery.validator.addMethod("alfaOespacio", function (value, element) {
     return this.optional(element) || /^[ a-záéíóúüñ]*$/i.test(value);
-});
+}, `S\u00f3lo letras o espacios.`);
+
+// CORREO
+jQuery.validator.addMethod("correo", function (value, element) {
+    return (
+        this.optional(element) ||
+        /^\b[A-Z0-9._%-]+@[A-Z0-9.-]+\.[A-Z]{2,4}\b$/i.test(value)
+    );
+}, `Ingrese un email v\u00e1lido.`);
 
 // DUI
 jQuery.validator.addMethod("isDUI", function (value) {
@@ -438,7 +446,7 @@ jQuery.validator.addMethod("isDUI", function (value) {
     } else {
         return false;
     }
-});
+}, `DUI inv\u00e1lido`);
 
 // jQuery.validator.addMethod("isDUI", function (value) {
 //     // Verificar si el valor es '00000000-0'
@@ -467,15 +475,6 @@ jQuery.validator.addMethod("isDUI", function (value) {
 //     }
 // }, "DUI inválido");
 
-
-// CORREO
-jQuery.validator.addMethod("correo", function (value, element) {
-    return (
-        this.optional(element) ||
-        /^\b[A-Z0-9._%-]+@[A-Z0-9.-]+\.[A-Z]{2,4}\b$/i.test(value)
-    );
-});
-
 function valSize(input) {
     const fileSize = input.files[0].size / 1024 / 1024; // in MiB
     if (fileSize < 5) {
@@ -494,8 +493,8 @@ function valDimensions(imagen) {
         var alto = img.height;
         console.log(ancho + " " + alto);
         if (ancho >= 1000 && alto >= 900) {
-            document.getElementById("upload").value = "";
-            document.getElementById("nombre_imagen").value = "";
+            document.getElementById("upload").value = '';
+            document.getElementById("nombre_imagen").value = '';
             toastInfoMessage(`<p style="color: #fff; font-size: 1.18em;">Tama\u00f1o m\u00e1ximo 2000x2000 elija una imagen adecuada...</p>`);
         }
     };

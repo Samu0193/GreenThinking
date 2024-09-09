@@ -55,10 +55,11 @@ function loadDepartamentos() {
         type: 'GET',
         dataType: 'json',
         cache: false,
-        success: function (data) {
+        success: function (jsonResponse) {
             var options = "<option selected disabled value=''>Seleccionar... </option>";
-            $.each(data, function (index, object) {
-                options += '<option value="' + object.id_departamento + '">' + object.nombre_departamento + '</option>';
+            // index es el numero de la iteracion
+            $.each(jsonResponse.data, function (index, depa) {
+                options += `<option value="${depa.id_departamento}">${depa.nombre_departamento}</option>`;
             });
             $("[name='departamento_residencia']").html(options);
         }
@@ -78,9 +79,14 @@ jQuery(document).ready(function () {
         $.ajax({
             url: `${url}inicio/setMunicipios`,
             type: 'POST',
-            data: { id_departamento: id_departamento },
-            success: function (data) {
-                $("[name='municipio_residencia']").html(data);
+            data: { 'id_departamento': id_departamento },
+            success: function (jsonResponse) {
+                console.log(jsonResponse);
+                var options = "<option selected disabled value=''>Seleccionar... </option>";
+                $.each(jsonResponse.data, function (index, muni) {
+                    options += `<option value="${muni.id_municipio}">${muni.nombre_municipio}</option>`;
+                });
+                $("[name='municipio_residencia']").html(options);
             },
             error: function () {
                 alert('error ocurio..!');
@@ -97,6 +103,7 @@ let form_menores = $('#form-menores');
 let title_form = $('#title-form');
 form_mayores.hide();
 form_menores.hide();
+
 $(".mostrar-modal").on('click', function () {
     loadDepartamentos();
     $("[name='municipio_residencia']").html("<option selected disabled value=''>Seleccionar... </option>");
@@ -151,31 +158,27 @@ form_acordeon.eq(1).on('click', function () {
     }
 });
 
-$("#close").on('click', function () {
+function closeModal() {
     modal.hide(300);
     form_mayores.hide(300);
     form_menores.hide(300);
     input_form.eq(0).fadeIn();
     input_form.eq(1).hide();
+}
+
+$("#close").on('click', function () {
+    closeModal();
 });
 
 $(window).on('click', function (e) {
     if (e.target === $("#modal-flex")[0]) {
-        modal.hide(300);
-        form_mayores.hide(300);
-        form_menores.hide(300);
-        input_form.eq(0).fadeIn();
-        input_form.eq(1).hide();
+        closeModal();
     }
 });
 
 $(window).on('keyup', function (e) {
     if (e.key === 'Escape') {
-        modal.hide(300);
-        form_mayores.hide(300);
-        form_menores.hide(300);
-        input_form.eq(0).fadeIn();
-        input_form.eq(1).hide();
+        closeModal();
     }
 });
 
@@ -187,33 +190,33 @@ $(function () {
         rules: {
             nombres: { required: true, alfaOespacio: true },
             apellidos: { required: true, alfaOespacio: true },
-            f_nacimiento_mayor: { required: true, min: false, max: false, minEdadMay: true, maxEdadMay: true },
+            f_nacimiento_mayor: { required: true, minEdadMay: true, maxEdadMay: true },
             DUI: { required: true, isDUI: true },
             email: { required: true, correo: true },
             departamento_residencia: { required: true },
             municipio_residencia: { required: true },
             direccion: { required: true },
             telefono: { required: true },
-            fecha_finalizacion: { required: true, min: false, max: false, minFin: true, maxFin: true }
+            fecha_finalizacion: { required: true, minFin: true, maxFin: true }
         },
         messages: {
-            nombres: { required: 'Nombres requeridos.', alfaOespacio: 'S\u00f3lo letras o espacios.' },
-            apellidos: { required: 'Apellidos requeridos.', alfaOespacio: 'S\u00f3lo letras o espacios.' },
+            nombres: { required: 'Nombres requeridos.' },
+            apellidos: { required: 'Apellidos requeridos.' },
             f_nacimiento_mayor: {
-                required: 'Fechade nacimiento requerida.',
-                minEdadMay: 'Edad m\u00e1xima 40 a\u00f1os',
-                maxEdadMay: 'Edad m\u00ednima 18 a\u00f1os'
+                required: 'Fecha de nacimiento requerida.',
+                min: 'Edad m\u00e1xima 40 a\u00f1os.',
+                max: 'Edad m\u00ednima 18 a\u00f1os.'
             },
-            DUI: { required: 'DUI requerido.', isDUI: 'DUI inv\u00e1lido.' },
-            email: { required: 'Email requerido.', correo: 'Ingrese un email v\u00e1lido.' },
+            DUI: { required: 'DUI requerido.' },
+            email: { required: 'Email requerido.' },
             departamento_residencia: 'Departamento requerido.',
             municipio_residencia: 'Municipio requerido.',
             direccion: 'Direcci\u00f3n requerida.',
             telefono: 'Tel\u00f3fono requerido.',
             fecha_finalizacion: {
-                required: 'Fecha finalizaci\u00f3n requerida.',
-                minFin: 'Debe ser mayor o igual a: ' + f_MinFin(0),
-                maxFin: 'Debe ser menor o igual a: ' + f_MaxFin(0)
+                required: 'Fecha de finalizaci\u00f3n requerida.',
+                min: `Debe ser mayor o igual a: ${f_MinFin(0)}`,
+                max: `Debe ser menor o igual a: ${f_MaxFin(0)}`
             }
         },
         invalidHandler: function (error, element) {
@@ -230,9 +233,11 @@ $(function () {
                 success: function (msg) {
                     toastSuccesMessage(`<p style="color: white; font-size: 1.18em;">Espere uno momento mientras se genera el PDF!</p>`);
                     form.submit();
-                    modal.hide(300);
+                    closeModal();
                     $(form)[0].reset();
-                    form_mayores.hide(300);
+                    // modal.hide(300);
+                    // $(form)[0].reset();
+                    // form_mayores.hide(300);
                 }
             });
             return false;
@@ -249,36 +254,36 @@ $(function () {
             parentesco: { required: true, alfaOespacio: true },
             nombres_ref: { required: true, alfaOespacio: true },
             apellidos_ref: { required: true, alfaOespacio: true },
-            f_nacimiento_ref: { required: true, min: false, max: false, minEdadRes: true, maxEdadRes: true },
+            f_nacimiento_ref: { required: true, minEdadRes: true, maxEdadRes: true },
             DUI_ref: { required: true, isDUI: true },
             telefono_ref: { required: true },
             nombres_menor: { required: true, alfaOespacio: true },
             apellidos_menor: { required: true, alfaOespacio: true },
-            f_nacimiento_menor: { required: true, min: false, max: false, minEdadMen: true, maxEdadMen: true },
+            f_nacimiento_menor: { required: true,  minEdadMen: true, maxEdadMen: true },
             email: { required: true, correo: true },
             departamento_residencia: { required: true },
             municipio_residencia: { required: true },
             direccion: { required: true },
             telefono_menor: { required: true },
-            fecha_finalizacion: { required: true, min: false, max: false, minFin: true, maxFin: true }
+            fecha_finalizacion: { required: true, minFin: true, maxFin: true }
         },
         messages: {
-            parentesco: { required: 'Parentezco requerido.', alfaOespacio: 'S\u00f3lo letras o espacios.' },
-            nombres_ref: { required: 'Nombres requeridos.', alfaOespacio: 'S\u00f3lo letras o espacios.' },
-            apellidos_ref: { required: 'Apellidos requeridos.', alfaOespacio: 'S\u00f3lo letras o espacios.' },
+            parentesco: { required: 'Parentezco requerido.' },
+            nombres_ref: { required: 'Nombres requeridos.' },
+            apellidos_ref: { required: 'Apellidos requeridos.' },
             f_nacimiento_ref: {
                 required: 'Fecha nacimiento requerida.',
-                minEdadRes: 'Edad m\u00e1xima 70 a\u00f1os',
-                maxEdadRes: 'Edad m\u00ednima 20 a\u00f1os'
+                min: 'Edad m\u00e1xima 70 a\u00f1os.',
+                max: 'Edad m\u00ednima 20 a\u00f1os.'
             },
-            DUI_ref: { required: 'DUI requerido.', isDUI: 'DUI inv\u00e1lido.' },
+            DUI_ref: { required: 'DUI requerido.' },
             telefono_ref: 'Tel\u00f3fono requerido.',
-            nombres_menor: { required: 'Nombres requeridos.', alfaOespacio: 'S\u00f3lo letras o espacios.' },
-            apellidos_menor: { required: 'Apellidos requeridos.', alfaOespacio: 'S\u00f3lo letras o espacios.' },
+            nombres_menor: { required: 'Nombres requeridos.' },
+            apellidos_menor: { required: 'Apellidos requeridos.' },
             f_nacimiento_menor: {
                 required: 'Fecha nacimiento requerida.',
-                minEdadMen: 'Edad m\u00e1xima 17 a\u00f1os',
-                maxEdadMen: 'Edad m\u00ednima 12 a\u00f1os'
+                min: 'Edad m\u00e1xima 17 a\u00f1os.',
+                max: 'Edad m\u00ednima 12 a\u00f1os.'
             },
             email: { required: 'Email requerido.', correo: 'Ingrese un email v\u00e1lido.' },
             departamento_residencia: { required: 'Departamento requerido.' },
@@ -286,9 +291,9 @@ $(function () {
             direccion: 'Direcci\u00f3n requerida.',
             telefono_menor: 'Tel\u00f3fono requerido.',
             fecha_finalizacion: {
-                required: 'Fecha finalizaci\u00f3n requerida.',
-                minFin: 'Debe ser mayor o igual a: ' + f_MinFin(0),
-                maxFin: 'Debe ser menor o igual a: ' + f_MaxFin(0)
+                required: 'Fecha de finalizaci\u00f3n requerida.',
+                min: `Debe ser mayor o igual a: ${f_MinFin(0)}`,
+                max: `Debe ser menor o igual a: ${f_MaxFin(0)}`
             }
         },
         invalidHandler: function (error, element) {
@@ -305,11 +310,12 @@ $(function () {
                 success: function (msg) {
                     toastSuccesMessage(`<p style="color: white; font-size: 1.18em;">Espere uno momento mientras se genera el PDF!</p>`);
                     form.submit();
-                    modal.hide(300);
+                    closeModal();
                     $(form)[0].reset();
-                    form_menores.hide(300);
-                    input_form.eq(0).fadeIn();
-                    input_form.eq(1).hide();
+                    // modal.hide(300);
+                    // form_menores.hide(300);
+                    // input_form.eq(0).fadeIn();
+                    // input_form.eq(1).hide();
                 }
             });
             return false;
@@ -443,7 +449,7 @@ $(document).ready(function () {
     //     var lastID = '';
     //     await $.ajax({
     //         url: `${url}galeria/cargarImg/${i}`,
-    //         type: "GET",
+    //         type: 'GET',
     //         data: { 'id_galeria': i },
     //         dataType: 'json',
     //         success: function(response) {

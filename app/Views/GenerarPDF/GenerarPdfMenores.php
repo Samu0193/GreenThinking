@@ -13,9 +13,9 @@
     <p style="position: absolute;margin-top: 75px; left: 260px;"><b>Carta permiso voluntarios menores de edad</b></p>
 
     <p></p><br><br><br><br>
-    <p>Yo <b><?= $b['nombre_parantesco'] ?></b> <b><?= $b['apellido_parantesco'] ?></b></p>
-    <p>con numero de Dui <b><?= $b['dui_refe'] ?></b> </p>
-    <p>Autorizo que mi hij@ <b><?= $b['nombres'] ?></b> <b><?= $b['apellidos'] ?></b></p>
+    <p>Yo <b><?= $volMenor['nombre_parantesco'] ?></b> <b><?= $volMenor['apellido_parantesco'] ?></b></p>
+    <p>con numero de Dui <b><?= $volMenor['dui_refe'] ?></b> </p>
+    <p>Autorizo que mi hij@ <b><?= $volMenor['nombres'] ?></b> <b><?= $volMenor['apellidos'] ?></b></p>
     <p>Participe como voluntario de Green Thinking en sus actividades en pro del medio ambiente y la juventud del mismo
         modo también acepto y doy autorización que mi hij@ pueda aparecer en fotos de las redes sociales de Green
         Thinking teniendo conocimiento que es una buena causa la cual busca promover el cuido del medio ambiente y crear

@@ -2,6 +2,7 @@
 
 namespace App\Controllers;
 
+use App\Utils\ResponseUtil;
 use CodeIgniter\Controller;
 use CodeIgniter\HTTP\CLIRequest;
 use CodeIgniter\HTTP\IncomingRequest;
@@ -28,6 +29,13 @@ abstract class BaseController extends Controller
      * @var CLIRequest|IncomingRequest
      */
     protected $request;
+
+    /**
+     * Instance of the main ResponseUtil object.
+     *
+     * @var ResponseUtil
+     */
+    protected $responseUtil;
 
     /**
      * An array of helpers to be loaded automatically upon
@@ -58,5 +66,6 @@ abstract class BaseController extends Controller
 
         // E.g.: $this->session = \Config\Services::session();
         $this->session = \Config\Services::session();
+        $this->responseUtil = new ResponseUtil(); 
     }
 }

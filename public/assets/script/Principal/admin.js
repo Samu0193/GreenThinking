@@ -226,26 +226,26 @@ rePassword.change(function () {
 $(function () {
     $("#form-usuarios").validate({
         rules: {
-            nombres: { required: false, alfaOespacio: false },
-            apellidos: { required: false, alfaOespacio: false },
-            f_nacimiento_mayor: { required: false, minEdadMay: false, maxEdadMay: false },
-            DUI: { required: false, isDUI: false },
-            email: { required: false, correo: false },
-            telefono: { required: false },
-            nombre_usuario: { required: false },
-            password: { required: false },
-            re_password: { required: false }
+            nombres: { required: true, alfaOespacio: true },
+            apellidos: { required: true, alfaOespacio: true },
+            f_nacimiento_mayor: { required: true, minEdadMay: true, maxEdadMay: true },
+            DUI: { required: true, isDUI: true },
+            email: { required: true, correo: true },
+            telefono: { required: true },
+            nombre_usuario: { required: true },
+            password: { required: true },
+            re_password: { required: true }
         },
         messages: {
-            nombres: { required: 'Nombres requeridos.', alfaOespacio: 'S\u00f3lo letras o espacios.' },
-            apellidos: { required: 'Apellidos requeridos.', alfaOespacio: 'S\u00f3lo letras o espacios.' },
+            nombres: { required: 'Nombres requeridos.' },
+            apellidos: { required: 'Apellidos requeridos.' },
             f_nacimiento_mayor: {
                 required: 'Fecha de nacimiento requerida.',
-                minEdadMay: 'Edad m\u00e1xima 40 a\u00f1os',
-                maxEdadMay: 'Edad m\u00ednima 18 a\u00f1os'
+                min: 'Edad m\u00e1xima 40 a\u00f1os.',
+                max: 'Edad m\u00ednima 18 a\u00f1os.'
             },
-            DUI: { required: 'DUI requerido.', isDUI: 'DUI inv\u00e1lido.' },
-            email: { required: 'Email requerido.', correo: 'Ingrese un email v\u00e1lido.' },
+            DUI: { required: 'DUI requerido.' },
+            email: { required: 'Email requerido.' },
             telefono: 'Tel\u00f3fono requerido.',
             nombre_usuario: 'Usuario requerido.',
             password: 'Contrase\u00f1a requerida.',
@@ -375,7 +375,7 @@ $(function () {
         messages: {
             nombre_producto: 'Nombre requerido.',
             descripcion: 'Descripcion requerida.',
-            precio: { required: 'Precio requerido.', decimal: 'Precio inv\u00e1lido.' },
+            precio: { required: 'Precio requerido.' },
             nombre_imagen: 'Imagen requerida.'
         },
         invalidHandler: function (error, element) {
