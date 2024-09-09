@@ -17,6 +17,16 @@ class ProductosModel extends Model
         'estado'
     ];
 
+    public $validator = [
+        'precio' => [
+            'rules' => 'required|regex_match[/^\d+(\.\d{1,2})?$/]',
+            'errors' => [
+                'required' => 'El campo precio es obligatorio.',
+                'regex_match' => 'El precio debe ser un número con hasta dos decimales.',
+            ]
+        ],
+    ];
+
     // *************************************************************************************************************************
     //    OBTIENE Y GENERA EL ID MAXIMO DE LA TABLA "PRODUCTO":
     public function maxProducto()

@@ -82,12 +82,27 @@ class UsuarioController extends BaseController
     public function guardar()
     {
         try {
+            // Obtener datos del POST
+            $data = $this->request->getPost();
+            log_message('debug', json_encode($data));
+
+            // Validar usando las reglas definidas en el modelo
+            if (!$this->validate($this->usuarioModel->validator)) {
+                // Obtiene todos los errores
+                $errors = $this->validator->getErrors();
+                
+                // Obtener el primer mensaje de error
+                $firstError = reset($errors); // reset() devuelve el primer valor del array
+                $jsonResponse = ResponseUtil::setResponse(400, "error", $errors, []);
+                return $this->response->setStatusCode(400)->setJSON($jsonResponse);
+            }
+
             date_default_timezone_set("America/El_Salvador");
             $date1 = new \DateTime($this->request->getPost('f_nacimiento_mayor'));
             $date2 = new \DateTime();
             $edad = $date1->diff($date2);
 
-            $persona = [
+            $datosPersona = [
                 'id_persona' => $this->usuarioModel->maxPersona(),
                 'nombres' => $this->request->getPost('nombres'),
                 'apellidos' => $this->request->getPost('apellidos'),
@@ -96,11 +111,10 @@ class UsuarioController extends BaseController
                 'telefono' => $this->request->getPost('telefono'),
                 'fecha_creacion' => date('Y-m-d H:i:s')
             ];
-            $dato1 = $this->usuarioModel->insertPersona($persona);
 
-            $usuario = [
+            $datosUsuario = [
                 'id_usuario' => $this->usuarioModel->maxUsuario(),
-                'id_persona' => $persona['id_persona'],
+                'id_persona' => $datosPersona['id_persona'],
                 'id_rol' => 2,
                 'usuario' => $this->request->getPost('nombre_usuario'),
                 'email' => $this->request->getPost('email'),
@@ -108,25 +122,20 @@ class UsuarioController extends BaseController
                 'estado' => true,
                 'fecha_creacion' => date('Y-m-d H:i:s')
             ];
-            $dato2 = $this->usuarioModel->insertUsuario($usuario);
 
-            return $this->response->setBody($dato1 && $dato2 ? 'true' : 'false');
-
-            // return $this->response->setJSON(
-            //     [
-            //         'persona' => $persona,
-            //         'usuario' => $usuario
-            //     ], 200);
+            $persona = $this->usuarioModel->insertPersona($datosPersona);
+            $usuario = $this->usuarioModel->insertUsuario($datosUsuario);
+            return $this->response->setBody($persona && $usuario ? 'true' : 'false');
 
         } catch (\Exception $e) {
-            // Log the error message
-            log_message('error', $e->getMessage());
-            return $this->response->setJSON(['error' => 'Ocurrio un error: ' . $e->getMessage()], 500);
+            $jsonResponse = ResponseUtil::setResponse(500, "server_error", 'Error inesperado.', []);
+            ResponseUtil::logWithContext(ResponseUtil::setResponse(500, "server_error", 'Exception: ' . $e->getMessage(), []));
+            return $this->response->setStatusCode(500)->setJSON($jsonResponse);
         }
     }
 
     // *************************************************************************************************************************
-    //    MOSTRAR TODOS LOS USUARIOS:
+    //    MOSTRAR TODOS LOS USUARIOS CON NIVEL BAJO:
     public function tblUsuarios()
     {
 
@@ -154,7 +163,7 @@ class UsuarioController extends BaseController
 
         foreach ($resultList as $value) {
 
-            log_message('debug', 'Estado Usuario: ' . $value['estado']);
+            // log_message('debug', 'Estado Usuario: ' . $value['estado']);
             $btnEstado = $value['estado'] == 'Activo' ?
                 '<a class="btn-table btn-active" title="Estado" style="font-size: x-large;" onclick="cambiarEstadoUsuario(' . $value['id_usuario'] . ');"><i class="fas fa-user-check"></i></a>' :
                 '<a class="btn-table btn-inactive" title="Estado" style="font-size: x-large;" onclick="cambiarEstadoUsuario(' . $value['id_usuario'] . ');"><i class="fas fa-user-times"></i></a>';
@@ -220,34 +229,4 @@ class UsuarioController extends BaseController
         
     }
 
-
-
-
-
-    public function tblUsuariosViejo()
-    {
-        $resultList = $this->usuarioModel->tblUsuariosModel();
-        $result = ['data' => []];
-        $i = 1;
-
-        foreach ($resultList as $value) {
-            $estado = $value['estado'] > 0 ? 'Activo' : 'Inactivo';
-            $btnEstado = $value['estado'] > 0 ?
-                '<a class="btn-table btn-active" title="Estado" style="font-size: x-large;" onclick="cambiarEstadoUsuario(' . $value['id_usuario'] . ');"><i class="fas fa-user-check"></i></a>' :
-                '<a class="btn-table btn-inactive" title="Estado" style="font-size: x-large;" onclick="cambiarEstadoUsuario(' . $value['id_usuario'] . ');"><i class="fas fa-user-times"></i></a>';
-
-            $result['data'][] = [
-                $i++,
-                $value['nombres'] . ' ' . $value['apellidos'],
-                $value['rol'],
-                $value['usuario'],
-                $value['telefono'],
-                '<textarea class="txt-tbl" readonly>' . $value['email'] . '</textarea>',
-                $value['fecha_creacion'],
-                $estado,
-                $btnEstado
-            ];
-        }
-        return $this->response->setJSON($result);
-    }
 }

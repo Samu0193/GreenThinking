@@ -21,6 +21,80 @@ class UsuarioModel extends Model
         'fecha_creacion'
     ];
 
+    // Puedes definir las reglas como una propiedad en el modelo
+    public $validator = [
+        'nombres' => [
+            'rules' => 'required|alfaOespacio',
+            'errors' => [
+                'required' => 'Nombres requeridos.',
+                'alfaOespacio' => 'Nombres sólo pueden contener letras y espacios.'
+            ]
+        ],
+        'apellidos' => [
+            'rules' => 'required|alfaOespacio',
+            'errors' => [
+                'required' => 'Apellidos requeridos.',
+                'alfaOespacio' => 'Apellidos sólo pueden contener letras y espacios.'
+            ]
+        ],
+        'f_nacimiento_mayor' => [
+            'rules' => 'required|minEdadMay|maxEdadMay',
+            'errors' => [
+                'required' => 'Fecha de nacimiento requerida.',
+                'minEdadMay' => 'Edad máxima 40 años.',
+                'maxEdadMay' => 'Edad mínima 18 años.',
+            ]
+        ],
+        'DUI' => [
+            'rules' => 'required|isDUI',
+            'errors' => [
+                'required' => 'DUI requerido.',
+                'isDUI' => 'DUI inválido.'
+            ]
+        ],
+        'telefono' => [
+            'rules' => 'required|telefono',
+            'errors' => [
+                'required' => 'Teléfono requerido.',
+                'telefono' => 'Teléfono inválido.'
+            ]
+        ],
+        'email' => [
+            'rules' => 'required|valid_email',
+            'errors' => [
+                'required' => 'Email requerido.',
+                'valid_email' => 'Ingrese un email válido.'
+            ]
+        ],
+        'nombre_usuario' => [
+            'rules' => 'required',
+            'errors' => [
+                'required' => 'Usuario requerido.'
+            ]
+        ],
+        'password' => [
+            'rules' => 'required|passwordMatch[re_password]',
+            'errors' => [
+                'required' => 'Contraseña requerida.',
+                'passwordMatch' => 'Las contraseñas no coinciden.'
+            ]
+        ],
+        're_password' => [
+            'rules' => 'required|passwordMatch[password]',
+            'errors' => [
+                'required' => 'Repetir contraseña requerido.',
+                'passwordMatch' => 'Las contraseñas no coinciden.'
+            ]
+        ]
+        // 're_password' => [
+        //     'rules' => 'required|matches[password]',
+        //     'errors' => [
+        //         'required' => 'Repetir contraseña requerido.',
+        //         'matches'  => 'Las contraseñas no coinciden.'
+        //     ]
+        // ]
+    ];
+
     // *************************************************************************************************************************
     //    OBTIENE Y GENERA EL ID MAXIMO DE LA TABLA "PERSONA":
     public function maxPersona()

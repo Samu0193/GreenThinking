@@ -51,7 +51,7 @@ $(window).on('scroll', function () {
 // LLENAR SELECT DEPARTAMENTOS
 function loadDepartamentos() {
     $.ajax({
-        url: url + "inicio/setDepartamentos",
+        url: `${url}inicio/setDepartamentos`,
         type: 'GET',
         dataType: 'json',
         cache: false,
@@ -76,7 +76,7 @@ jQuery(document).ready(function () {
 
         $("[name='municipio_residencia']").prop('disabled', false);
         $.ajax({
-            url: url + "inicio/setMunicipios",
+            url: `${url}inicio/setMunicipios`,
             type: 'POST',
             data: { id_departamento: id_departamento },
             success: function (data) {
@@ -217,37 +217,18 @@ $(function () {
             }
         },
         invalidHandler: function (error, element) {
-            Swal.fire({
-                icon: 'error',
-                iconColor: '#fff',
-                background: '#f00',
-                title: '<p style="color: #fff; font-size: 1.18em;">Campos vac\u00edos o inv\u00e1lidos!</p>',
-                confirmButtonColor: "#343a40"
-            });
+            modalErrorMessage(`<p style="color: #fff; font-size: 1.18em;">Formulario inv\u00e1lido!</p>`);
         },
         submitHandler: function (form, e) {
             e.preventDefault();
             $.ajax({
-                url: url + 'inicio/guardar1',
+                url: `${url}inicio/guardar1`,
                 data: $(form).serialize(),
                 type: 'POST',
                 async: false,
                 dataType: 'json',
                 success: function (msg) {
-                    Swal.fire({
-                        toast: true,
-                        icon: 'success',
-                        iconColor: 'white',
-                        background: 'dodgerblue',
-                        position: 'top-end',
-                        title: '<p style="color: white; font-size: 1.18em;">Espere unos segundos mientras se genera el pdf!</p>',
-                        showConfirmButton: false,
-                        timerProgressBar: true,
-                        allowEscapeKey: false,
-                        allowOutsideClick: false,
-                        timer: 5000
-                    });
-
+                    toastSuccesMessage(`<p style="color: white; font-size: 1.18em;">Espere uno momento mientras se genera el PDF!</p>`);
                     form.submit();
                     modal.hide(300);
                     $(form)[0].reset();
@@ -311,37 +292,18 @@ $(function () {
             }
         },
         invalidHandler: function (error, element) {
-            Swal.fire({
-                icon: 'error',
-                iconColor: '#fff',
-                background: '#f00',
-                title: '<p style="color: #fff; font-size: 1.18em;">Campos vac\u00edos o inv\u00e1lidos!</p>',
-                confirmButtonColor: "#343a40"
-            });
+            modalErrorMessage(`<p style="color: #fff; font-size: 1.18em;">Formulario inv\u00e1lido!</p>`);
         },
         submitHandler: function (form, e) {
             e.preventDefault();
             $.ajax({
-                url: url + 'inicio/guardar2',
+                url: `${url}inicio/guardar2`,
                 data: $(form).serialize(),
                 type: 'POST',
                 async: false,
                 dataType: 'json',
                 success: function (msg) {
-                    Swal.fire({
-                        toast: true,
-                        icon: 'success',
-                        iconColor: 'white',
-                        background: 'dodgerblue',
-                        position: 'top-end',
-                        title: '<p style="color: white; font-size: 1.18em;">Espere unos segundos mientras se genera el pdf!</p>',
-                        showConfirmButton: false,
-                        timerProgressBar: true,
-                        allowEscapeKey: false,
-                        allowOutsideClick: false,
-                        timer: 5000
-                    });
-
+                    toastSuccesMessage(`<p style="color: white; font-size: 1.18em;">Espere uno momento mientras se genera el PDF!</p>`);
                     form.submit();
                     modal.hide(300);
                     $(form)[0].reset();
@@ -421,7 +383,7 @@ $(document).ready(function () {
         delayedPlay;
 
     // $.ajax({
-    //     url: url + 'galeria/printImgGalery',
+    //     url: `${url}galeria/printImgGalery`,
     //     type: 'GET',
     //     dataType: 'json',
     //     cache: false,
@@ -435,7 +397,7 @@ $(document).ready(function () {
 
     // async function fetchGaleria() {
     //     let galeriaData = await $.ajax({
-    //         url: url + 'galeria/printImgGalery',
+    //         url: `${url}galeria/printImgGalery`,
     //         type: 'GET',
     //         dataType: 'json',
     //         cache: false
@@ -451,7 +413,7 @@ $(document).ready(function () {
     // console.log(galeriaData);
 
     // $.ajax({
-    //     url: url + 'Galeria/printImgGalery/' + i,
+    //     url: `${url}galeria/printImgGalery/${i}`,
     //     method: 'POST',
     //     data: { 'id_galeria': i },
     //     dataType: 'json',
@@ -466,7 +428,7 @@ $(document).ready(function () {
 
     // // var imgGaleria = undefined;
     // $.ajax({
-    //     url: url + 'Galeria/cargarImg/' + i,
+    //     url: `${url}galeria/cargarImg/${i}`,
     //     method: 'get',
     //     data: { 'id_galeria': i },
     //     dataType: 'json',
@@ -480,7 +442,7 @@ $(document).ready(function () {
     // async function fixCode() {
     //     var lastID = '';
     //     await $.ajax({
-    //         url: url + 'Galeria/cargarImg/' + i,
+    //         url: `${url}galeria/cargarImg/${i}`,
     //         type: "GET",
     //         data: { 'id_galeria': i },
     //         dataType: 'json',
@@ -517,7 +479,7 @@ $(document).ready(function () {
     // });
 
     // $.ajax({
-    //     url: url + 'galeria/printImgGalery',
+    //     url: `${url}galeria/printImgGalery`,
     //     type: 'GET',
     //     dataType: 'json',
     //     cache: false,
@@ -849,7 +811,7 @@ $(document).ready(function () {
 $(document).ready(function () {
     let productos = document.getElementById('products-container');
     $.ajax({
-        url: url + "productos/verProductos",
+        url: `${url}productos/verProductos`,
         type: 'GET',
         dataType: 'json',
         cache: false,

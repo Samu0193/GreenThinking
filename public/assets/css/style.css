@@ -1106,7 +1106,14 @@ table thead th {
 /* PARA EL TOOLTIP */
 body.swal2-toast-shown .swal2-container {
     height: auto;
-    width: 375px;
+    width: 440px;
+    /* width: 405px; */
+}
+.swal2-container.swal2-top-end>.swal2-popup,
+.swal2-container.swal2-top-right>.swal2-popup {
+    max-height: 98vh;
+    overflow-y: auto;
+    letter-spacing: 1px;
 }
 
 /* Estilo para centrar el mensaje de "processing" */
