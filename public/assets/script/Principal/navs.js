@@ -1,7 +1,7 @@
 /********************************************************************************************************************************************************
 *!*     MENSAJES:
 ********************************************************************************************************************************************************/
-function toastSuccesMessage(mensaje) {
+function toastSuccesMessageLong(mensaje) {
     Swal.fire({
         toast: true,
         icon: 'success',
@@ -11,7 +11,7 @@ function toastSuccesMessage(mensaje) {
         title: `${mensaje}`,
         showConfirmButton: false,
         timerProgressBar: true,
-        timer: 2500
+        timer: 4000
     });
     // POR EL PDF
     // Swal.fire({
@@ -27,6 +27,20 @@ function toastSuccesMessage(mensaje) {
     //     allowOutsideClick: false,
     //     timer: 5000
     // });
+}
+
+function toastSuccesMessageShort(mensaje) {
+    Swal.fire({
+        toast: true,
+        icon: 'success',
+        iconColor: 'white',
+        position: 'top-end',
+        background: '#3ca230',
+        title: `${mensaje}`,
+        showConfirmButton: false,
+        timerProgressBar: true,
+        timer: 2500
+    });
 }
 
 function toastErrorMessage(mensaje) {
@@ -267,38 +281,38 @@ function calculaMeses(meses, formato) {
 
 // FECHA DE EDAD MAYORES
 function f_MinEdadMayor(formato) {
-    calculaAnios(-40, formato);
+    return calculaAnios(-40, formato);
 }
 
 function f_MaxEdadMayor(formato) {
-    calculaAnios(-18, formato);
+    return calculaAnios(-18, formato);
 }
 
 // FECHA DE EDAD MENORES
 function f_MinEdadMenor(formato) {
-    calculaAnios(-17, formato);
+    return calculaAnios(-17, formato);
 }
 
 function f_MaxEdadMenor(formato) {
-    calculaAnios(-12, formato);
+    return calculaAnios(-12, formato);
 }
 
 // FECHA DE EDAD RESPONSABLE
 function f_MinEdadResponsable(formato) {
-    calculaAnios(-70, formato);
+    return calculaAnios(-70, formato);
 }
 
 function f_MaxEdadResponsable(formato) {
-    calculaAnios(-20, formato);
+    return calculaAnios(-20, formato);
 }
 
 // FECHA FINALIZACION DE VOLUNTARIADO
 function f_MinFin(formato) {
-    calculaMeses(+3, formato);
+    return calculaMeses(+3, formato);
 }
 
 function f_MaxFin(formato) {
-    calculaAnios(+1, formato);
+    return calculaAnios(+1, formato);
 }
 
 // $("#f_nacimiento_mayor").prop("min", f_MinEdadMayor(1));

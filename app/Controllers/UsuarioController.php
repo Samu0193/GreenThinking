@@ -162,9 +162,8 @@ class UsuarioController extends BaseController
 
             $data = $this->request->getPost();
             if (!$this->validate($this->modelUsuario->validatorUser)) {
-
-                $errors = $this->validator->getErrors();
-                $firstError = reset($errors);
+                $errors       = $this->validator->getErrors();
+                $firstError   = reset($errors);
                 $jsonResponse = $this->responseUtil->setResponse(400, "error", $errors, []);
                 return $this->response->setStatusCode(400)->setJSON($jsonResponse);
             }
@@ -172,31 +171,31 @@ class UsuarioController extends BaseController
             // date_default_timezone_set("America/El_Salvador");
             $date1 = new \DateTime($this->request->getPost('f_nacimiento_mayor'));
             $date2 = new \DateTime();
-            $edad = $date1->diff($date2);
+            $edad  = $date1->diff($date2);
 
             $datosPersona = [
-                'id_persona' => $this->modelUsuario->maxPersona(),
-                'nombres' => $this->request->getPost('nombres'),
-                'apellidos' => $this->request->getPost('apellidos'),
-                'DUI' => $this->request->getPost('DUI'),
-                'edad' => $edad->y,
-                'telefono' => $this->request->getPost('telefono'),
+                'id_persona'     => $this->modelUsuario->maxPersona(),
+                'nombres'        => $this->request->getPost('nombres'),
+                'apellidos'      => $this->request->getPost('apellidos'),
+                'DUI'            => $this->request->getPost('DUI'),
+                'edad'           => $edad->y,
+                'telefono'       => $this->request->getPost('telefono'),
                 'fecha_creacion' => date('Y-m-d H:i:s')
             ];
+            $persona = $this->modelUsuario->insertPersona($datosPersona);
 
             $datosUsuario = [
-                'id_usuario' => $this->modelUsuario->maxUsuario(),
-                'id_persona' => $datosPersona['id_persona'],
-                'id_rol' => 2,
-                'usuario' => $this->request->getPost('nombre_usuario'),
-                'email' => $this->request->getPost('email'),
-                'password' => sha1($this->request->getPost('password')),
-                'estado' => true,
+                'id_usuario'     => $this->modelUsuario->maxUsuario(),
+                'id_persona'     => $datosPersona['id_persona'],
+                'id_rol'         => 2,
+                'usuario'        => $this->request->getPost('nombre_usuario'),
+                'email'          => $this->request->getPost('email'),
+                'password'       => sha1($this->request->getPost('password')),
+                'estado'         => true,
                 'fecha_creacion' => date('Y-m-d H:i:s')
             ];
-
-            $persona = $this->modelUsuario->insertPersona($datosPersona);
             $usuario = $this->modelUsuario->insertUsuario($datosUsuario);
+
             if ($persona && $usuario) {
                 $jsonResponse = $this->responseUtil->setResponse(201, "success", 'Usuario guardado exitosamente!', true);
                 return $this->response->setStatusCode(201)->setJSON($jsonResponse);
@@ -217,21 +216,20 @@ class UsuarioController extends BaseController
     // ****************************************************************************************************************************
     public function tblUsuarios()
     {
-
         // Simular un retraso de 5 segundos
         // sleep(5);
         // Retrasar 3 segundos (3000000 microsegundos)
         // usleep(3000000);
 
-        $request = $this->request->getPost();
-        $draw = intval($request['draw']);
-        $start = intval($request['start']);
-        $length = intval($request['length']);
+        $request     = $this->request->getPost();
+        $draw        = intval($request['draw']);
+        $start       = intval($request['start']);
+        $length      = intval($request['length']);
         $searchValue = $request['search']['value'] ?? '';
 
         // Obtener totales (con y sin filtro) en una sola llamada
-        $totals = $this->modelUsuario->getTotalUsuarios($searchValue);
-        $totalRecords = $totals['totalRecords'];  // Número total de usuarios sin filtro
+        $totals        = $this->modelUsuario->getTotalUsuarios($searchValue);
+        $totalRecords  = $totals['totalRecords'];  // Número total de usuarios sin filtro
         $totalFiltered = $totals['totalFiltered']; // Número de usuarios filtrados
 
         // Obtener usuarios paginados con búsqueda (si hay)
@@ -262,10 +260,10 @@ class UsuarioController extends BaseController
 
         // Devolver los datos con la estructura necesaria para DataTables
         return $this->response->setJSON([
-            'draw' => $draw,
-            'recordsTotal' => $totalRecords,
+            'draw'            => $draw,
+            'recordsTotal'    => $totalRecords,
             'recordsFiltered' => $totalFiltered,
-            'data' => $data
+            'data'            => $data
         ]);
     }
 
@@ -287,18 +285,18 @@ class UsuarioController extends BaseController
                 return $this->response->setStatusCode(404)->setJSON($jsonResponse);
             }
 
-            // Cambia el estado
+            // Cambiar el estado
             $nuevo_estado = !$estado['estado'];
-            $editar = $this->modelUsuario->cambiarEstadoModel($id_usuario, $nuevo_estado);
+            $editar       = $this->modelUsuario->cambiarEstadoModel($id_usuario, $nuevo_estado);
 
             // Devuelve la respuesta JSON
             if ($editar) {
-                $message = $estado['estado'] == true ? 'Deshabilitado exitosamente!' : 'Habilitado exitosamente!';
-                $jsonResponse = $this->responseUtil->setResponse(201, "success", $message, $editar);
+                $message      = $estado['estado'] == true ? 'Deshabilitado exitosamente!' : 'Habilitado exitosamente!';
+                $jsonResponse = $this->responseUtil->setResponse(201, "success", $message, true);
                 return $this->response->setStatusCode(201)->setJSON($jsonResponse);
             }
 
-            $jsonResponse = $this->responseUtil->setResponse(500, "server_error", 'Error al cambiar el estado.', $editar);
+            $jsonResponse = $this->responseUtil->setResponse(500, "server_error", 'Error al cambiar el estado.', false);
             return $this->response->setStatusCode(500)->setJSON($jsonResponse);
 
         } catch (\Exception $e) {

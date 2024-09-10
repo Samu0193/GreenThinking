@@ -36,7 +36,6 @@ $routes->post('inicio/createVolMenor', 'InicioController::createVolMenor');
 // LOGIN CONTROLLER
 $routes->post('login/verifica', 'LoginController::verifica');
 $routes->get('login/logout', 'LoginController::logout');
-$routes->post('login/test', 'LoginController::test');
 $routes->get('login/forgotPassword', 'LoginController::forgotPassword');
 $routes->post('login/forgotPassword', 'LoginController::forgotPassword');
 $routes->get('login/password', 'LoginController::password');

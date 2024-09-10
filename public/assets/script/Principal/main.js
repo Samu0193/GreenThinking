@@ -81,7 +81,6 @@ jQuery(document).ready(function () {
             type: 'POST',
             data: { 'id_departamento': id_departamento },
             success: function (jsonResponse) {
-                console.log(jsonResponse);
                 var options = "<option selected disabled value=''>Seleccionar... </option>";
                 $.each(jsonResponse.data, function (index, muni) {
                     options += `<option value="${muni.id_municipio}">${muni.nombre_municipio}</option>`;
@@ -190,16 +189,16 @@ $(window).on('keyup', function (e) {
 $(function () {
     $('#form-mayores').validate({
         rules: {
-            nombres: { required: false, alfaOespacio: false },
-            apellidos: { required: false, alfaOespacio: false },
-            f_nacimiento_mayor: { required: false, minEdadMay: false, maxEdadMay: false },
-            DUI: { required: false, isDUI: false },
-            email: { required: false, correo: false },
-            departamento_residencia: { required: false },
-            municipio_residencia: { required: false },
-            direccion: { required: false },
-            telefono: { required: false },
-            fecha_finalizacion: { required: false, minFin: false, maxFin: false }
+            nombres: { required: true, alfaOespacio: true },
+            apellidos: { required: true, alfaOespacio: true },
+            f_nacimiento_mayor: { required: true, minEdadMay: true, maxEdadMay: true },
+            DUI: { required: true, isDUI: true },
+            email: { required: true, correo: true },
+            departamento_residencia: { required: true },
+            municipio_residencia: { required: true },
+            direccion: { required: true },
+            telefono: { required: true },
+            fecha_finalizacion: { required: true, minFin: true, maxFin: true }
         },
         messages: {
             nombres: { required: 'Nombres requeridos.' },
@@ -232,8 +231,8 @@ $(function () {
                 type: 'POST',
                 async: false,
                 dataType: 'json',
-                success: function (msg) {
-                    toastSuccesMessage(`<p style="color: white; font-size: 1.18em; font-weight: 100;">Espere uno momento mientras se genera el PDF!</p>`);
+                success: function (jsonResponse) {
+                    toastSuccesMessageLong(`<p style="color: white; font-size: 1.18em; font-weight: 100;">${jsonResponse.message}\nEspere uno momento mientras se genera el PDF!</p>`);
                     form.submit();
                     closeModal();
                     $(form)[0].reset();
@@ -246,15 +245,14 @@ $(function () {
                     // Limpia las clases de error previas
                     $(form).find('.invalid-feedback').remove();
                     $(form).find('.error').removeClass('error');
-                    console.error(`Error en la solicitud AJAX:\nStatus: ${textStatus}\nError Thrown: ${errorThrown}\nMessage: ${jqXHR.responseJSON.message}`);
                     let errorMessage = 'Ocurrió un problema al procesar su solicitud. Por favor, inténtelo de nuevo más tarde.';
+                    
                     $.each(jqXHR.responseJSON.message, function (campo, mensaje) {
                         let input = $(form).find(`[name="${campo}"]`);
                         if (input.length) {
                             input.addClass('error');
                             input.after(`<label id="${campo}-error" class="error" for="${campo}">${mensaje}</label>`);
                         }
-
                         errorMessage += mensaje + '\n';
                     });
                     
@@ -332,15 +330,38 @@ $(function () {
                 type: 'POST',
                 async: false,
                 dataType: 'json',
-                success: function (msg) {
-                    toastSuccesMessage(`<p style="color: white; font-size: 1.18em; font-weight: 100;">Espere uno momento mientras se genera el PDF!</p>`);
+                success: function (jsonResponse) {
+                    toastSuccesMessageLong(`<p style="color: white; font-size: 1.18em; font-weight: 100;">${jsonResponse.message}\nEspere uno momento mientras se genera el PDF!</p>`);
                     form.submit();
                     closeModal();
                     $(form)[0].reset();
                     // modal.hide(300);
                     // form_menores.hide(300);
-                    // input_form.eq(0).fadeIn();
+                    // input_form.eq(0).fadeIn();00000000-0
                     // input_form.eq(1).hide();
+                },
+                error: function (jqXHR, textStatus, errorThrown) {
+
+                    // Limpia las clases de error previas
+                    $(form).find('.invalid-feedback').remove();
+                    $(form).find('.error').removeClass('error');
+                    console.error(`Error en la solicitud AJAX:\nStatus: ${textStatus}\nError Thrown: ${errorThrown}\nMessage: ${jqXHR.responseJSON.message}`);
+                    let errorMessage = 'Ocurrió un problema al procesar su solicitud. Por favor, inténtelo de nuevo más tarde.';
+                    $.each(jqXHR.responseJSON.message, function (campo, mensaje) {
+                        let input = $(form).find(`[name="${campo}"]`);
+                        if (input.length) {
+                            input.addClass('error');
+                            input.after(`<label id="${campo}-error" class="error" for="${campo}">${mensaje}</label>`);
+                        }
+
+                        errorMessage += mensaje + '\n';
+                    });
+
+                    if (jqXHR.responseJSON.data !== false) {
+                        modalErrorMessage(`<p style="color: #fff; font-size: 1.18em; font-weight: 100;">Formulario inválido!</p>`);
+                    } else {
+                        toastErrorMessage(`<p style="color: #fff; font-size: 1.18em; font-weight: 100;">${jqXHR.responseJSON.message}</p>`);
+                    }
                 }
             });
             return false;
@@ -562,7 +583,6 @@ $(document).ready(function () {
     //     }
     // });
 
-
     for (var i = 1; i <= cantFotos; i++) {
         if ((i - 1) % 4 == 0) column++;
         var b = document.createElement('div');
@@ -573,7 +593,7 @@ $(document).ready(function () {
                 id: 'b' + i,
                 class: 'photoBox pb-col' + column
             },
-            backgroundImage: 'url(' + url + 'assets/img/galery/galeria' + i + '.jpg)',
+            backgroundImage: `url(${files.galeria[i]})`,
             backgroundSize: 'cover',
             backgroundPosition: 'center',
             overflow: 'hidden',
@@ -849,7 +869,7 @@ $(document).ready(function () {
         success: function (data) {
             if (Array.isArray(data)) {
                 $.each(data, function (index, object) {
-                    // products desktop
+                    // productos desktop
                     productos.innerHTML +=
                         `
                             <div class="card">
@@ -864,7 +884,7 @@ $(document).ready(function () {
                             </div>
                         `;
 
-                    // products mobile
+                    // productos mobile
                     productos.innerHTML +=
                         `
                             <div class="card-wrap">

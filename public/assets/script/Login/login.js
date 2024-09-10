@@ -51,7 +51,7 @@ $(document).ready(function() {
             url: url + 'login/verifica',
             type: 'POST',
             data: $(this).serialize(),
-            success: function(response) {
+            success: function(jsonResponse) {
                 // console.log(response);
                 if (response.status == 0) {
                     Swal.fire({
@@ -75,8 +75,30 @@ $(document).ready(function() {
                     location.reload(); //devuelve una url con json  
                 }
             },
-            error: function(xhr, status, error) {
-                console.error('Error:', xhr, status, error);
+            error: function (jqXHR, textStatus, errorThrown) {
+
+                let errorMessage = 'Ocurrió un problema al iniciar sesión. Por favor, inténtelo de nuevo más tarde.';
+                $.each(jqXHR.responseJSON.message, function (campo, mensaje) {
+                    let input = $(form).find(`[name="${campo}"]`);
+                    if (input.length) {
+                        input.addClass('error');
+                        input.after(`<label id="${campo}-error" class="error" for="${campo}">${mensaje}</label>`);
+                    }
+                    errorMessage += mensaje + '\n';
+                });
+                
+                if (jqXHR.responseJSON.data !== false) {
+                    modalErrorMessage(`<p style="color: #fff; font-size: 1.18em; font-weight: 100;">Formulario inválido!</p>`);
+                } else {
+                    Swal.fire({
+                        toast: true,
+                        icon: 'error',
+                        iconColor: '#fff',
+                        background: '#f00',
+                        title: `<p style="color: #fff; font-size: 1.18em;">${jqXHR.responseJSON.message}</p>`,
+                        confirmButtonColor: "#343a40"
+                    });
+                }
             }
         });
         e.preventDefault();

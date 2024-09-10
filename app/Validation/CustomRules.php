@@ -4,47 +4,20 @@ namespace App\Validation;
 
 class CustomRules
 {
-    // Validaciones de fecha
-    public function minEdadMayor($value): bool
+    // CALCULO DE AÑOS
+    private function calculaAnios($anios, $formato): string
     {
-        return strtotime($value) >= strtotime($this->fun_minEdadMayor(1));
+        $date = new \DateTime();
+        $date->modify("$anios years");
+        return $formato == 1 ? $date->format('Y-m-d') : $date->format('d-m-Y');
     }
 
-    public function maxEdadMayor($value): bool
+    // CALCULO DE MESES
+    private function calculaMeses($meses, $formato): string
     {
-        return strtotime($value) <= strtotime($this->fun_maxEdadMayor(1));
-    }
-
-    public function minEdadMenor($value): bool
-    {
-        return strtotime($value) >= strtotime($this->fun_minEdadMenor(1));
-    }
-
-    public function maxEdadMenor($value): bool
-    {
-        return strtotime($value) <= strtotime($this->fun_maxEdadMenor(1));
-    }
-
-    public function minEdadRef($value): bool
-    {
-        return strtotime($value) >= strtotime($this->fun_minEdadReferencia(1));
-    }
-
-    public function maxEdadRef($value): bool
-    {
-        return strtotime($value) <= strtotime($this->fun_MaxEdadReferencia(1));
-    }
-
-    public function minFin($value, string &$error = null): bool
-    {
-        $error = 'Debe ser mayor o igual a: ' . $this->fun_MinFin(0);
-        return strtotime($value) >= strtotime($this->fun_MinFin(1));
-    }
-
-    public function maxFin($value, string &$error = null): bool
-    {
-        $error = 'Debe ser menor o igual a: ' . $this->fun_MaxFin(0);
-        return strtotime($value) <= strtotime($this->fun_MaxFin(1));
+        $date = new \DateTime();
+        $date->modify("$meses months");
+        return $formato == 1 ? $date->format('Y-m-d') : $date->format('d-m-Y');
     }
 
     // Métodos de fecha (equivalentes a las funciones de jQuery)
@@ -88,20 +61,46 @@ class CustomRules
         return $this->calculaAnios(+1, $formato);
     }
 
-    // CALCULO DE AÑOS
-    private function calculaAnios($anios, $formato): string
+    public function minEdadMayor($value): bool
     {
-        $date = new \DateTime();
-        $date->modify("$anios years");
-        return $formato == 1 ? $date->format('Y-m-d') : $date->format('d-m-Y');
+        return strtotime($value) >= strtotime($this->fun_minEdadMayor(1));
     }
 
-    // CALCULO DE MESES
-    private function calculaMeses($meses, $formato): string
+    public function maxEdadMayor($value): bool
     {
-        $date = new \DateTime();
-        $date->modify("$meses months");
-        return $formato == 1 ? $date->format('Y-m-d') : $date->format('d-m-Y');
+        return strtotime($value) <= strtotime($this->fun_maxEdadMayor(1));
+    }
+
+    public function minEdadMenor($value): bool
+    {
+        return strtotime($value) >= strtotime($this->fun_minEdadMenor(1));
+    }
+
+    public function maxEdadMenor($value): bool
+    {
+        return strtotime($value) <= strtotime($this->fun_maxEdadMenor(1));
+    }
+
+    public function minEdadRef($value): bool
+    {
+        return strtotime($value) >= strtotime($this->fun_minEdadReferencia(1));
+    }
+
+    public function maxEdadRef($value): bool
+    {
+        return strtotime($value) <= strtotime($this->fun_MaxEdadReferencia(1));
+    }
+
+    public function minFin($value, string &$error = null): bool
+    {
+        $error = 'Debe ser mayor o igual a: ' . $this->fun_MinFin(0);
+        return strtotime($value) >= strtotime($this->fun_MinFin(1));
+    }
+
+    public function maxFin($value, string &$error = null): bool
+    {
+        $error = 'Debe ser menor o igual a: ' . $this->fun_MaxFin(0);
+        return strtotime($value) <= strtotime($this->fun_MaxFin(1));
     }
 
     // SOLO LETRAS Y ESPACIOS
@@ -136,6 +135,20 @@ class CustomRules
     {
         // Acepta formato 9999-9999
         return (bool) preg_match('/^\d{4}-\d{4}$/', $value);
+    }
+
+    public function uniqueTelefono(string $value, string $fields): bool
+    {
+        log_message('debug', $fields);
+        $db = \Config\Database::connect();
+        $exists = $db->table('persona')->where('telefono', $value)->countAllResults();
+        return $exists === 0;
+    }
+
+    public function noRepeatTelefono(string $value, string $fields, array $data): bool
+    {
+        log_message('debug', $fields);
+        return isset($data[$fields]) && $value !== $data[$fields];
     }
 
     // Validación de DUI

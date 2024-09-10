@@ -620,22 +620,23 @@
 
     <!-- URL PARA METODOS -->
     <script type="text/javascript">
+        // $('body').css('display', 'none')
         var url = '<?= site_url(); ?>';
+        var files = <?= json_encode($files); ?>; // Convierte el array PHP $dataFiles a un JSON válido para usar en JavaScript
 
-        // Convierte el array PHP $galeryFiles a un JSON válido para usar en JavaScript
-        var galeryFiles = <?= json_encode($galeryFiles); ?>;
-
-        // Verifica el contenido de galeryFiles en la consola
-        // console.log(galeryFiles);
-
-        // Ahora puedes usar galeryFiles en tu JavaScript
-        // galeryFiles.forEach(function(index, data) {
-        //     console.log("Archivo de galería:", data);
+        // $.each(files.galeria, function(index, imagen) {
+        //     console.log(index, imagen);
         // });
 
-        $.each(galeryFiles, function(index, galeria) {
-            // console.log(index, galeria);
-        });
+        // //Usamos un bucle para objetos, ya que files.galeria es un objeto
+        // if (files.galeria) {
+        //     // Usamos Object.keys para obtener las claves (1, 2, 3, etc.)
+        //     Object.keys(files.galeria).forEach(function(key, index) {
+        //         console.log((index + 1) + ": " + files.galeria[key]);
+        //     });
+        // } else {
+        //     console.log("No hay imágenes en la galería.");
+        // }
     </script>
 
     <!-- ALERTAS JS -->

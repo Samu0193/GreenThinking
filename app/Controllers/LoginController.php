@@ -14,6 +14,9 @@ class LoginController extends BaseController
         $this->loginModel = new LoginModel();
     }
 
+    // ****************************************************************************************************************************
+    // *!*   CARGAR LA VISTA DE LOGIN:
+    // ****************************************************************************************************************************
     public function index()
     {
         $session = session();
@@ -27,42 +30,58 @@ class LoginController extends BaseController
         // return redirect()->to(site_url('login'));
     }
 
-    public function test()
-    {
-        echo "AJAX";
-    }
-
-    // *************************************************************************************************************************
-    //    VALIDA INICIO DE SESION:
+    // ****************************************************************************************************************************
+    // *!*   VALIDA INICIO DE SESION:
+    // ****************************************************************************************************************************
     public function verifica()
     {
-        // Acceder a la solicitud usando $this->request
-        $nombre = $this->request->getPost('nombre');
-        $password = sha1($this->request->getPost('password'));
+        if ($this->request->isAJAX()) {
 
-        // Validación básica
-        if (empty($nombre) || empty($password)) {
-            return $this->response->setJSON(['status' => 0, 'message' => 'Usuario y contraseña son requeridos...']);
+            try {
+                // Acceder a la solicitud usando $this->request
+                $nombre   = $this->request->getPost('nombre');
+                $password = sha1($this->request->getPost('password'));
+
+                // Validación básica
+                if (empty($nombre) || empty($password)) {
+                    $jsonResponse = $this->responseUtil->setResponse(400, "error", 'Usuario y contraseña son requeridos...', false);
+                    return $this->response->setStatusCode(400)->setJSON($jsonResponse);
+                    // return $this->response->setJSON(['status' => 0, 'message' => 'Usuario y contraseña son requeridos...']);
+                }
+
+                // Verificación del usuario
+                $res = $this->loginModel->loginView($nombre, $password);
+                if (!$res || !isset($res['id_usuario'])) {
+                    $jsonResponse = $this->responseUtil->setResponse(400, "error", 'Verifica tus credenciales...', false);
+                    return $this->response->setStatusCode(400)->setJSON($jsonResponse);
+                    // return $this->response->setJSON(['status' => 1, 'message' => 'Verifica tus credenciales...']);
+                }
+
+                // Respuesta con la URL a redirigir
+                $sessionData = [
+                    'id_usuario'          => $res['id_usuario'],
+                    'id_persona'          => $res['id_persona'],
+                    'id_rol'              => $res['id_rol'],
+                    'usuario'             => $res['usuario'],
+                    'estado'              => $res['estado'],
+                    'is_logged'           => true,
+                    'currently_logged_in' => 1
+                ];
+                session()->set($sessionData);
+                $jsonResponse = $this->responseUtil->setResponse(200, "success", 'Logueado exitosamente!', site_url('dashboard'));
+                return $this->response->setStatusCode(200)->setJSON($jsonResponse);
+                // return $this->response->setJSON(['status' => 2, 'url' => site_url('dashboard')]);
+
+            } catch (\Exception $e) {
+                $jsonResponse = $this->responseUtil->setResponse(500, "server_error", 'Error inesperado.', []);
+                $this->responseUtil->logWithContext($this->responseUtil->setResponse(500, "server_error", 'Exception: ' . $e->getMessage(), []));
+                return $this->response->setStatusCode(500)->setJSON($jsonResponse);
+            }
+
         }
 
-        // Verificación del usuario
-        $res = $this->loginModel->loginView($nombre, $password);
-        if (!$res || !isset($res['id_usuario'])) {
-            return $this->response->setJSON(['status' => 1, 'message' => 'Verifica tus credenciales...']);
-        }
+        return redirect()->back();
 
-        // Respuesta con la URL a redirigir
-        $sessionData = [
-            'id_usuario' => $res['id_usuario'],
-            'id_persona' => $res['id_persona'],
-            'id_rol' => $res['id_rol'],
-            'usuario' => $res['usuario'],
-            'estado' => $res['estado'],
-            'is_logged' => true,
-            'currently_logged_in' => 1
-        ];
-        session()->set($sessionData);
-        return $this->response->setJSON(['status' => 2, 'url' => site_url('dashboard')]);
     }
 
     // *************************************************************************************************************************

@@ -140,11 +140,11 @@ class VoluntarioModel extends Model
             ]
         ],
         'telefono_ref' => [
-            'rules'  => 'required|telefono|is_unique[persona.telefono]',
+            'rules'  => 'required|telefono|noRepeatTelefono[telefono_menor]|uniqueTelefono[telefono_ref]',
             'errors' => [
                 'required'  => 'Teléfono del referente requerido.',
                 'telefono'  => 'Teléfono del referente inválido.',
-                'is_unique' => 'Este teléfono ya está registrado.'
+                'uniqueTelefono' => 'Este teléfono ya está registrado.'
             ]
         ],
         'nombres_menor' => [
@@ -171,11 +171,12 @@ class VoluntarioModel extends Model
             ]
         ],
         'telefono_menor' => [
-            'rules'  => 'required|telefono|is_unique[persona.telefono]',
+            'rules'  => 'required|telefono|noRepeatTelefono[telefono_ref]|uniqueTelefono[telefono_menor]',
             'errors' => [
                 'required'  => 'Teléfono del voluntario requerido.',
                 'telefono'  => 'Teléfono del voluntario inválido.',
-                'is_unique' => 'Este teléfono ya está registrado.'
+                'noRepeatTelefono'  => 'Los telefonos no pueden ser iguales.',
+                'uniqueTelefono' => 'Este teléfono ya está registrado.'
             ]
         ],
         'email' => [

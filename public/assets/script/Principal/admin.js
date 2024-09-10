@@ -198,7 +198,7 @@ function loadRoles() {
 /********************************************************************************************************************************************************
 *!*     COMPARAR CONTRASEÑAS:
 ********************************************************************************************************************************************************/
-var password = $('#password');
+var password   = $('#password');
 var rePassword = $('#re_password');
 
 password.change(function () {
@@ -263,9 +263,9 @@ $(function () {
                 type: 'POST',
                 async: false,
                 dataType: 'json',
-                success: function (response) {
-                    console.log(response);
-                    toastSuccesMessage(`<p style="color: white; font-size: 1.06em; font-weight: 100;">Usuario guardado!</p>`);
+                success: function (jsonResponse) {
+                    console.log(jsonResponse);
+                    toastSuccesMessageShort(`<p style="color: white; font-size: 1.06em; font-weight: 100;">${jsonResponse.message}</p>`);
                     // form.submit();
                     $("#modal").hide(300);
                     $(form)[0].reset();
@@ -275,8 +275,8 @@ $(function () {
                     console.error(`Error en la solicitud AJAX:\nStatus: ${textStatus}\nError Thrown: ${errorThrown}\nMessage: ${jqXHR.responseJSON.message}`);
 
                     // Limpia las clases de error previas
+                    $(form).find('.invalid-feedback').remove();
                     $(form).find('.error').removeClass('error');
-                    // $(form).find('.invalid-feedback').remove();
 
                     // Mensaje amigable para el usuario basado en el mensaje del servidor
                     let errorMessage = 'Ocurrió un problema al procesar su solicitud. Por favor, inténtelo de nuevo más tarde.';
@@ -407,7 +407,7 @@ function cambiarEstadoProducto(producto) {
         async: false,
         dataType: 'json',
         success: function () {
-            toastSuccesMessage(`<p style="color: white; font-size: 1.18em; font-weight: 100;">Estado cambiado!</p>`);
+            toastSuccesMessageShort(`<p style="color: white; font-size: 1.18em; font-weight: 100;">Estado cambiado!</p>`);
             $('#productos').DataTable().ajax.reload(null, false);
         },
         error: function () {
@@ -426,7 +426,7 @@ function cambiarEstadoUsuario(usuario) {
         type: 'POST',
         dataType: 'json',
         success: function (response) {
-            toastSuccesMessage('<p style="color: white; font-size: 1.18em; font-weight: 100;">' + response.message + '</p>');
+            toastSuccesMessageShort('<p style="color: white; font-size: 1.18em; font-weight: 100;">' + response.message + '</p>');
             $('#usuarios').DataTable().ajax.reload(null, false);
         },
         error: function (jqXHR, textStatus, errorThrown) {
@@ -454,7 +454,7 @@ function cambiarEstadoUsuario(usuario) {
 //         dataType: 'json',
 //         success: function(response) {
 //             console.log('Respuesta del servidor:', response.success); // Verifica la respuesta
-//             toastSuccesMessage(`<p style="color: white; font-size: 1.18em; font-weight: 100;">Estado cambiado!</p>`);
+//             toastSuccesMessageShort(`<p style="color: white; font-size: 1.18em; font-weight: 100;">Estado cambiado!</p>`);
 //             $('#usuarios').DataTable().ajax.reload(null, false);
 //         },
 //         error: function(jqXHR, textStatus, errorThrown) {

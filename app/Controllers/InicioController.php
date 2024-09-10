@@ -15,29 +15,45 @@ class InicioController extends BaseController
         $this->modelVol = new VoluntarioModel();
     }
 
-    // VISTA PRINCIPAL
+    // ****************************************************************************************************************************
+    // *!*   CARGAR LA VISTA PRINCIPAL:
+    // ****************************************************************************************************************************
     public function index()
     {
         // Usa FCPATH para obtener la ruta física completa al directorio de imágenes
-        $galeryDirectory = FCPATH . 'assets/img/galery';
-        $galeryFiles = array_diff(scandir($galeryDirectory), array('.', '..'));
-        $productsDirectory = FCPATH . 'assets/img/galery';
-        $productsFiles = array_diff(scandir($galeryDirectory), array('.', '..'));
+        $galeriaDirectorio = FCPATH . 'assets/img/galery';
+        $galeriaFiles = array_diff(scandir($galeriaDirectorio), array('.', '..'));
+
+        natsort($galeriaFiles);
+        $galeriaFiles = array_values($galeriaFiles); // Reindexar el array
+        $galeriaFiles = array_combine(range(1, count($galeriaFiles)), $galeriaFiles); // Reindexar comenzando desde 1
+
+        $galeriaFiles = array_map(function($file) {
+            return base_url('assets/img/galery/' . $file);
+        }, $galeriaFiles); // Añadir la ruta completa para cada archivo de galería
+
+        $dataFiles = [
+            'files' => [
+                'galeria'  => $galeriaFiles
+            ]
+        ];
 
         // dd(date('Y-m-d H:i:s'));
-        // dd($galeryFiles); // Mostrar los archivos
+        // dd($dataFiles); // Mostrar los archivos
 
         // Envía los archivos como un array asociativo a la vista
-        return view('Inicio/index', ['galeryFiles' => $galeryFiles]);
+        return view('Inicio/index', $dataFiles);
     }
 
 
-    /*************************************************************************************************************************
-        METODOS NORMALES:
-     *************************************************************************************************************************/
+    // ****************************************************************************************************************************
+    // *!*   METODOS NORMALES:
+    // ****************************************************************************************************************************
 
-    // *************************************************************************************************************************
-    //    DESCARGAR PDF VOLUNTARIO MAYOR DE EDAD:
+    
+    // ****************************************************************************************************************************
+    // *!*   DESCARGAR PDF VOLUNTARIO MAYOR DE EDAD:
+    // ****************************************************************************************************************************
     public function pdfMayor()
     {
         try {
@@ -75,8 +91,9 @@ class InicioController extends BaseController
         }
     }
 
-    // *************************************************************************************************************************
-    //    DESCARGAR PDF VOLUNTARIO MENOR DE EDAD:
+    // ****************************************************************************************************************************
+    // *!*   DESCARGAR PDF VOLUNTARIO MENOR DE EDAD:
+    // ****************************************************************************************************************************
     public function pdfMenor()
     {
         try {
@@ -194,7 +211,7 @@ class InicioController extends BaseController
                     return $this->response->setStatusCode(404)->setJSON($jsonResponse);
                 }
 
-                $message = count($municipio) . ' registros encontrados';
+                $message      = count($municipio) . ' registros encontrados';
                 $jsonResponse = $this->responseUtil->setResponse(200, "success", $message, $municipio);
                 return $this->response->setStatusCode(200)->setJSON($jsonResponse);
 
@@ -358,11 +375,9 @@ class InicioController extends BaseController
 
             try {
 
-                log_message('debug', "paso:");
-
                 // Obtener datos del POST (PARA VALIDATOR)
                 $data = $this->request->getPost();
-
+                // log_message('debug', json_encode($data));
                 // Validar usando las reglas definidas en el modelo
                 if (!$this->validate($this->modelVol->validatorMayor)) {
 
@@ -370,7 +385,7 @@ class InicioController extends BaseController
                     $errors = $this->validator->getErrors();
                     
                     // Obtener el primer mensaje de error
-                    $firstError = reset($errors); // reset() devuelve el primer valor del array
+                    $firstError   = reset($errors); // reset() devuelve el primer valor del array
                     $jsonResponse = $this->responseUtil->setResponse(400, "error", $errors, []);
                     return $this->response->setStatusCode(400)->setJSON($jsonResponse);
                 }
@@ -391,7 +406,7 @@ class InicioController extends BaseController
                     'fecha_creacion' => date('Y-m-d H:i:s')
                 ];
                 $persona = $this->modelVol->insertPersona($persona_voluntario);
-                
+
                 // DATOS TABLA VOLUNTARIO
                 $datos_per_voluntario = [
                     'id_voluntario'           => $this->modelVol->maxVoluntario(),
@@ -412,16 +427,16 @@ class InicioController extends BaseController
                     'fecha_creacion'     => date('Y-m-d H:i:s')
                 ];
                 $solicitud = $this->modelVol->insertSolicitud($datos_solicitud);
-                // return $this->response->setBody($persona && $voluntario && $solicitud ? 'true' : 'false');
 
                 // Devuelve la respuesta JSON
                 if ($persona && $voluntario && $solicitud) {
-                    $jsonResponse = $this->responseUtil->setResponse(201, "success", 'Voluntario guardado exitosamente!', true);
+                    $jsonResponse = $this->responseUtil->setResponse(201, "success", 'Información guardada exitosamente!', true);
                     return $this->response->setStatusCode(201)->setJSON($jsonResponse);
                 }
 
-                $jsonResponse = $this->responseUtil->setResponse(500, "server_error", 'Error al guardar voluntario.', false);
+                $jsonResponse = $this->responseUtil->setResponse(500, "server_error", 'Error al guardar la información.', false);
                 return $this->response->setStatusCode(500)->setJSON($jsonResponse);
+                // return $this->response->setBody($persona && $voluntario && $solicitud ? 'true' : 'false');
 
             } catch (\Exception $e) {
                 $jsonResponse = $this->responseUtil->setResponse(500, "server_error", 'Error inesperado.', []);
@@ -442,6 +457,17 @@ class InicioController extends BaseController
         if ($this->request->isAJAX()) {
 
             try {
+
+                $data = $this->request->getPost();
+                // log_message('debug', json_encode($data));
+                if (!$this->validate($this->modelVol->validatorMenor)) {
+                    $errors       = $this->validator->getErrors();
+                    $firstError   = reset($errors);
+                    log_message('debug', json_encode($errors));
+                    $jsonResponse = $this->responseUtil->setResponse(400, "error", $errors, []);
+                    return $this->response->setStatusCode(400)->setJSON($jsonResponse);
+                }
+
                 // date_default_timezone_set("America/El_Salvador");
                 $f_nacMenor      = new \DateTime($this->request->getPost('f_nacimiento_menor'));
                 $f_nacRef        = new \DateTime($this->request->getPost('f_nacimiento_ref'));
@@ -505,15 +531,15 @@ class InicioController extends BaseController
                 $insert_soli = $this->modelVol->insertSolicitud($datos_solicitud);
 
                 if ($insert_per_ref && $insert_referencia && $insert_per_vol && $insert_vol && $insert_soli) {
-                    $jsonResponse = $this->responseUtil->setResponse(201, "success", 'Voluntario guardado exitosamente!', true);
+                    $jsonResponse = $this->responseUtil->setResponse(201, "success", 'Información guardada exitosamente!', true);
                     return $this->response->setStatusCode(201)->setJSON($jsonResponse);
                 }
 
-                $jsonResponse = $this->responseUtil->setResponse(500, "server_error", 'Error al guardar voluntario.', false);
+                $jsonResponse = $this->responseUtil->setResponse(500, "server_error", 'Error al guardar la información.', false);
                 return $this->response->setStatusCode(500)->setJSON($jsonResponse);
 
                 // return $this->response->setBody($insert_per_vol && $insert_vol && $insert_soli ? 'true' : 'false');
-                return $this->response->setBody($insert_per_vol && $insert_per_ref && $insert_vol && $insert_referencia && $insert_soli ? 'true' : 'false');
+                // return $this->response->setBody($insert_per_vol && $insert_per_ref && $insert_vol && $insert_referencia && $insert_soli ? 'true' : 'false');
 
                 // return $this->response->setJSON(
                 //     [
@@ -533,4 +559,5 @@ class InicioController extends BaseController
 
         return redirect()->back();
     }
+
 }
