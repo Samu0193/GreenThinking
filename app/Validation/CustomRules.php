@@ -12,8 +12,6 @@ class CustomRules
 
     public function maxEdadMayor($value): bool
     {
-        // log_message('debug', $value);
-        log_message('debug', strtotime($this->fun_minEdadMayor(1)));
         return strtotime($value) <= strtotime($this->fun_maxEdadMayor(1));
     }
 
@@ -27,82 +25,86 @@ class CustomRules
         return strtotime($value) <= strtotime($this->fun_maxEdadMenor(1));
     }
 
-    public function minEdadRes($value): bool
+    public function minEdadRef($value): bool
     {
-        return strtotime($value) >= strtotime($this->fun_minEdadResponsable(1));
+        return strtotime($value) >= strtotime($this->fun_minEdadReferencia(1));
     }
 
-    public function maxEdadRes($value): bool
+    public function maxEdadRef($value): bool
     {
-        return strtotime($value) <= strtotime($this->fun_MaxEdadResponsable(1));
+        return strtotime($value) <= strtotime($this->fun_MaxEdadReferencia(1));
     }
 
-    public function minFin($value): bool
+    public function minFin($value, string &$error = null): bool
     {
+        $error = 'Debe ser mayor o igual a: ' . $this->fun_MinFin(0);
         return strtotime($value) >= strtotime($this->fun_MinFin(1));
     }
 
-    public function maxFin($value): bool
+    public function maxFin($value, string &$error = null): bool
     {
+        $error = 'Debe ser menor o igual a: ' . $this->fun_MaxFin(0);
         return strtotime($value) <= strtotime($this->fun_MaxFin(1));
     }
 
     // Métodos de fecha (equivalentes a las funciones de jQuery)
-    private function fun_minEdadMayor($format): string
+    private function fun_minEdadMayor($formato): string
     {
-        return $this->calculateDateFromYearsAgo(40, $format);
+        return $this->calculaAnios(-40, $formato);
     }
 
-    private function fun_maxEdadMayor($format): string
+    private function fun_maxEdadMayor($formato): string
     {
-        return $this->calculateDateFromYearsAgo(18, $format);
+        return $this->calculaAnios(-18, $formato);
     }
 
-    private function fun_minEdadMenor($format): string
+    private function fun_minEdadMenor($formato): string
     {
-        return $this->calculateDateFromYearsAgo(17, $format);
+        return $this->calculaAnios(-17, $formato);
     }
 
-    private function fun_maxEdadMenor($format): string
+    private function fun_maxEdadMenor($formato): string
     {
-        return $this->calculateDateFromYearsAgo(12, $format);
+        return $this->calculaAnios(-12, $formato);
     }
 
-    private function fun_minEdadResponsable($format): string
+    private function fun_minEdadReferencia($formato): string
     {
-        return $this->calculateDateFromYearsAgo(70, $format);
+        return $this->calculaAnios(-70, $formato);
     }
 
-    private function fun_MaxEdadResponsable($format): string
+    private function fun_MaxEdadReferencia($formato): string
     {
-        return $this->calculateDateFromYearsAgo(20, $format);
+        return $this->calculaAnios(-20, $formato);
     }
 
-    private function fun_MinFin($format): string
+    private function fun_MinFin($formato): string
     {
-        return $this->calculateDateFromMonthsAgo(3, $format);
+        return $this->calculaMeses(+3, $formato);
     }
 
-    private function fun_MaxFin($format): string
+    private function fun_MaxFin($formato): string
     {
-        return $this->calculateDateFromYearsAgo(-1, $format);
+        return $this->calculaAnios(+1, $formato);
     }
 
-    // Función auxiliar para calcular fechas
-    private function calculateDateFromYearsAgo($years, $format): string
-    {
-        $date = new \DateTime();
-        $date->modify("-$years years");
-        return $format == 1 ? $date->format('Y-m-d') : $date->format('d-m-Y');
-    }
-
-    private function calculateDateFromMonthsAgo($months, $format): string
+    // CALCULO DE AÑOS
+    private function calculaAnios($anios, $formato): string
     {
         $date = new \DateTime();
-        $date->modify("+$months months");
-        return $format == 1 ? $date->format('Y-m-d') : $date->format('d-m-Y');
+        $date->modify("$anios years");
+        return $formato == 1 ? $date->format('Y-m-d') : $date->format('d-m-Y');
     }
 
+    // CALCULO DE MESES
+    private function calculaMeses($meses, $formato): string
+    {
+        $date = new \DateTime();
+        $date->modify("$meses months");
+        return $formato == 1 ? $date->format('Y-m-d') : $date->format('d-m-Y');
+    }
+
+    // SOLO LETRAS Y ESPACIOS
     public function alfaOespacio(string $value, string &$error = null): bool
     {
         // Verificar si la cadena solo contiene letras y espacios (con acentos)

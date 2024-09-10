@@ -846,6 +846,7 @@ body::-webkit-scrollbar-thumb:hover,
 .form-modal .form-section {
     cursor: pointer;
     text-align: center;
+    letter-spacing: 1px;
     color: #fff;
     width: 100%;
     border-radius: 5px;
@@ -902,6 +903,12 @@ body::-webkit-scrollbar-thumb:hover,
     padding: 15px;
     border-radius: 5px;
     text-align: center;
+    letter-spacing: 1px;
+}
+
+/* Deshabilita el scroll en el body */
+.no-scroll {
+    overflow: hidden;
 }
 
 .form-modal .error {

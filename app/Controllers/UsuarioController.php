@@ -14,6 +14,9 @@ class UsuarioController extends BaseController
         $this->modelUsuario = new UsuarioModel();
     }
 
+    // ****************************************************************************************************************************
+    // *!*   CARGAR LA VISTA DE USUARIOS:
+    // ****************************************************************************************************************************
     public function index()
     {
         $session = session();
@@ -35,10 +38,54 @@ class UsuarioController extends BaseController
         return redirect()->to(site_url('login'))->with('message', 'Usted no se ha identificado.');
     }
 
-    /**************************************************************************************************************************************************
-        METODOS PARA AJAX:
-     **************************************************************************************************************************************************/
+    
+    // ****************************************************************************************************************************
+    // ****************************************************************************************************************************
+    //                        ******                  ****         ******          ****             ****
+    //                       ********	              ****        ********           ****         ****
+    //                      ****  ****	              ****       ****  ****            ****     ****
+    //                     ****    ****	              ****      ****    ****             *********
+    //                    **************   	****      ****     **************            *********
+    //                   ****************	****      ****    ****************         ****     ****
+    //                  ****          ****   ************    ****          ****      ****         ****
+    //                 ****            ****    *********    ****            ****   ****             ****
+    // ****************************************************************************************************************************
+    // ****************************************************************************************************************************
 
+
+    // ****************************************************************************************************************************
+    // *!*   LLENAR SELECT ROLES (AJAX):
+    // ****************************************************************************************************************************
+    public function setRoles()
+    {
+        if ($this->request->isAJAX()) {
+
+            try {
+
+                $roles = $this->modelUsuario->getRolesModel();
+                if (!$roles) {
+                    $jsonResponse = $this->responseUtil->setResponse(404, "not_found", 'No hay registros.', []);
+                    return $this->response->setStatusCode(404)->setJSON($jsonResponse);
+                }
+
+                $message = count($roles) . ' registros encontrados';
+                $jsonResponse = $this->responseUtil->setResponse(200, "success", $message, $roles);
+                return $this->response->setStatusCode(200)->setJSON($jsonResponse);
+
+            } catch (\Exception $e) {
+                $jsonResponse = $this->responseUtil->setResponse(500, "server_error", 'Error inesperado.', []);
+                $this->responseUtil->logWithContext($this->responseUtil->setResponse(500, "server_error", 'Exception: ' . $e->getMessage(), []));
+                return $this->response->setStatusCode(500)->setJSON($jsonResponse);
+            }
+
+        }
+
+        return redirect()->back();
+    }
+
+    // ****************************************************************************************************************************
+    // *!*   VALIDAR CORREO (AJAX):
+    // ****************************************************************************************************************************
     public function validarEmail()
     {
         if ($this->request->isAJAX()) {
@@ -71,6 +118,9 @@ class UsuarioController extends BaseController
         return redirect()->back();
     }
 
+    // ****************************************************************************************************************************
+    // *!*   VALIDAR USUARIO (AJAX):
+    // ****************************************************************************************************************************
     public function validarUser()
     {
         if ($this->request->isAJAX()) {
@@ -103,24 +153,10 @@ class UsuarioController extends BaseController
         return redirect()->back();
     }
 
-    public function setRoles()
-    {
-        if ($this->request->isAJAX()) {
-            $datos = $this->modelUsuario->getRolesModel();
-            return $this->response->setJSON($datos);
-        }
-
-        return redirect()->back();
-    }
-
-    public function ingresarUsuario()
-    {
-        return view('Usuario/IngresarUsuario');
-    }
-
-    // *************************************************************************************************************************
-    //    GUARDAR UN NUEVO USUARIO:
-    public function guardar()
+    // ****************************************************************************************************************************
+    // *!*   GUARDAR UN NUEVO USUARIO (AJAX):
+    // ****************************************************************************************************************************
+    public function create()
     {
         try {
 
@@ -133,7 +169,7 @@ class UsuarioController extends BaseController
                 return $this->response->setStatusCode(400)->setJSON($jsonResponse);
             }
 
-            date_default_timezone_set("America/El_Salvador");
+            // date_default_timezone_set("America/El_Salvador");
             $date1 = new \DateTime($this->request->getPost('f_nacimiento_mayor'));
             $date2 = new \DateTime();
             $edad = $date1->diff($date2);
@@ -161,7 +197,13 @@ class UsuarioController extends BaseController
 
             $persona = $this->modelUsuario->insertPersona($datosPersona);
             $usuario = $this->modelUsuario->insertUsuario($datosUsuario);
-            return $this->response->setBody($persona && $usuario ? 'true' : 'false');
+            if ($persona && $usuario) {
+                $jsonResponse = $this->responseUtil->setResponse(201, "success", 'Usuario guardado exitosamente!', true);
+                return $this->response->setStatusCode(201)->setJSON($jsonResponse);
+            }
+
+            $jsonResponse = $this->responseUtil->setResponse(500, "server_error", 'Error al guardar usuario.', false);
+            return $this->response->setStatusCode(500)->setJSON($jsonResponse);
 
         } catch (\Exception $e) {
             $jsonResponse = $this->responseUtil->setResponse(500, "server_error", 'Error inesperado.', []);
@@ -170,8 +212,9 @@ class UsuarioController extends BaseController
         }
     }
 
-    // *************************************************************************************************************************
-    //    MOSTRAR TODOS LOS USUARIOS CON NIVEL BAJO:
+    // ****************************************************************************************************************************
+    // *!*   MOSTRAR TODOS LOS USUARIOS CON NIVEL BAJO (AJAX DATATABLE):
+    // ****************************************************************************************************************************
     public function tblUsuarios()
     {
 
@@ -226,8 +269,9 @@ class UsuarioController extends BaseController
         ]);
     }
 
-    // *************************************************************************************************************************
-    //    CAMBIAR EL ESTADO DE UN USUARIO:
+    // ****************************************************************************************************************************
+    // *!*   CAMBIAR EL ESTADO DE UN USUARIO (AJAX DATATABLE):
+    // ****************************************************************************************************************************
     public function cambiarEstado()
     {
         try {

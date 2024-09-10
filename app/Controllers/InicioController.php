@@ -24,6 +24,7 @@ class InicioController extends BaseController
         $productsDirectory = FCPATH . 'assets/img/galery';
         $productsFiles = array_diff(scandir($galeryDirectory), array('.', '..'));
 
+        // dd(date('Y-m-d H:i:s'));
         // dd($galeryFiles); // Mostrar los archivos
 
         // Envía los archivos como un array asociativo a la vista
@@ -113,14 +114,23 @@ class InicioController extends BaseController
         }
     }
 
+    // ****************************************************************************************************************************
+    // ****************************************************************************************************************************
+    //                        ******                  ****         ******          ****             ****
+    //                       ********	              ****        ********           ****         ****
+    //                      ****  ****	              ****       ****  ****            ****     ****
+    //                     ****    ****	              ****      ****    ****             *********
+    //                    **************   	****      ****     **************            *********
+    //                   ****************	****      ****    ****************         ****     ****
+    //                  ****          ****   ************    ****          ****      ****         ****
+    //                 ****            ****    *********    ****            ****   ****             ****
+    // ****************************************************************************************************************************
+    // ****************************************************************************************************************************
 
-    /*************************************************************************************************************************
-        METODOS PARA AJAX:
-     *************************************************************************************************************************/
 
-
-    // *************************************************************************************************************************
-    //    LLENAR SELECT DEPARTAMENTO (AJAX):
+    // ****************************************************************************************************************************
+    // *!*   LLENAR SELECT DEPARTAMENTO (AJAX):
+    // ****************************************************************************************************************************
     public function setDepartamentos()
     {
         if ($this->request->isAJAX()) {
@@ -163,8 +173,9 @@ class InicioController extends BaseController
         return redirect()->back();
     }
 
-    // *************************************************************************************************************************
-    //    LLENAR SELECT MUNICIPIO (AJAX):
+    // ****************************************************************************************************************************
+    // *!*   LLENAR SELECT MUNICIPIO (AJAX):
+    // ****************************************************************************************************************************
     public function setMunicipios()
     {
         if ($this->request->isAJAX()) {
@@ -232,8 +243,9 @@ class InicioController extends BaseController
     //     return redirect()->back();
     // }
 
-    // *************************************************************************************************************************
-    //    VALIDAR DUI (AJAX):
+    // ****************************************************************************************************************************
+    // *!*   VALIDAR DUI (AJAX):
+    // ****************************************************************************************************************************
     public function validarDUI()
     {
         if ($this->request->isAJAX()) {
@@ -267,8 +279,9 @@ class InicioController extends BaseController
         return redirect()->back();
     }
 
-    // *************************************************************************************************************************
-    //    VALIDAR TELEFONO (AJAX):
+    // ****************************************************************************************************************************
+    // *!*   VALIDAR TELEFONO (AJAX):
+    // ****************************************************************************************************************************
     public function validarTel()
     {
         if ($this->request->isAJAX()) {
@@ -301,8 +314,9 @@ class InicioController extends BaseController
         return redirect()->back();
     }
 
-    // *************************************************************************************************************************
-    //    VALIDAR CORREO (AJAX):
+    // ****************************************************************************************************************************
+    // *!*   VALIDAR CORREO (AJAX):
+    // ****************************************************************************************************************************
     public function validarEmail()
     {
         if ($this->request->isAJAX()) {
@@ -335,13 +349,16 @@ class InicioController extends BaseController
         return redirect()->back();
     }
 
-    // *************************************************************************************************************************
-    //    GUARDAR VOLUNTARIO MAYOR DE EDAD (AJAX):
-    public function guardar1()
+    // ****************************************************************************************************************************
+    // *!*   GUARDAR VOLUNTARIO MAYOR DE EDAD (AJAX):
+    // ****************************************************************************************************************************
+    public function createVolMayor()
     {
         if ($this->request->isAJAX()) {
 
             try {
+
+                log_message('debug', "paso:");
 
                 // Obtener datos del POST (PARA VALIDATOR)
                 $data = $this->request->getPost();
@@ -358,7 +375,7 @@ class InicioController extends BaseController
                     return $this->response->setStatusCode(400)->setJSON($jsonResponse);
                 }
 
-                date_default_timezone_set("America/El_Salvador");
+                // date_default_timezone_set("America/El_Salvador");
                 $f_nacimiento = new \DateTime($this->request->getPost('f_nacimiento_mayor'));
                 $f_hoy        = new \DateTime();
                 $edad         = $f_nacimiento->diff($f_hoy)->y;
@@ -374,7 +391,7 @@ class InicioController extends BaseController
                     'fecha_creacion' => date('Y-m-d H:i:s')
                 ];
                 $persona = $this->modelVol->insertPersona($persona_voluntario);
-
+                
                 // DATOS TABLA VOLUNTARIO
                 $datos_per_voluntario = [
                     'id_voluntario'           => $this->modelVol->maxVoluntario(),
@@ -394,9 +411,17 @@ class InicioController extends BaseController
                     'fecha_finalizacion' => $this->request->getPost('fecha_finalizacion'),
                     'fecha_creacion'     => date('Y-m-d H:i:s')
                 ];
-                $solicitud  = $this->modelVol->insertSolicitud($datos_solicitud);
+                $solicitud = $this->modelVol->insertSolicitud($datos_solicitud);
+                // return $this->response->setBody($persona && $voluntario && $solicitud ? 'true' : 'false');
 
-                return $this->response->setBody($persona && $voluntario && $solicitud ? 'true' : 'false');
+                // Devuelve la respuesta JSON
+                if ($persona && $voluntario && $solicitud) {
+                    $jsonResponse = $this->responseUtil->setResponse(201, "success", 'Voluntario guardado exitosamente!', true);
+                    return $this->response->setStatusCode(201)->setJSON($jsonResponse);
+                }
+
+                $jsonResponse = $this->responseUtil->setResponse(500, "server_error", 'Error al guardar voluntario.', false);
+                return $this->response->setStatusCode(500)->setJSON($jsonResponse);
 
             } catch (\Exception $e) {
                 $jsonResponse = $this->responseUtil->setResponse(500, "server_error", 'Error inesperado.', []);
@@ -409,35 +434,24 @@ class InicioController extends BaseController
         return redirect()->back();
     }
 
-    // *************************************************************************************************************************
-    //    GUARDAR VOLUNTARIO MENOR DE EDAD (AJAX):
-    public function guardar2()
+    // ****************************************************************************************************************************
+    // *!*   GUARDAR VOLUNTARIO MENOR DE EDAD (AJAX):
+    // ****************************************************************************************************************************
+    public function createVolMenor()
     {
         if ($this->request->isAJAX()) {
 
             try {
-                date_default_timezone_set("America/El_Salvador");
+                // date_default_timezone_set("America/El_Salvador");
                 $f_nacMenor      = new \DateTime($this->request->getPost('f_nacimiento_menor'));
                 $f_nacRef        = new \DateTime($this->request->getPost('f_nacimiento_ref'));
                 $f_hoy           = new \DateTime();
                 $edad_menor      = $f_nacMenor->diff($f_hoy)->y;
                 $edad_referencia = $f_nacRef->diff($f_hoy)->y;
 
-                // DATOS TABLA PERSONA (VOLUNTARIO MENOR)
-                $persona_voluntario = [
-                    'id_persona'     => $this->modelVol->maxPersona(),
-                    'nombres'        => $this->request->getPost('nombres_menor'),
-                    'apellidos'      => $this->request->getPost('apellidos_menor'),
-                    'edad'           => $edad_menor,
-                    'DUI'            => null,
-                    'telefono'       => $this->request->getPost('telefono_menor'),
-                    'fecha_creacion' => date('Y-m-d H:i:s')
-                ];
-                $insert_per_vol = $this->modelVol->insertPersona($persona_voluntario);
-
                 // DATOS TABLA PERSONA (REFERENCIA)
                 $persona_referencia = [
-                    'id_persona'     => $this->modelVol->maxPersona() + 1,
+                    'id_persona'     => $this->modelVol->maxPersona(),
                     'nombres'        => $this->request->getPost('nombres_ref'),
                     'apellidos'      => $this->request->getPost('apellidos_ref'),
                     'edad'           => $edad_referencia,
@@ -446,6 +460,27 @@ class InicioController extends BaseController
                     'fecha_creacion' => date('Y-m-d H:i:s')
                 ];
                 $insert_per_ref = $this->modelVol->insertPersona($persona_referencia);
+
+                // DATOS TABLA REFERENCIA
+                $datos_per_referencia = [
+                    'id_referencia'  => $this->modelVol->maxReferenciaPersonal(),
+                    'id_persona'     => $persona_referencia['id_persona'],
+                    'parentesco'     => $this->request->getPost('parentesco'),
+                    'fecha_creacion' => date('Y-m-d H:i:s')
+                ];
+                $insert_referencia = $this->modelVol->insertReferencia($datos_per_referencia);
+
+                // DATOS TABLA PERSONA (VOLUNTARIO MENOR)
+                $persona_voluntario = [
+                    'id_persona'     => $this->modelVol->maxPersona() + 1,
+                    'nombres'        => $this->request->getPost('nombres_menor'),
+                    'apellidos'      => $this->request->getPost('apellidos_menor'),
+                    'edad'           => $edad_menor,
+                    'DUI'            => null,
+                    'telefono'       => $this->request->getPost('telefono_menor'),
+                    'fecha_creacion' => date('Y-m-d H:i:s')
+                ];
+                $insert_per_vol = $this->modelVol->insertPersona($persona_voluntario);
 
                 // DATOS TABLA VOLUNTARIO
                 $datos_per_voluntario = [
@@ -459,15 +494,6 @@ class InicioController extends BaseController
                 ];
                 $insert_vol = $this->modelVol->insertVoluntario($datos_per_voluntario);
 
-                // DATOS TABLA REFERENCIA
-                $datos_per_referencia = [
-                    'id_referencia'  => $this->modelVol->maxReferenciaPersonal(),
-                    'id_persona'     => $persona_referencia['id_persona'],
-                    'parentesco'     => $this->request->getPost('parentesco'),
-                    'fecha_creacion' => date('Y-m-d H:i:s')
-                ];
-                $insert_referencia = $this->modelVol->insertReferencia($datos_per_referencia);
-
                 // DATOS TABLA SOLICITUD
                 $datos_solicitud = [
                     'id_voluntario'      => $datos_per_voluntario['id_voluntario'],
@@ -477,6 +503,14 @@ class InicioController extends BaseController
                     'fecha_creacion'     => date('Y-m-d H:i:s')
                 ];
                 $insert_soli = $this->modelVol->insertSolicitud($datos_solicitud);
+
+                if ($insert_per_ref && $insert_referencia && $insert_per_vol && $insert_vol && $insert_soli) {
+                    $jsonResponse = $this->responseUtil->setResponse(201, "success", 'Voluntario guardado exitosamente!', true);
+                    return $this->response->setStatusCode(201)->setJSON($jsonResponse);
+                }
+
+                $jsonResponse = $this->responseUtil->setResponse(500, "server_error", 'Error al guardar voluntario.', false);
+                return $this->response->setStatusCode(500)->setJSON($jsonResponse);
 
                 // return $this->response->setBody($insert_per_vol && $insert_vol && $insert_soli ? 'true' : 'false');
                 return $this->response->setBody($insert_per_vol && $insert_per_ref && $insert_vol && $insert_referencia && $insert_soli ? 'true' : 'false');

@@ -73,13 +73,13 @@ $(document).ready(function () {
                         }
                     } else {
                         img.value = ''; //for clearing with Jquery
-                        modalErrorMessage(`<p style="color: #fff; font-size: 1.18em;">Dimensiones m\u00e1ximas 2000x2000, elija una imagen adecuada...</p>`);
+                        modalErrorMessage(`<p style="color: #fff; font-size: 1.18em; font-weight: 100;">Dimensiones m\u00e1ximas 2000x2000, elija una imagen adecuada...</p>`);
                     }
                 }
             } else {
                 this.value = ''; //for clearing with Jquery
                 nombre.value = '';
-                modalErrorMessage(`<p style="color: #fff; font-size: 1.18em;">Tama\u00f1o m\u00e1ximo 5Mb, elija una imagen menos pesada... </p>`);
+                modalErrorMessage(`<p style="color: #fff; font-size: 1.18em; font-weight: 100;">Tama\u00f1o m\u00e1ximo 5Mb, elija una imagen menos pesada... </p>`);
             }
 
         });
@@ -206,7 +206,7 @@ password.change(function () {
         rePassword.addClass('error');
         rePassword.after(`<label id="${rePassword.attr('name')}-error" class="error" for="${rePassword.attr('name')}">Las contrase\u00f1as no coinciden!</label>`);
         rePassword.val('');
-        // modalErrorMessage(`<p style="color: #fff; font-size: 1.18em;">Las contrase\u00f1as no coinciden!</p>`);
+        // modalErrorMessage(`<p style="color: #fff; font-size: 1.18em; font-weight: 100;">Las contrase\u00f1as no coinciden!</p>`);
     }
 });
 
@@ -216,7 +216,7 @@ rePassword.change(function () {
         $(this).addClass('error');
         $(this).after(`<label id="${$(this).attr('name')}-error" class="error" for="${$(this).attr('name')}">Las contrase\u00f1as no coinciden!</label>`);
         $(this).val('');
-        // modalErrorMessage(`<p style="color: #fff; font-size: 1.18em;">Las contrase\u00f1as no coinciden!</p>`);
+        // modalErrorMessage(`<p style="color: #fff; font-size: 1.18em; font-weight: 100;">Las contrase\u00f1as no coinciden!</p>`);
     }
 });
 
@@ -253,19 +253,19 @@ $(function () {
         },
         invalidHandler: function (error, element) {
             // console.log(error, element);
-            modalErrorMessage(`<p style="color: #fff; font-size: 1.18em;">Formulario inválido!</p>`);
+            modalErrorMessage(`<p style="color: #fff; font-size: 1.18em; font-weight: 100;">Formulario inválido!</p>`);
         },
         submitHandler: function (form, e) {
             e.preventDefault();
             $.ajax({
-                url: `${url}usuario/guardar`,
+                url: `${url}usuario/create`,
                 data: $(form).serialize(),
                 type: 'POST',
                 async: false,
                 dataType: 'json',
                 success: function (response) {
                     console.log(response);
-                    toastSuccesMessage(`<p style="color: white; font-size: 1.06em;">Usuario guardado!</p>`);
+                    toastSuccesMessage(`<p style="color: white; font-size: 1.06em; font-weight: 100;">Usuario guardado!</p>`);
                     // form.submit();
                     $("#modal").hide(300);
                     $(form)[0].reset();
@@ -308,7 +308,7 @@ $(function () {
                         }
                     }
 
-                    modalErrorMessage(`<p style="color: #fff; font-size: 1.18em;">Formulario inválido!</p>`);
+                    modalErrorMessage(`<p style="color: #fff; font-size: 1.18em; font-weight: 100;">Formulario inválido!</p>`);
                 }
             });
             return false;
@@ -355,7 +355,7 @@ $(function () {
                 event.stopPropagation();
                 // modal.hide(300);
                 $('#form-galeria')[0].reset();
-                toastInfoMessage(`<p style="color:white; font-size: 1.3em;">Elije una nueva imagen!</p>`);
+                toastInfoMessage(`<p style="color:white; font-size: 1.3em; font-weight: 100;">Elije una nueva imagen!</p>`);
             }
         });
     });
@@ -379,7 +379,7 @@ $(function () {
             nombre_imagen: 'Imagen requerida.'
         },
         invalidHandler: function (error, element) {
-            modalErrorMessage(`<p style="color: #fff; font-size: 1.18em;">Formulario inv\u00e1lido!</p>`);
+            modalErrorMessage(`<p style="color: #fff; font-size: 1.18em; font-weight: 100;">Formulario inv\u00e1lido!</p>`);
         },
         submitHandler: function (form, e) {
             e.preventDefault();
@@ -407,11 +407,11 @@ function cambiarEstadoProducto(producto) {
         async: false,
         dataType: 'json',
         success: function () {
-            toastSuccesMessage(`<p style="color: white; font-size: 1.18em;">Estado cambiado!</p>`);
+            toastSuccesMessage(`<p style="color: white; font-size: 1.18em; font-weight: 100;">Estado cambiado!</p>`);
             $('#productos').DataTable().ajax.reload(null, false);
         },
         error: function () {
-            toastErrorMessage(`<p style="color: #fff; font-size: 1.18em;">Error al cambiar estado!</p>`);
+            toastErrorMessage(`<p style="color: #fff; font-size: 1.18em; font-weight: 100;">Error al cambiar estado!</p>`);
         }
     });
 }
@@ -426,7 +426,7 @@ function cambiarEstadoUsuario(usuario) {
         type: 'POST',
         dataType: 'json',
         success: function (response) {
-            toastSuccesMessage('<p style="color: white; font-size: 1.18em;">' + response.message + '</p>');
+            toastSuccesMessage('<p style="color: white; font-size: 1.18em; font-weight: 100;">' + response.message + '</p>');
             $('#usuarios').DataTable().ajax.reload(null, false);
         },
         error: function (jqXHR, textStatus, errorThrown) {
@@ -438,8 +438,8 @@ function cambiarEstadoUsuario(usuario) {
                 errorMessage = jqXHR.responseJSON.message;
             }
 
-            // toastErrorMessage(`<p style="color: #fff; font-size: 1.18em;">${errorMessage}</p>`);
-            toastErrorMessage(`<p style="color: #fff; font-size: 1.27em;">${errorMessage}</p>`);
+            // toastErrorMessage(`<p style="color: #fff; font-size: 1.18em; font-weight: 100;">${errorMessage}</p>`);
+            toastErrorMessage(`<p style="color: #fff; font-size: 1.27em; font-weight: 100;">${errorMessage}</p>`);
         }
     });
 }
@@ -454,12 +454,12 @@ function cambiarEstadoUsuario(usuario) {
 //         dataType: 'json',
 //         success: function(response) {
 //             console.log('Respuesta del servidor:', response.success); // Verifica la respuesta
-//             toastSuccesMessage(`<p style="color: white; font-size: 1.18em;">Estado cambiado!</p>`);
+//             toastSuccesMessage(`<p style="color: white; font-size: 1.18em; font-weight: 100;">Estado cambiado!</p>`);
 //             $('#usuarios').DataTable().ajax.reload(null, false);
 //         },
 //         error: function(jqXHR, textStatus, errorThrown) {
 //             console.error('Error en la solicitud AJAX:', textStatus, errorThrown); // Mensajes de error
-//             toastErrorMessage(`<p style="color: #fff; font-size: 1.27em;">Error al cambiar estado!</p>`);
+//             toastErrorMessage(`<p style="color: #fff; font-size: 1.27em; font-weight: 100;">Error al cambiar estado!</p>`);
 //         }
 //     });
 // }

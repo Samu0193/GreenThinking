@@ -39,12 +39,12 @@ class VoluntarioModel extends Model
             ]
         ],
         'f_nacimiento_mayor' => [
-            'rules'  => 'required|valid_date|minEdadMay|maxEdadMay',
+            'rules'  => 'required|valid_date|minEdadMayor|maxEdadMayor',
             'errors' => [
-                'required'   => 'Fecha de nacimiento requerida.',
-                'valid_date' => 'Fecha de finalización debe ser una fecha válida.',
-                'minEdadMay' => 'Edad máxima 40 años.',
-                'maxEdadMay' => 'Edad mínima 18 años.',
+                'required'     => 'Fecha de nacimiento requerida.',
+                'valid_date'   => 'Fecha de nacimiento debe ser una fecha válida.',
+                'minEdadMayor' => 'Edad máxima 40 años.',
+                'maxEdadMayor' => 'Edad mínima 18 años.',
             ]
         ],
         'DUI' => [
@@ -64,7 +64,7 @@ class VoluntarioModel extends Model
             ]
         ],
         'email' => [
-            'rules'  => 'required|valid_email|is_unique[usuario.email]',
+            'rules'  => 'required|valid_email|is_unique[voluntario.email]',
             'errors' => [
                 'required'    => 'Email requerido.',
                 'valid_email' => 'Ingrese un email válido.',
@@ -92,7 +92,122 @@ class VoluntarioModel extends Model
             ]
         ],
         'fecha_finalizacion' => [
-            'rules'  => 'required|valid_date',
+            'rules'  => 'required|valid_date|minFin|maxFin',
+            'errors' => [
+                'required'   => 'Fecha de finalización requerida.',
+                'valid_date' => 'Fecha de finalización debe ser una fecha válida.'
+            ]
+        ]
+    ];
+
+    public $validatorMenor = [
+        'parentesco' => [
+            'rules'  => 'required|alfaOespacio',
+            'errors' => [
+                'required'     => 'Parentezco requerido.',
+                'alfaOespacio' => 'Parentezco sólo puede contener letras y espacios.'
+            ]
+        ],
+        'nombres_ref' => [
+            'rules'  => 'required|alfaOespacio',
+            'errors' => [
+                'required'     => 'Nombres del referente requeridos.',
+                'alfaOespacio' => 'Nombres del referente sólo pueden contener letras y espacios.'
+            ]
+        ],
+        'apellidos_ref' => [
+            'rules'  => 'required|alfaOespacio',
+            'errors' => [
+                'required'     => 'Apellidos del referente requeridos.',
+                'alfaOespacio' => 'Apellidos del referente sólo pueden contener letras y espacios.'
+            ]
+        ],
+        'f_nacimiento_ref' => [
+            'rules'  => 'required|valid_date|minEdadRef|maxEdadRef',
+            'errors' => [
+                'required'   => 'Fecha de nacimiento del referente requerida.',
+                'valid_date' => 'Fecha de nacimiento del referente debe ser una fecha válida.',
+                'minEdadRef' => 'Edad máxima del referente 70 años.',
+                'maxEdadRef' => 'Edad mínima del referente 20 años.',
+            ]
+        ],
+        'DUI_ref' => [
+            'rules'  => 'required|isDUI|is_unique[persona.DUI]',
+            'errors' => [
+                'required'  => 'DUI requerido.',
+                'isDUI'     => 'DUI inválido.',
+                'is_unique' => 'Este DUI ya está registrado.'
+            ]
+        ],
+        'telefono_ref' => [
+            'rules'  => 'required|telefono|is_unique[persona.telefono]',
+            'errors' => [
+                'required'  => 'Teléfono del referente requerido.',
+                'telefono'  => 'Teléfono del referente inválido.',
+                'is_unique' => 'Este teléfono ya está registrado.'
+            ]
+        ],
+        'nombres_menor' => [
+            'rules'  => 'required|alfaOespacio',
+            'errors' => [
+                'required'     => 'Nombres del voluntario requeridos.',
+                'alfaOespacio' => 'Nombres del voluntario sólo pueden contener letras y espacios.'
+            ]
+        ],
+        'apellidos_menor' => [
+            'rules'  => 'required|alfaOespacio',
+            'errors' => [
+                'required'     => 'Apellidos del voluntario requeridos.',
+                'alfaOespacio' => 'Apellidos del voluntario sólo pueden contener letras y espacios.'
+            ]
+        ],
+        'f_nacimiento_menor' => [
+            'rules'  => 'required|valid_date|minEdadMenor|maxEdadMenor',
+            'errors' => [
+                'required'     => 'Fecha de nacimiento del voluntario requerida.',
+                'valid_date'   => 'Fecha de nacimiento del voluntario debe ser una fecha válida.',
+                'minEdadMenor' => 'Edad máxima 17 años.',
+                'maxEdadMenor' => 'Edad mínima 12 años.',
+            ]
+        ],
+        'telefono_menor' => [
+            'rules'  => 'required|telefono|is_unique[persona.telefono]',
+            'errors' => [
+                'required'  => 'Teléfono del voluntario requerido.',
+                'telefono'  => 'Teléfono del voluntario inválido.',
+                'is_unique' => 'Este teléfono ya está registrado.'
+            ]
+        ],
+        'email' => [
+            'rules'  => 'required|valid_email|is_unique[usuario.email]',
+            'errors' => [
+                'required'    => 'Email del voluntario requerido.',
+                'valid_email' => 'Email del voluntario inválido.',
+                'is_unique'   => 'Este email ya está registrado.'
+            ]
+        ],
+        'departamento_residencia' => [
+            'rules'  => 'required|integer',
+            'errors' => [
+                'required' => 'Departamento del voluntario requerido.',
+                'integer'  => 'Departamento del voluntario debe ser un número entero.'
+            ]
+        ],
+        'municipio_residencia' => [
+            'rules'  => 'required|integer',
+            'errors' => [
+                'required' => 'Municipio del voluntario requerido.',
+                'integer'  => 'Municipio del voluntario debe ser un número entero.'
+            ]
+        ],
+        'direccion' => [
+            'rules'  => 'required',
+            'errors' => [
+                'required' => 'Dirección del voluntario requerida.'
+            ]
+        ],
+        'fecha_finalizacion' => [
+            'rules'  => 'required|valid_date|minFin|maxFin',
             'errors' => [
                 'required'   => 'Fecha de finalización requerida.',
                 'valid_date' => 'Fecha de finalización debe ser una fecha válida.'

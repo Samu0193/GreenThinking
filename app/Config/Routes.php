@@ -30,8 +30,8 @@ $routes->post('inicio/setMunicipios', 'InicioController::setMunicipios');
 $routes->post('inicio/validarDUI', 'InicioController::validarDUI');
 $routes->post('inicio/validarTel', 'InicioController::validarTel');
 $routes->post('inicio/validarEmail', 'InicioController::validarEmail');
-$routes->post('inicio/guardar1', 'InicioController::guardar1');
-$routes->post('inicio/guardar2', 'InicioController::guardar2');
+$routes->post('inicio/createVolMayor', 'InicioController::createVolMayor');
+$routes->post('inicio/createVolMenor', 'InicioController::createVolMenor');
 
 // LOGIN CONTROLLER
 $routes->post('login/verifica', 'LoginController::verifica');
@@ -48,7 +48,7 @@ $routes->get('usuario', 'UsuarioController::index');
 $routes->post('usuario/validarEmail', 'UsuarioController::validarEmail');
 $routes->post('usuario/validarUser', 'UsuarioController::validarUser');
 $routes->get('usuario/setRoles', 'UsuarioController::setRoles');
-$routes->post('usuario/guardar', 'UsuarioController::guardar');
+$routes->post('usuario/create', 'UsuarioController::create');
 $routes->post('usuario/cambiarEstado', 'UsuarioController::cambiarEstado');
 
 // GALERIA CONTROLLER

@@ -105,6 +105,7 @@ form_mayores.hide();
 form_menores.hide();
 
 $(".mostrar-modal").on('click', function () {
+    $('body').addClass('no-scroll'); // Deshabilitar el scroll
     loadDepartamentos();
     $("[name='municipio_residencia']").html("<option selected disabled value=''>Seleccionar... </option>");
     modal.fadeIn();
@@ -159,6 +160,7 @@ form_acordeon.eq(1).on('click', function () {
 });
 
 function closeModal() {
+    $('body').removeClass('no-scroll'); // Deshabilitar el scroll
     modal.hide(300);
     form_mayores.hide(300);
     form_menores.hide(300);
@@ -188,16 +190,16 @@ $(window).on('keyup', function (e) {
 $(function () {
     $('#form-mayores').validate({
         rules: {
-            nombres: { required: true, alfaOespacio: true },
-            apellidos: { required: true, alfaOespacio: true },
-            f_nacimiento_mayor: { required: true, minEdadMay: true, maxEdadMay: true },
-            DUI: { required: true, isDUI: true },
-            email: { required: true, correo: true },
-            departamento_residencia: { required: true },
-            municipio_residencia: { required: true },
-            direccion: { required: true },
-            telefono: { required: true },
-            fecha_finalizacion: { required: true, minFin: true, maxFin: true }
+            nombres: { required: false, alfaOespacio: false },
+            apellidos: { required: false, alfaOespacio: false },
+            f_nacimiento_mayor: { required: false, minEdadMay: false, maxEdadMay: false },
+            DUI: { required: false, isDUI: false },
+            email: { required: false, correo: false },
+            departamento_residencia: { required: false },
+            municipio_residencia: { required: false },
+            direccion: { required: false },
+            telefono: { required: false },
+            fecha_finalizacion: { required: false, minFin: false, maxFin: false }
         },
         messages: {
             nombres: { required: 'Nombres requeridos.' },
@@ -220,24 +222,47 @@ $(function () {
             }
         },
         invalidHandler: function (error, element) {
-            modalErrorMessage(`<p style="color: #fff; font-size: 1.18em;">Formulario inv\u00e1lido!</p>`);
+            modalErrorMessage(`<p style="color: #fff; font-size: 1.18em; font-weight: 100;">Formulario inv\u00e1lido!</p>`);
         },
         submitHandler: function (form, e) {
             e.preventDefault();
             $.ajax({
-                url: `${url}inicio/guardar1`,
+                url: `${url}inicio/createVolMayor`,
                 data: $(form).serialize(),
                 type: 'POST',
                 async: false,
                 dataType: 'json',
                 success: function (msg) {
-                    toastSuccesMessage(`<p style="color: white; font-size: 1.18em;">Espere uno momento mientras se genera el PDF!</p>`);
+                    toastSuccesMessage(`<p style="color: white; font-size: 1.18em; font-weight: 100;">Espere uno momento mientras se genera el PDF!</p>`);
                     form.submit();
                     closeModal();
                     $(form)[0].reset();
                     // modal.hide(300);
                     // $(form)[0].reset();
                     // form_mayores.hide(300);
+                },
+                error: function (jqXHR, textStatus, errorThrown) {
+                    
+                    // Limpia las clases de error previas
+                    $(form).find('.invalid-feedback').remove();
+                    $(form).find('.error').removeClass('error');
+                    console.error(`Error en la solicitud AJAX:\nStatus: ${textStatus}\nError Thrown: ${errorThrown}\nMessage: ${jqXHR.responseJSON.message}`);
+                    let errorMessage = 'Ocurrió un problema al procesar su solicitud. Por favor, inténtelo de nuevo más tarde.';
+                    $.each(jqXHR.responseJSON.message, function (campo, mensaje) {
+                        let input = $(form).find(`[name="${campo}"]`);
+                        if (input.length) {
+                            input.addClass('error');
+                            input.after(`<label id="${campo}-error" class="error" for="${campo}">${mensaje}</label>`);
+                        }
+
+                        errorMessage += mensaje + '\n';
+                    });
+                    
+                    if (jqXHR.responseJSON.data !== false) {
+                        modalErrorMessage(`<p style="color: #fff; font-size: 1.18em; font-weight: 100;">Formulario inválido!</p>`);
+                    } else {
+                        toastErrorMessage(`<p style="color: #fff; font-size: 1.18em; font-weight: 100;">${jqXHR.responseJSON.message}</p>`);
+                    }
                 }
             });
             return false;
@@ -272,7 +297,7 @@ $(function () {
             nombres_ref: { required: 'Nombres requeridos.' },
             apellidos_ref: { required: 'Apellidos requeridos.' },
             f_nacimiento_ref: {
-                required: 'Fecha nacimiento requerida.',
+                required: 'Fecha de nacimiento requerida.',
                 min: 'Edad m\u00e1xima 70 a\u00f1os.',
                 max: 'Edad m\u00ednima 20 a\u00f1os.'
             },
@@ -281,7 +306,7 @@ $(function () {
             nombres_menor: { required: 'Nombres requeridos.' },
             apellidos_menor: { required: 'Apellidos requeridos.' },
             f_nacimiento_menor: {
-                required: 'Fecha nacimiento requerida.',
+                required: 'Fecha de nacimiento requerida.',
                 min: 'Edad m\u00e1xima 17 a\u00f1os.',
                 max: 'Edad m\u00ednima 12 a\u00f1os.'
             },
@@ -297,18 +322,18 @@ $(function () {
             }
         },
         invalidHandler: function (error, element) {
-            modalErrorMessage(`<p style="color: #fff; font-size: 1.18em;">Formulario inv\u00e1lido!</p>`);
+            modalErrorMessage(`<p style="color: #fff; font-size: 1.18em; font-weight: 100;">Formulario inv\u00e1lido!</p>`);
         },
         submitHandler: function (form, e) {
             e.preventDefault();
             $.ajax({
-                url: `${url}inicio/guardar2`,
+                url: `${url}inicio/createVolMenor`,
                 data: $(form).serialize(),
                 type: 'POST',
                 async: false,
                 dataType: 'json',
                 success: function (msg) {
-                    toastSuccesMessage(`<p style="color: white; font-size: 1.18em;">Espere uno momento mientras se genera el PDF!</p>`);
+                    toastSuccesMessage(`<p style="color: white; font-size: 1.18em; font-weight: 100;">Espere uno momento mientras se genera el PDF!</p>`);
                     form.submit();
                     closeModal();
                     $(form)[0].reset();

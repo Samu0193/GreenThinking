@@ -205,7 +205,7 @@
                     <h3 class="form-section" id="form-section">Referencia Personal</h3>
                     <div class="form-section-content">
                         <div class="input-field">
-                            <label for="parentesco">Parentesco </label>
+                            <label for="parentesco">Parentezco </label>
                             <select name="parentesco" id="" required>
                                 <option selected disabled value=''>Seleccionar... </option>
                                 <option value="Padre">Padre</option>
@@ -213,7 +213,7 @@
                                 <option value="Abuelo">Abuelo</option>
                                 <option value="Abuela">Abuela</option>
                                 <option value="T&iacute;o">T&iacute;o</option>
-                                <option value="T&oacute;a">T&oacute;a</option>
+                                <option value="T&iacute;a">T&iacute;a</option>
                                 <option value="Tutor legal">Tutor legal</option>
                             </select>
                             <label for="nombres_ref">Nombres: </label>
@@ -242,15 +242,18 @@
                             <input type="text" name="apellidos_menor" id="" placeholder="Ingrese Apellidos" required>
                             <label for="f_nacimiento_menor">Fecha de Nacimiento: </label>
                             <input type="date" name="f_nacimiento_menor" id="" required>
+                            <label for="telefono_menor">Teléfono: </label>
+                            <input type="text" name="telefono_menor" id="" placeholder="9999-9999" onchange="valTel(this);"
+                                required>
                             <label for="email">Email: </label>
                             <input type="text" name="email" id="" placeholder="Ingrese Email" onchange="valEmail(this);"
                                 required>
+                        </div>
+                        <div class="input-field">
                             <label for="departamento_residencia">Departamento Residencia: </label>
                             <select name="departamento_residencia" id="" required>
 
                             </select>
-                        </div>
-                        <div class="input-field">
                             <label for="municipio_residencia">Municipio Residencia: </label>
                             <select name="municipio_residencia" id="" required>
 
@@ -258,15 +261,13 @@
                             <label for="direccion">Dirección: </label>
                             <textarea name="direccion" id="" rows="5" cols="" placeholder="Ingrese Dirección"
                                 required></textarea>
-                            <label for="telefono_menor">Teléfono: </label>
-                            <input type="text" name="telefono_menor" id="" placeholder="9999-9999" onchange="valTel(this);"
-                                required>
+                            
                             <label for="fecha_finalizacion">Fecha de Finalización: <i class="fas fa-info-circle"
                                     id="info-fecha2" style="color: #17a2b8; cursor: pointer; font-size: 1.5em;"></i></label>
                             <div class="info-fecha" style="background-color: #888; color: #fff;">
-                                <h4>
+                                <p>
                                     "Fecha en la que estimas hasta cuándo estarás con nosotros, mínimo 3 meses, máximo 1 año"
-                                </h4>
+                                </p>
                             </div>
                             <input type="date" name="fecha_finalizacion" id="" required>
                         </div>

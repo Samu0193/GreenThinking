@@ -162,7 +162,7 @@ function valDui(input) {
         data: { 'DUI': input.value },
         success: function (jsonResponse) {
             if (jsonResponse.data === false) {
-                // toastInfoMessage(`<p style="color: #fff; font-size: 1.18em;">${jsonResponse.message}</p>`);
+                // toastInfoMessage(`<p style="color: #fff; font-size: 1.18em; font-weight: 100;">${jsonResponse.message}</p>`);
                 // input.value = '';
             }
         },
@@ -177,7 +177,7 @@ function valTel(input) {
         data: { 'telefono': input.value },
         success: function (jsonResponse) {
             if (jsonResponse.data === false) {
-                // toastInfoMessage(`<p style="color: #fff; font-size: 1.18em;">${jsonResponse.message}</p>`);
+                // toastInfoMessage(`<p style="color: #fff; font-size: 1.18em; font-weight: 100;">${jsonResponse.message}</p>`);
                 // input.value = '';
             }
         },
@@ -192,8 +192,8 @@ function valEmail(input) {
         data: { 'email': input.value },
         success: function (jsonResponse) {
             if (jsonResponse.data === false) {
-                toastInfoMessage(`<p style="color: #fff; font-size: 1.18em;">${jsonResponse.message}</p>`);
-                input.value = '';
+                // toastInfoMessage(`<p style="color: #fff; font-size: 1.18em; font-weight: 100;">${jsonResponse.message}</p>`);
+                // input.value = '';
             }
         },
     });
@@ -207,7 +207,7 @@ function valEmailUser(input) {
         data: { 'email': input.value },
         success: function (jsonResponse) {
             if (jsonResponse.data === false) {
-                // toastInfoMessage(`<p style="color: #fff; font-size: 1.18em;">${jsonResponse.message}</p>`);
+                // toastInfoMessage(`<p style="color: #fff; font-size: 1.18em; font-weight: 100;">${jsonResponse.message}</p>`);
                 // input.value = '';
             }
         },
@@ -222,17 +222,17 @@ $("[name='nombre_usuario']").change(function () {
         data: { 'nombre_usuario': $(this).val() },
         success: function (jsonResponse) {
             if (jsonResponse.data === false) {
-                // toastInfoMessage(`<p style="color: #fff; font-size: 1.18em;">${jsonResponse.message}</p>`);
+                // toastInfoMessage(`<p style="color: #fff; font-size: 1.18em; font-weight: 100;">${jsonResponse.message}</p>`);
                 // $("[name='nombre_usuario']").val('');
             }
         },
     });
 });
 
-// FECHA DE EDAD MAYORES
-function f_MinEdadMayor(value) {
+// CALCULO DE AÑOS
+function calculaAnios(anios, formato) {
     var now = new Date(),
-        fecha = new Date(now.setFullYear(now.getFullYear() - 40)),
+        fecha = new Date(now.setFullYear(now.getFullYear() + anios)),
         anio = fecha.getFullYear(),
         mes = fecha.getMonth() + 1,
         dia = fecha.getDate();
@@ -240,16 +240,17 @@ function f_MinEdadMayor(value) {
     if (mes < 10) mes = "0" + mes.toString();
     if (dia < 10) dia = "0" + dia.toString();
 
-    if (value == 1) {
+    if (formato === 1) {
         return anio + "-" + mes + "-" + dia;
     } else {
         return dia + "-" + mes + "-" + anio;
     }
 }
 
-function f_MaxEdadMayor(value) {
+// CALCULO DE MESES
+function calculaMeses(meses, formato) {
     var now = new Date(),
-        fecha = new Date(now.setFullYear(now.getFullYear() - 18)),
+        fecha = new Date(now.setMonth(now.getMonth() + meses)),
         anio = fecha.getFullYear(),
         mes = fecha.getMonth() + 1,
         dia = fecha.getDate();
@@ -257,129 +258,60 @@ function f_MaxEdadMayor(value) {
     if (mes < 10) mes = "0" + mes.toString();
     if (dia < 10) dia = "0" + dia.toString();
 
-    if (value == 1) {
+    if (formato === 1) {
         return anio + "-" + mes + "-" + dia;
     } else {
         return dia + "-" + mes + "-" + anio;
     }
+}
+
+// FECHA DE EDAD MAYORES
+function f_MinEdadMayor(formato) {
+    calculaAnios(-40, formato);
+}
+
+function f_MaxEdadMayor(formato) {
+    calculaAnios(-18, formato);
 }
 
 // FECHA DE EDAD MENORES
-function f_MinEdadMenor(value) {
-    var now = new Date(),
-        fecha = new Date(now.setFullYear(now.getFullYear() - 17)),
-        anio = fecha.getFullYear(),
-        mes = fecha.getMonth() + 1,
-        dia = fecha.getDate();
-
-    if (mes < 10) mes = "0" + mes.toString();
-    if (dia < 10) dia = "0" + dia.toString();
-
-    if (value == 1) {
-        return anio + "-" + mes + "-" + dia;
-    } else {
-        return dia + "-" + mes + "-" + anio;
-    }
+function f_MinEdadMenor(formato) {
+    calculaAnios(-17, formato);
 }
 
-function f_MaxEdadMenor(value) {
-    var now = new Date(),
-        fecha = new Date(now.setFullYear(now.getFullYear() - 12)),
-        anio = fecha.getFullYear(),
-        mes = fecha.getMonth() + 1,
-        dia = fecha.getDate();
-
-    if (mes < 10) mes = "0" + mes.toString();
-    if (dia < 10) dia = "0" + dia.toString();
-
-    if (value == 1) {
-        return anio + "-" + mes + "-" + dia;
-    } else {
-        return dia + "-" + mes + "-" + anio;
-    }
+function f_MaxEdadMenor(formato) {
+    calculaAnios(-12, formato);
 }
 
 // FECHA DE EDAD RESPONSABLE
-function f_MinEdadResponsable(value) {
-    var now = new Date(),
-        fecha = new Date(now.setFullYear(now.getFullYear() - 70)),
-        anio = fecha.getFullYear(),
-        mes = fecha.getMonth() + 1,
-        dia = fecha.getDate();
-
-    if (mes < 10) mes = "0" + mes.toString();
-    if (dia < 10) dia = "0" + dia.toString();
-
-    if (value == 1) {
-        return anio + "-" + mes + "-" + dia;
-    } else {
-        return dia + "-" + mes + "-" + anio;
-    }
+function f_MinEdadResponsable(formato) {
+    calculaAnios(-70, formato);
 }
 
-function f_MaxEdadResponsable(value) {
-    var now = new Date(),
-        fecha = new Date(now.setFullYear(now.getFullYear() - 20)),
-        anio = fecha.getFullYear(),
-        mes = fecha.getMonth() + 1,
-        dia = fecha.getDate();
-
-    if (mes < 10) mes = "0" + mes.toString();
-    if (dia < 10) dia = "0" + dia.toString();
-
-    if (value == 1) {
-        return anio + "-" + mes + "-" + dia;
-    } else {
-        return dia + "-" + mes + "-" + anio;
-    }
+function f_MaxEdadResponsable(formato) {
+    calculaAnios(-20, formato);
 }
 
 // FECHA FINALIZACION DE VOLUNTARIADO
-function f_MinFin(value) {
-    var now = new Date(),
-        fecha = new Date(now.setMonth(now.getMonth() + 3)),
-        anio = fecha.getFullYear(),
-        mes = fecha.getMonth() + 1,
-        dia = fecha.getDate();
-
-    if (mes < 10) mes = "0" + mes.toString();
-    if (dia < 10) dia = "0" + dia.toString();
-
-    if (value == 1) {
-        return anio + "-" + mes + "-" + dia;
-    } else {
-        return dia + "-" + mes + "-" + anio;
-    }
+function f_MinFin(formato) {
+    calculaMeses(+3, formato);
 }
 
-function f_MaxFin(value) {
-    var now = new Date(),
-        fecha = new Date(now.setFullYear(now.getFullYear() + 1)),
-        anio = fecha.getFullYear(),
-        mes = fecha.getMonth() + 1,
-        dia = fecha.getDate();
-
-    if (mes < 10) mes = "0" + mes.toString();
-    if (dia < 10) dia = "0" + dia.toString();
-
-    if (value == 1) {
-        return anio + "-" + mes + "-" + dia;
-    } else {
-        return dia + "-" + mes + "-" + anio;
-    }
+function f_MaxFin(formato) {
+    calculaAnios(+1, formato);
 }
 
-$("#f_nacimiento_mayor").prop("min", f_MinEdadMayor(1));
-$("#f_nacimiento_mayor").prop("max", f_MaxEdadMayor(1));
+// $("#f_nacimiento_mayor").prop("min", f_MinEdadMayor(1));
+// $("#f_nacimiento_mayor").prop("max", f_MaxEdadMayor(1));
 
-$("#f_nacimiento_ref").prop("min", f_MinEdadResponsable(1));
-$("#f_nacimiento_ref").prop("max", f_MaxEdadResponsable(1));
+// $("#f_nacimiento_ref").prop("min", f_MinEdadResponsable(1));
+// $("#f_nacimiento_ref").prop("max", f_MaxEdadResponsable(1));
 
-$("[name='f_nacimiento_menor'1515-1155]").prop("min", f_MinEdadMenor(1));
-$("[name='f_nacimiento_menor']").prop("max", f_MaxEdadMenor(1));
+// $("[name='f_nacimiento_menor']").prop("min", f_MinEdadMenor(1));
+// $("[name='f_nacimiento_menor']").prop("max", f_MaxEdadMenor(1));
 
-$("[name='fecha_finalizacion']").prop("min", f_MinFin(1));
-$("[name='fecha_finalizacion']").prop("max", f_MaxFin(1));
+// $("[name='fecha_finalizacion']").prop("min", f_MinFin(1));
+// $("[name='fecha_finalizacion']").prop("max", f_MaxFin(1));
 
 jQuery.validator.addMethod("minEdadMay", function (value, element) {
     return this.optional(element) || value >= f_MinEdadMayor(1);
@@ -407,11 +339,11 @@ jQuery.validator.addMethod("maxEdadMen", function (value, element) {
 
 jQuery.validator.addMethod("minFin", function (value, element) {
     return this.optional(element) || value >= f_MinFin(1);
-}, `Debe ser mayor o igual a: ${f_MinFin(0)}`);
+}, `Debe ser mayor o igual a: <br>${f_MinFin(0)}`);
 
 jQuery.validator.addMethod("maxFin", function (value, element) {
     return this.optional(element) || value <= f_MaxFin(1);
-}, `Debe ser menor o igual a: ${f_MaxFin(0)}`);
+}, `Debe ser menor o igual a: <br>${f_MaxFin(0)}`);
 
 jQuery.validator.addMethod("decimal", function (value, element) {
     return this.optional(element) || /^\d{1,2}(\.\d{1,2})?$/i.test(value);
@@ -495,7 +427,7 @@ function valDimensions(imagen) {
         if (ancho >= 1000 && alto >= 900) {
             document.getElementById("upload").value = '';
             document.getElementById("nombre_imagen").value = '';
-            toastInfoMessage(`<p style="color: #fff; font-size: 1.18em;">Tama\u00f1o m\u00e1ximo 2000x2000 elija una imagen adecuada...</p>`);
+            toastInfoMessage(`<p style="color: #fff; font-size: 1.18em; font-weight: 100;">Tama\u00f1o m\u00e1ximo 2000x2000 elija una imagen adecuada...</p>`);
         }
     };
 }
