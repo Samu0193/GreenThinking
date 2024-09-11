@@ -31,7 +31,8 @@ class LoginModel extends Model
     //    VALIDAR CORREO PARA RECUPERACION DE CONTRASEÑA:
     public function validateEmail($email)
     {
-        return $this->where('email', $email)->first();
+        // return $this->where('email', $email)->first();
+        return $this->db->table('vw_usuarios')->where('email', $email)->get()->getRowArray();
     }
 
     // *************************************************************************************************************************

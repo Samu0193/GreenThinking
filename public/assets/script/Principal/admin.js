@@ -212,7 +212,6 @@ password.change(function () {
 
 rePassword.change(function () {
     if (password.val() !== $(this).val()) {
-        console.log($(this));
         $(this).addClass('error');
         $(this).after(`<label id="${$(this).attr('name')}-error" class="error" for="${$(this).attr('name')}">Las contrase\u00f1as no coinciden!</label>`);
         $(this).val('');

@@ -227,7 +227,7 @@ class UsuarioModel extends Model
     //    CREAR REGISTRO EN LA TABLA "USUARIO":
     public function insertUsuario($data)
     {
-        return $this->insert($data);
+        return $this->db->table('usuario')->insert($data); // Retorna 1 si es exitoso
     }
 
     // *************************************************************************************************************************

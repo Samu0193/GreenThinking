@@ -158,57 +158,63 @@ class UsuarioController extends BaseController
     // ****************************************************************************************************************************
     public function create()
     {
-        try {
+        if ($this->request->isAJAX()) {
+            
+            try {
 
-            $data = $this->request->getPost();
-            if (!$this->validate($this->modelUsuario->validatorUser)) {
-                $errors       = $this->validator->getErrors();
-                $firstError   = reset($errors);
-                $jsonResponse = $this->responseUtil->setResponse(400, "error", $errors, []);
-                return $this->response->setStatusCode(400)->setJSON($jsonResponse);
+                $data = $this->request->getPost();
+                if (!$this->validate($this->modelUsuario->validatorUser)) {
+                    $errors       = $this->validator->getErrors();
+                    $firstError   = reset($errors);
+                    $jsonResponse = $this->responseUtil->setResponse(400, "error", $errors, []);
+                    return $this->response->setStatusCode(400)->setJSON($jsonResponse);
+                }
+
+                // date_default_timezone_set("America/El_Salvador");
+                $date1 = new \DateTime($this->request->getPost('f_nacimiento_mayor'));
+                $date2 = new \DateTime();
+                $edad  = $date1->diff($date2);
+
+                $datosPersona = [
+                    'id_persona'     => $this->modelUsuario->maxPersona(),
+                    'nombres'        => $this->request->getPost('nombres'),
+                    'apellidos'      => $this->request->getPost('apellidos'),
+                    'DUI'            => $this->request->getPost('DUI'),
+                    'edad'           => $edad->y,
+                    'telefono'       => $this->request->getPost('telefono'),
+                    'fecha_creacion' => date('Y-m-d H:i:s')
+                ];
+                $persona = $this->modelUsuario->insertPersona($datosPersona);
+
+                $datosUsuario = [
+                    'id_usuario'     => $this->modelUsuario->maxUsuario(),
+                    'id_persona'     => $datosPersona['id_persona'],
+                    'id_rol'         => 2,
+                    'usuario'        => $this->request->getPost('nombre_usuario'),
+                    'email'          => $this->request->getPost('email'),
+                    'password'       => sha1($this->request->getPost('password')),
+                    'estado'         => true,
+                    'fecha_creacion' => date('Y-m-d H:i:s')
+                ];
+                $usuario = $this->modelUsuario->insertUsuario($datosUsuario);
+
+                if ($persona && $usuario) {
+                    $jsonResponse = $this->responseUtil->setResponse(201, "success", 'Usuario guardado exitosamente!', true);
+                    return $this->response->setStatusCode(201)->setJSON($jsonResponse);
+                }
+
+                $jsonResponse = $this->responseUtil->setResponse(500, "server_error", 'Error al guardar usuario.', false);
+                return $this->response->setStatusCode(500)->setJSON($jsonResponse);
+
+            } catch (\Exception $e) {
+                $jsonResponse = $this->responseUtil->setResponse(500, "server_error", 'Error inesperado.', []);
+                $this->responseUtil->logWithContext($this->responseUtil->setResponse(500, "server_error", 'Exception: ' . $e->getMessage(), []));
+                return $this->response->setStatusCode(500)->setJSON($jsonResponse);
             }
 
-            // date_default_timezone_set("America/El_Salvador");
-            $date1 = new \DateTime($this->request->getPost('f_nacimiento_mayor'));
-            $date2 = new \DateTime();
-            $edad  = $date1->diff($date2);
-
-            $datosPersona = [
-                'id_persona'     => $this->modelUsuario->maxPersona(),
-                'nombres'        => $this->request->getPost('nombres'),
-                'apellidos'      => $this->request->getPost('apellidos'),
-                'DUI'            => $this->request->getPost('DUI'),
-                'edad'           => $edad->y,
-                'telefono'       => $this->request->getPost('telefono'),
-                'fecha_creacion' => date('Y-m-d H:i:s')
-            ];
-            $persona = $this->modelUsuario->insertPersona($datosPersona);
-
-            $datosUsuario = [
-                'id_usuario'     => $this->modelUsuario->maxUsuario(),
-                'id_persona'     => $datosPersona['id_persona'],
-                'id_rol'         => 2,
-                'usuario'        => $this->request->getPost('nombre_usuario'),
-                'email'          => $this->request->getPost('email'),
-                'password'       => sha1($this->request->getPost('password')),
-                'estado'         => true,
-                'fecha_creacion' => date('Y-m-d H:i:s')
-            ];
-            $usuario = $this->modelUsuario->insertUsuario($datosUsuario);
-
-            if ($persona && $usuario) {
-                $jsonResponse = $this->responseUtil->setResponse(201, "success", 'Usuario guardado exitosamente!', true);
-                return $this->response->setStatusCode(201)->setJSON($jsonResponse);
-            }
-
-            $jsonResponse = $this->responseUtil->setResponse(500, "server_error", 'Error al guardar usuario.', false);
-            return $this->response->setStatusCode(500)->setJSON($jsonResponse);
-
-        } catch (\Exception $e) {
-            $jsonResponse = $this->responseUtil->setResponse(500, "server_error", 'Error inesperado.', []);
-            $this->responseUtil->logWithContext($this->responseUtil->setResponse(500, "server_error", 'Exception: ' . $e->getMessage(), []));
-            return $this->response->setStatusCode(500)->setJSON($jsonResponse);
         }
+
+        return redirect()->back();
     }
 
     // ****************************************************************************************************************************

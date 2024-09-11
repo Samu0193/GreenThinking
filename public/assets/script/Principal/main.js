@@ -241,12 +241,12 @@ $(function () {
                     // form_mayores.hide(300);
                 },
                 error: function (jqXHR, textStatus, errorThrown) {
-                    
+
                     // Limpia las clases de error previas
                     $(form).find('.invalid-feedback').remove();
                     $(form).find('.error').removeClass('error');
                     let errorMessage = 'Ocurrió un problema al procesar su solicitud. Por favor, inténtelo de nuevo más tarde.';
-                    
+
                     $.each(jqXHR.responseJSON.message, function (campo, mensaje) {
                         let input = $(form).find(`[name="${campo}"]`);
                         if (input.length) {
@@ -255,7 +255,7 @@ $(function () {
                         }
                         errorMessage += mensaje + '\n';
                     });
-                    
+
                     if (jqXHR.responseJSON.code !== 500) {
                         modalErrorMessage(`<p style="color: #fff; font-size: 1.18em; font-weight: 100;">Formulario inválido!</p>`);
                     } else {
