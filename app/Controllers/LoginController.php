@@ -176,8 +176,8 @@ class LoginController extends BaseController
                     $message    = str_replace('@USUARIO', $user, $html);
                     $message    = str_replace('@LINK', $resetLink, $message);
                     $subject    = "Restablecer contraseña.";
-                    $this->send();
-                    $sentStatus = $this->sendEmail($email, $subject, $message);
+                    // $sentStatus = $this->sendEmail($email, $subject, $message);
+                    $sentStatus = $this->sendEmailService($email, $subject, $message);
 
                     if ($sentStatus) {
                         $this->loginModel->updatePasswordHash($data, $email);
@@ -206,18 +206,36 @@ class LoginController extends BaseController
 
     // *************************************************************************************************************************
     //    ENVIO DE CORREO PARA RECUPERACION DE CONTRASEÑA:
-    public function send()
+    public function sendEmailService($to, $subject, $body)
     {
         $emailService = new PHPMailerService();
-        $to = 'davidsanse37@gmail.com';
-        $subject = 'Asunto del correo';
-        $body = '<p>Este es el cuerpo del correo.</p>';
+        return $emailService->sendMail($to, $subject, $body);
 
-        if ($emailService->send($to, $subject, $body)) {
-            echo 'Correo enviado exitosamente!';
-        } else {
-            echo 'No se pudo enviar el correo.';
-        }
+        // $mail = new \PHPMailer\PHPMailer\PHPMailer(true);
+        // try {
+        //     $mail->isSMTP();
+        //     $mail->Host = 'smtp.gmail.com';
+        //     $mail->SMTPAuth = true;
+        //     $mail->Username = 'davidsanse37@gmail.com';
+        //     $mail->Password = 'lgrz xtqg jopt mqiw';
+        //     $mail->SMTPSecure = \PHPMailer\PHPMailer\PHPMailer::ENCRYPTION_SMTPS;
+        //     $mail->Port = 465;
+        //     $mail->CharSet = 'utf-8';
+        //     $mail->setFrom('davidsanse37@gmail.com', 'Mailer');
+        //     $mail->addAddress($email);
+        //     $mail->isHTML(true);
+        //     $mail->Subject = $subject;
+        //     $mail->Body    = $message;
+        //     $mail->addEmbeddedImage(FCPATH . 'assets/img/logoGT.jpeg', 'image_cid');
+        //     $mail->Body    = 'HTML Body with image: <img src="cid:image_cid">';
+        //     $mail->AltBody = 'This is the body in plain text for non-HTML mail clients';
+        //     // $mail->send();
+        //     return $mail->send();
+        // } catch (\PHPMailer\PHPMailer\Exception $e) {
+        //     $this->responseUtil->logWithContext($this->responseUtil->setResponse(500, "error", 'Exception: ' . $e->getMessage() . "Message could not be sent. Mailer Error: {$mail->ErrorInfo}", []));
+        //     // echo "Message could not be sent. Mailer Error: {$mail->ErrorInfo}";
+        //     return false;
+        // }
     }
 
     public function sendEmail($email, $subject, $message)
