@@ -256,7 +256,7 @@ $(function () {
                         errorMessage += mensaje + '\n';
                     });
                     
-                    if (jqXHR.responseJSON.data !== false) {
+                    if (jqXHR.responseJSON.code !== 500) {
                         modalErrorMessage(`<p style="color: #fff; font-size: 1.18em; font-weight: 100;">Formulario inválido!</p>`);
                     } else {
                         toastErrorMessage(`<p style="color: #fff; font-size: 1.18em; font-weight: 100;">${jqXHR.responseJSON.message}</p>`);
@@ -357,7 +357,7 @@ $(function () {
                         errorMessage += mensaje + '\n';
                     });
 
-                    if (jqXHR.responseJSON.data !== false) {
+                    if (jqXHR.responseJSON.code !== 500) {
                         modalErrorMessage(`<p style="color: #fff; font-size: 1.18em; font-weight: 100;">Formulario inválido!</p>`);
                     } else {
                         toastErrorMessage(`<p style="color: #fff; font-size: 1.18em; font-weight: 100;">${jqXHR.responseJSON.message}</p>`);

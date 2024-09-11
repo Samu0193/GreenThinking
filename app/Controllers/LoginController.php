@@ -84,8 +84,9 @@ class LoginController extends BaseController
 
     }
 
-    // *************************************************************************************************************************
-    //    CERRAR SESION:
+    // ****************************************************************************************************************************
+    // *!*   CERRAR SESION:
+    // ****************************************************************************************************************************
     public function logout()
     {
         session()->remove(['id_usuario', 'id_persona', 'id_rol', 'usuario', 'estado', 'is_logged']);
@@ -94,8 +95,9 @@ class LoginController extends BaseController
         return redirect()->to(site_url('login'));
     }
 
-    // *************************************************************************************************************************
-    //    RECUPERACION DE CONTRASEÑA:
+    // ****************************************************************************************************************************
+    // *!*   RECUPERACION DE CONTRASEÑA:
+    // ****************************************************************************************************************************
     public function forgotPassword()
     {
         $session = session();
@@ -105,50 +107,93 @@ class LoginController extends BaseController
         }
 
         if ($this->request->getMethod() == 'POST') {
-            $email = $this->request->getPost('email');
-            if (empty($email)) {
-                return $this->response->setJSON(0);
-            }
 
-            $validateEmail = $this->loginModel->validateEmail($email);
-            if ($validateEmail) {
-                $user_id = $validateEmail['id_usuario'];
-                $string = time() . $user_id . $email;
-                $hash_string = hash('sha256', $string);
-                $currentDate = date('Y-m-d H:i');
-                $hash_expiry = date('Y-m-d H:i', strtotime($currentDate . ' + 1 days'));
+            if ($this->request->isAJAX()) {
 
-                $data = [
-                    'hash_key' => $hash_string,
-                    'hash_expiry' => $hash_expiry
-                ];
-
-                $resetLink = site_url('login/password?hash=' . $hash_string);
-                $message = '<div style="font-family: sans-serif; color:#000; text-align: center; padding: 1rem; width: 100%; height: 40vh; background-color: #EAEFFC;">
-                                <h2>GREEN THINKING</h2>
-                            <div style=" margin: 0 auto; text-align: center; padding: 1rem; width: 50%; background-color: #fff;
-                            border-radius: 5px;">                
-                                <h3>Actualizar Clave de Acceso</h3>
-                                <p>Pulsa a Restablecer Password para Cambiar tu Clave de Acceso</p><br>
-                                <a href="' . $resetLink . '" style="text-decoration: none; width: 150px; margin-bottom: 1rem; padding: 1rem; color: #fff; font-size: 16px; background-color: #325FEB; border: none; cursor: pointer; border-radius: 5px;"><b>Reestablecer Password</b></a>
+                try {
+                    $email = $this->request->getPost('email');
+                    if (empty($email)) {
+                        $jsonResponse = $this->responseUtil->setResponse(400, "error", 'Correo electrónico requerido...', []);
+                        return $this->response->setStatusCode(400)->setJSON($jsonResponse);
+                        // return $this->response->setJSON(0);
+                    }
+    
+                    $validUser = $this->loginModel->validateEmail($email);
+                    if (!$validUser) {
+                        $jsonResponse = $this->responseUtil->setResponse(400, "error", 'Correo electrónico no existe en la base de datos...', []);
+                        return $this->response->setStatusCode(400)->setJSON($jsonResponse);
+                        // return $this->response->setJSON(3);
+                    }
+    
+                    $user_id     = $validUser['id_usuario'];
+                    $user        = $validUser['usuario'];
+                    $string      = time() . $user_id . $email;
+                    $hash_string = hash('sha256', $string);
+                    $currentDate = date('Y-m-d H:i');
+                    $hash_expiry = date('Y-m-d H:i', strtotime($currentDate . ' + 1 days'));
+    
+                    $data = [
+                        'hash_key' => $hash_string,
+                        'hash_expiry' => $hash_expiry
+                    ];
+    
+                    $resetLink = site_url('login/password?hash=' . $hash_string);
+                    // $message = '<div style="font-family: sans-serif; color:#000; text-align: center; padding: 1rem; width: 100%; height: 40vh; background-color: #EAEFFC;">
+                    //             <h2>GREEN THINKING</h2>
+                    //         <div style=" margin: 0 auto; text-align: center; padding: 1rem; width: 50%; background-color: #fff;
+                    //         border-radius: 5px;">                
+                    //             <h3>Actualizar Clave de Acceso</h3>
+                    //             <p>Pulsa a Restablecer Password para Cambiar tu Clave de Acceso</p><br>
+                    //             <a href="' . $resetLink . '" style="text-decoration: none; width: 150px; margin-bottom: 1rem; padding: 1rem; color: #fff; font-size: 16px; background-color: #325FEB; border: none; cursor: pointer; border-radius: 5px;"><b>Reestablecer Password</b></a>
+                    //         </div>
+                    //         </div>';
+                    $message =
+                        '<div style="font-family: sans-serif; color:#000; text-align: center; padding: 1rem; width: 100%; height: auto; background-color: #EAEFFC;">
+                            <h1>Green Thinking</h1>
+                            <div style="margin: 0 auto; text-align: left; padding: 1rem; width: 600px; background-color: #fff; border-radius: 12px;">
+                                <div style="padding: 20px; border: 1px solid #DBDBDB; border-radius: 12px; font-family: Sans-serif;">
+                                    <h2>Restablecer contraseña</h2>
+                                    <p style="margin-bottom: 25px;">
+                                        Estimado/a&nbsp;<b>' . $user . '</b>:
+                                    </p>
+                                    <p style="margin-bottom: 25px;">
+                                        Se solicitó un restablecimiento de contraseña para tu cuenta, haz clic en el botón
+                                        que aparece a continuación para cambiar tu contraseña.
+                                    </p>
+                                    <a style="padding: 12px; border-radius: 12px; background-color: #3ca230; color: #fff; text-decoration: none;" href="' . $resetLink . '"
+                                        target="_blank">
+                                        Cambiar contraseña
+                                    </a>
+                                    <p style="margin-top: 25px;">Gracias.</p>
+                                </div>
                             </div>
-                            </div>';
+                        </div>';
+                    $subject = "Green Thinking - Link para reestablecer contraseña.";
+    
+                    $sentStatus = $this->sendEmail($email, $subject, $message);
+                    if ($sentStatus) {
+                        $this->loginModel->updatePasswordHash($data, $email);
+                        $jsonResponse = $this->responseUtil->setResponse(400, "error", 'Enviando correo de recuperación... Por favor, espere...', true);
+                        return $this->response->setStatusCode(400)->setJSON($jsonResponse);
+                        // return $this->response->setJSON(1);
+                    }
 
-                $subject = "Green Thinking - Link para Reestablecer Password";
-                $sentStatus = $this->sendEmail($email, $subject, $message);
-
-                if ($sentStatus) {
-                    $this->loginModel->updatePasswordHash($data, $email);
-                    return $this->response->setJSON(1);
-                } else {
-                    return $this->response->setJSON(2);
+                    $jsonResponse = $this->responseUtil->setResponse(500, "server_error", 'Error al enviar correo.', false);
+                    return $this->response->setStatusCode(500)->setJSON($jsonResponse);
+                    // return $this->response->setJSON(2);
+    
+                } catch (\Exception $e) {
+                    $jsonResponse = $this->responseUtil->setResponse(500, "server_error", 'Error inesperado.', []);
+                    $this->responseUtil->logWithContext($this->responseUtil->setResponse(500, "server_error", 'Exception: ' . $e->getMessage(), []));
+                    return $this->response->setStatusCode(500)->setJSON($jsonResponse);
                 }
-            } else {
-                return $this->response->setJSON(3);
+
             }
+    
+            return redirect()->back();
         }
 
-        return view('Login/forgot_password');
+        return view('Login/forgot_password'); // METHOD = GET
     }
 
     // *************************************************************************************************************************

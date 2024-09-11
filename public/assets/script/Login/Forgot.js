@@ -38,57 +38,35 @@ $(document).ready(function() {
             url: url + 'login/forgotPassword',
             type: 'POST',
             data: $(this).serialize(),
-            success: function(response) { //
-                if (response == 0) {
-                    Swal.fire({
-                        toast: true,
-                        icon: 'error',
-                        iconColor: '#fff',
-                        background: '#f00',
-                        title: '<p style="color: #fff; font-size: 1.18em;">Correo electrónico requerido...</p>',
-                        confirmButtonColor: "#343a40"
-                    });
+            success: function(jsonResponse) { //
+                Swal.fire({
+                    title: 'Enviando correo de recuperación...',
+                    text: 'Por favor, espere...',
+                    timer: 5000,
+                    allowEscapeKey: false,
+                    allowOutsideClick: false,
+                    didOpen: () => {
+                        Swal.showLoading();
+                    }
+                });
 
-                } else if (response == 1) {
-                    Swal.fire({
-                        title: 'Enviando Correo De Recuperación...',
-                        text: 'Por favor, espere...',
-                        timer: 5000,
-                        allowEscapeKey: false,
-                        allowOutsideClick: false,
-                        didOpen: () => {
-                            Swal.showLoading();
-                        }
-                    });
-
-                    // Para asegurar que el valor se borre antes de la redirección
-                    $('#email').val('');
-                    
-                    // Redirigir después de un breve retraso para asegurarse de que el usuario vea el mensaje
-                    setTimeout(function() {
-                        location.href = url + 'login';
-                    }, 5000);
-
-                } else if (response == 2) {
-                    Swal.fire({
-                        toast: true,
-                        icon: 'error',
-                        iconColor: '#fff',
-                        background: '#f00',
-                        title: '<p style="color: #fff; font-size: 1.18em;">Error al enviar email</p>',
-                        confirmButtonColor: "#343a40"
-                    });
-
-                } else if (response == 3) {
-                    Swal.fire({
-                        toast: true,
-                        icon: 'error',
-                        iconColor: '#fff',
-                        background: '#f00',
-                        title: '<p style="color: #fff; font-size: 1.18em;">El correo electrónico no existe en la base de datos...</p>',
-                        confirmButtonColor: "#343a40"
-                    });
-                }
+                // Para asegurar que el valor se borre antes de la redirección
+                $('#email').val('');
+                
+                // Redirigir después de un breve retraso para asegurarse de que el usuario vea el mensaje
+                setTimeout(function() {
+                    location.href = url + 'login';
+                }, 5000);
+            },
+            error: function (jqXHR, textStatus, errorThrown) {
+                Swal.fire({
+                    // toast: true,
+                    icon: 'error',
+                    iconColor: '#fff',
+                    background: '#f00',
+                    title: `<p style="color: #fff; font-size: 1.18em;">${jqXHR.responseJSON.message}</p>`,
+                    confirmButtonColor: "#343a40"
+                });
             }
         });
         ev.preventDefault();

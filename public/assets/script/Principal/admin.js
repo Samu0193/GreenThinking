@@ -188,7 +188,7 @@ function loadRoles() {
         success: function (data) {
             var options = "<option selected disabled value=''>Seleccionar... </option>";
             $.each(data, function (index, object) {
-                options += '<option value="' + object.id_rol + '">' + object.rol + '</option>';
+                options += `<option value="${object.id_rol}">${object.rol}</option>`;
             });
             $("[name='id_rol']").html(options);
         }
@@ -306,9 +306,14 @@ $(function () {
                         } else { // ErrorMessage es otro tipo de dato
                             console.log('Otro tipo de dato:', typeof jqXHR.responseJSON.message);
                         }
+                        
                     }
 
-                    modalErrorMessage(`<p style="color: #fff; font-size: 1.18em; font-weight: 100;">Formulario inválido!</p>`);
+                    if (jqXHR.responseJSON.code !== 500) {
+                        modalErrorMessage(`<p style="color: #fff; font-size: 1.18em; font-weight: 100;">Formulario inválido!</p>`);
+                    } else {
+                        toastErrorMessage(`<p style="color: #fff; font-size: 1.18em; font-weight: 100;">${jqXHR.responseJSON.message}</p>`);
+                    }
                 }
             });
             return false;
@@ -397,26 +402,6 @@ $(function () {
 });
 
 /****************************************************************************
-                            CAMBIAR ESTADO PRODUCTO
-****************************************************************************/
-function cambiarEstadoProducto(producto) {
-    $.ajax({
-        url: `${url}productos/cambiarEstado/${producto}`,
-        data: { 'id_producto': producto },
-        type: 'POST',
-        async: false,
-        dataType: 'json',
-        success: function () {
-            toastSuccesMessageShort(`<p style="color: white; font-size: 1.18em; font-weight: 100;">Estado cambiado!</p>`);
-            $('#productos').DataTable().ajax.reload(null, false);
-        },
-        error: function () {
-            toastErrorMessage(`<p style="color: #fff; font-size: 1.18em; font-weight: 100;">Error al cambiar estado!</p>`);
-        }
-    });
-}
-
-/****************************************************************************
                             CAMBIAR ESTADO USUARIO
 ****************************************************************************/
 function cambiarEstadoUsuario(usuario) {
@@ -425,8 +410,8 @@ function cambiarEstadoUsuario(usuario) {
         data: { 'id_usuario': usuario },
         type: 'POST',
         dataType: 'json',
-        success: function (response) {
-            toastSuccesMessageShort('<p style="color: white; font-size: 1.18em; font-weight: 100;">' + response.message + '</p>');
+        success: function (jsonResponse) {
+            toastSuccesMessageShort(`<p style="color: white; font-size: 1.18em; font-weight: 100;">${jsonResponse.message}</p>`);
             $('#usuarios').DataTable().ajax.reload(null, false);
         },
         error: function (jqXHR, textStatus, errorThrown) {
@@ -463,3 +448,23 @@ function cambiarEstadoUsuario(usuario) {
 //         }
 //     });
 // }
+
+/****************************************************************************
+                            CAMBIAR ESTADO PRODUCTO
+****************************************************************************/
+function cambiarEstadoProducto(producto) {
+    $.ajax({
+        url: `${url}productos/cambiarEstado/${producto}`,
+        data: { 'id_producto': producto },
+        type: 'POST',
+        async: false,
+        dataType: 'json',
+        success: function () {
+            toastSuccesMessageShort(`<p style="color: white; font-size: 1.18em; font-weight: 100;">Estado cambiado!</p>`);
+            $('#productos').DataTable().ajax.reload(null, false);
+        },
+        error: function () {
+            toastErrorMessage(`<p style="color: #fff; font-size: 1.18em; font-weight: 100;">Error al cambiar estado!</p>`);
+        }
+    });
+}
