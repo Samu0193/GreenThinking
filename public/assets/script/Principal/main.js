@@ -62,6 +62,14 @@ function loadDepartamentos() {
                 options += `<option value="${depa.id_departamento}">${depa.nombre_departamento}</option>`;
             });
             $("[name='departamento_residencia']").html(options);
+        },
+        error: function(jqXHR, textStatus, errorThrown) {
+            let errorMessage = 'Ocurrió un problema al procesar su solicitud. Por favor, inténtelo de nuevo más tarde.';
+            let jsonResponse = jqXHR.responseJSON;
+            if (jsonResponse) {
+                errorMessage = jsonResponse.message;
+            }
+            console.log(errorMessage);
         }
     });
 }
@@ -87,8 +95,13 @@ jQuery(document).ready(function () {
                 });
                 $("[name='municipio_residencia']").html(options);
             },
-            error: function () {
-                alert('error ocurio..!');
+            error: function(jqXHR, textStatus, errorThrown) {
+                let errorMessage = 'Ocurrió un problema al procesar su solicitud. Por favor, inténtelo de nuevo más tarde.';
+                let jsonResponse = jqXHR.responseJSON;
+                if (jsonResponse) {
+                    errorMessage = jsonResponse.message;
+                }
+                console.log(errorMessage);
             }
         });
     });
@@ -246,8 +259,9 @@ $(function () {
                     $(form).find('.invalid-feedback').remove();
                     $(form).find('.error').removeClass('error');
                     let errorMessage = 'Ocurrió un problema al procesar su solicitud. Por favor, inténtelo de nuevo más tarde.';
+                    let jsonResponse = jqXHR.responseJSON;
 
-                    $.each(jqXHR.responseJSON.message, function (campo, mensaje) {
+                    $.each(jsonResponse.message, function (campo, mensaje) {
                         let input = $(form).find(`[name="${campo}"]`);
                         if (input.length) {
                             input.addClass('error');
@@ -256,10 +270,10 @@ $(function () {
                         errorMessage += mensaje + '\n';
                     });
 
-                    if (jqXHR.responseJSON.code !== 500) {
+                    if (jsonResponse.code !== 500) {
                         modalErrorMessage(`<p style="color: #fff; font-size: 1.18em; font-weight: 100;">Formulario inválido!</p>`);
                     } else {
-                        toastErrorMessage(`<p style="color: #fff; font-size: 1.18em; font-weight: 100;">${jqXHR.responseJSON.message}</p>`);
+                        toastErrorMessage(`<p style="color: #fff; font-size: 1.18em; font-weight: 100;">${jsonResponse.message}</p>`);
                     }
                 }
             });
@@ -345,9 +359,10 @@ $(function () {
                     // Limpia las clases de error previas
                     $(form).find('.invalid-feedback').remove();
                     $(form).find('.error').removeClass('error');
-                    console.error(`Error en la solicitud AJAX:\nStatus: ${textStatus}\nError Thrown: ${errorThrown}\nMessage: ${jqXHR.responseJSON.message}`);
                     let errorMessage = 'Ocurrió un problema al procesar su solicitud. Por favor, inténtelo de nuevo más tarde.';
-                    $.each(jqXHR.responseJSON.message, function (campo, mensaje) {
+                    let jsonResponse = jqXHR.responseJSON;
+                    console.error(`Error en la solicitud AJAX:\nStatus: ${textStatus}\nError Thrown: ${errorThrown}\nMessage: ${jsonResponse.message}`);
+                    $.each(jsonResponse.message, function (campo, mensaje) {
                         let input = $(form).find(`[name="${campo}"]`);
                         if (input.length) {
                             input.addClass('error');
@@ -357,10 +372,10 @@ $(function () {
                         errorMessage += mensaje + '\n';
                     });
 
-                    if (jqXHR.responseJSON.code !== 500) {
+                    if (jsonResponse.code !== 500) {
                         modalErrorMessage(`<p style="color: #fff; font-size: 1.18em; font-weight: 100;">Formulario inválido!</p>`);
                     } else {
-                        toastErrorMessage(`<p style="color: #fff; font-size: 1.18em; font-weight: 100;">${jqXHR.responseJSON.message}</p>`);
+                        toastErrorMessage(`<p style="color: #fff; font-size: 1.18em; font-weight: 100;">${jsonResponse.message}</p>`);
                     }
                 }
             });
@@ -902,8 +917,9 @@ $(document).ready(function () {
                 console.error("Error: Datos inesperados");
             }
         },
-        error: function (xhr, status, error) {
-            console.error("Error en la solicitud AJAX:", status, error);
+        error: function(jqXHR, textStatus, errorThrown) {
+            let jsonResponse = jqXHR.responseJSON;
+            toastErrorMessage(`<p style="color: #fff; font-size: 1.18em; font-weight: 100;">${jsonResponse.message}</p>`);
         }
     });
 });

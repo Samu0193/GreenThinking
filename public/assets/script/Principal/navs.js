@@ -180,6 +180,14 @@ function valDui(input) {
                 // input.value = '';
             }
         },
+        error: function(jqXHR, textStatus, errorThrown) {
+            let errorMessage = 'Ocurrió un problema al procesar su solicitud. Por favor, inténtelo de nuevo más tarde.';
+            let jsonResponse = jqXHR.responseJSON;
+            if (jsonResponse) {
+                errorMessage = jsonResponse.message;
+            }
+            console.log(errorMessage);
+        }
     });
 }
 
@@ -195,6 +203,14 @@ function valTel(input) {
                 // input.value = '';
             }
         },
+        error: function(jqXHR, textStatus, errorThrown) {
+            let errorMessage = 'Ocurrió un problema al procesar su solicitud. Por favor, inténtelo de nuevo más tarde.';
+            let jsonResponse = jqXHR.responseJSON;
+            if (jsonResponse) {
+                errorMessage = jsonResponse.message;
+            }
+            console.log(errorMessage);
+        }
     });
 }
 
@@ -210,6 +226,14 @@ function valEmail(input) {
                 // input.value = '';
             }
         },
+        error: function(jqXHR, textStatus, errorThrown) {
+            let errorMessage = 'Ocurrió un problema al procesar su solicitud. Por favor, inténtelo de nuevo más tarde.';
+            let jsonResponse = jqXHR.responseJSON;
+            if (jsonResponse) {
+                errorMessage = jsonResponse.message;
+            }
+            console.log(errorMessage);
+        }
     });
 }
 
@@ -225,6 +249,14 @@ function valEmailUser(input) {
                 // input.value = '';
             }
         },
+        error: function(jqXHR, textStatus, errorThrown) {
+            let errorMessage = 'Ocurrió un problema al procesar su solicitud. Por favor, inténtelo de nuevo más tarde.';
+            let jsonResponse = jqXHR.responseJSON;
+            if (jsonResponse) {
+                errorMessage = jsonResponse.message;
+            }
+            console.log(errorMessage);
+        }
     });
 }
 
@@ -240,6 +272,14 @@ $("[name='nombre_usuario']").change(function () {
                 // $("[name='nombre_usuario']").val('');
             }
         },
+        error: function(jqXHR, textStatus, errorThrown) {
+            let errorMessage = 'Ocurrió un problema al procesar su solicitud. Por favor, inténtelo de nuevo más tarde.';
+            let jsonResponse = jqXHR.responseJSON;
+            if (jsonResponse) {
+                errorMessage = jsonResponse.message;
+            }
+            console.log(errorMessage);
+        }
     });
 });
 

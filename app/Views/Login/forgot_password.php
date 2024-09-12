@@ -21,8 +21,8 @@
             <img src="<?= base_url('assets/img/hojinobg.png'); ?>">
         </div>
         <div class="login-content">
-            <form id="forgot" action="<?= site_url(); ?>login/forgotPassword" method="POST"
-                style="padding: 1rem; box-shadow: 0px 0px 10px rgba(0,0,0,0.1);">
+            <form id="form-forgot" action="<?= site_url('login/forgotPassword'); ?>" method="POST"
+                style="padding: 1rem; box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);">
                 <h3 class="title">Actualizar Contraseña<br></h3>
 
                 <div class="input-div one">

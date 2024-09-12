@@ -191,6 +191,14 @@ function loadRoles() {
                 options += `<option value="${object.id_rol}">${object.rol}</option>`;
             });
             $("[name='id_rol']").html(options);
+        },
+        error: function(jqXHR, textStatus, errorThrown) {
+            let errorMessage = 'Ocurrió un problema al procesar su solicitud. Por favor, inténtelo de nuevo más tarde.';
+            let jsonResponse = jqXHR.responseJSON;
+            if (jsonResponse) {
+                errorMessage = jsonResponse.message;
+            }
+            console.log(errorMessage);
         }
     });
 }
@@ -271,7 +279,18 @@ $(function () {
                     $('#usuarios').DataTable().ajax.reload(null, false);
                 },
                 error: function (jqXHR, textStatus, errorThrown) {
-                    console.error(`Error en la solicitud AJAX:\nStatus: ${textStatus}\nError Thrown: ${errorThrown}\nMessage: ${jqXHR.responseJSON.message}`);
+                    // console.error(`Error en la solicitud AJAX:\nStatus: ${textStatus}\nError Thrown: ${errorThrown}\nMessage: ${jqXHR.responseJSON.message}`);
+                    console.error('Error details:');
+                    console.error('Text Status (textStatus): ', textStatus); // Texto del estado (error, timeout, parsererror, abort)
+                    console.error('Error Thrown (errorThrown): ', errorThrown); // Detalle del error arrojado (opcional)
+                    console.error('State (jqXHR.readyState): ', jqXHR.readyState); // Estado de la solicitud AJAX (por ejemplo, 0 para no iniciada, 4 para completada).
+                    console.error('Status Code (jqXHR.status): ', jqXHR.status); // Código de estado HTTP (por ejemplo, 404 para no encontrado, 500 para error interno del servidor)
+                    console.error('Status (jqXHR.statusText): ', jqXHR.statusText); // Texto del estado HTTP (por ejemplo, "Not Found" o "Internal Server Error")
+                    console.error('Headers (jqXHR.getAllResponseHeaders()): ', jqXHR.getAllResponseHeaders()); // Devuelve todas las cabeceras de respuesta HTTP en forma de una cadena (string)
+                    console.error('Header name (jqXHR.getResponseHeader(Content-Type)): ', jqXHR.getResponseHeader('Content-Type')); // Devuelve el valor de una cabecera específica de la respuesta
+                    console.error('Response Text (jqXHR.responseText): ', jqXHR.responseText); // Muestra la respuesta como texto
+                    console.error('Response XML(jqXHR.responseXML): ', jqXHR.responseXML); // Muestra la respuesta en formato XML.
+                    console.error('Response Json (jqXHR.responseJson): ', jqXHR.responseJSON); // Muestra la respuesta en formato JSON
 
                     // Limpia las clases de error previas
                     $(form).find('.invalid-feedback').remove();
@@ -279,16 +298,17 @@ $(function () {
 
                     // Mensaje amigable para el usuario basado en el mensaje del servidor
                     let errorMessage = 'Ocurrió un problema al procesar su solicitud. Por favor, inténtelo de nuevo más tarde.';
-                    if (jqXHR.responseJSON && jqXHR.responseJSON.message) {
+                    let jsonResponse = jqXHR.responseJSON;
+                    if (jsonResponse) {
                         errorMessage = ''
 
-                        if (Array.isArray(jqXHR.responseJSON.message)) { // ErrorMessage es un array
-                            jqXHR.responseJSON.message.forEach(function (item) {
+                        if (Array.isArray(jsonResponse.message)) { // ErrorMessage es un array
+                            jsonResponse.message.forEach(function (item) {
                                 errorMessage += item + '\n';
                             });
 
-                        } else if (typeof jqXHR.responseJSON.message === 'object') { // ErrorMessage es un objeto.
-                            $.each(jqXHR.responseJSON.message, function (campo, mensaje) {
+                        } else if (typeof jsonResponse.message === 'object') { // ErrorMessage es un objeto.
+                            $.each(jsonResponse.message, function (campo, mensaje) {
                                 // Encuentra el campo correspondiente y agrega una clase de error
                                 let input = $(form).find(`[name="${campo}"]`);
                                 if (input.length) {
@@ -299,19 +319,19 @@ $(function () {
                                 errorMessage += mensaje + '\n';
                             });
 
-                        } else if (typeof jqXHR.responseJSON.message === 'string') { // ErrorMessage es un string
-                            errorMessage = jqXHR.responseJSON.message;
+                        } else if (typeof jsonResponse.message === 'string') { // ErrorMessage es un string
+                            errorMessage = jsonResponse.message;
 
                         } else { // ErrorMessage es otro tipo de dato
-                            console.log('Otro tipo de dato:', typeof jqXHR.responseJSON.message);
+                            console.log('Otro tipo de dato:', typeof jsonResponse.message);
                         }
                         
                     }
 
-                    if (jqXHR.responseJSON.code !== 500) {
+                    if (jsonResponse.code !== 500) {
                         modalErrorMessage(`<p style="color: #fff; font-size: 1.18em; font-weight: 100;">Formulario inválido!</p>`);
                     } else {
-                        toastErrorMessage(`<p style="color: #fff; font-size: 1.18em; font-weight: 100;">${jqXHR.responseJSON.message}</p>`);
+                        toastErrorMessage(`<p style="color: #fff; font-size: 1.18em; font-weight: 100;">${jsonResponse.message}</p>`);
                     }
                 }
             });
@@ -414,15 +434,15 @@ function cambiarEstadoUsuario(usuario) {
             $('#usuarios').DataTable().ajax.reload(null, false);
         },
         error: function (jqXHR, textStatus, errorThrown) {
-            console.error(`Error en la solicitud AJAX:\nStatus: ${textStatus}\nError Thrown: ${errorThrown}\nMessage: ${jqXHR.responseJSON.message}`);
 
             // Mensaje amigable para el usuario basado en el mensaje del servidor
             let errorMessage = 'Ocurrió un problema al procesar su solicitud. Por favor, inténtelo de nuevo más tarde.';
-            if (jqXHR.responseJSON && jqXHR.responseJSON.message) {
-                errorMessage = jqXHR.responseJSON.message;
-            }
+            let jsonResponse = jqXHR.responseJSON;
+            console.error(`Error en la solicitud AJAX:\nStatus: ${textStatus}\nError Thrown: ${errorThrown}\nMessage: ${jsonResponse.message}`);
 
-            // toastErrorMessage(`<p style="color: #fff; font-size: 1.18em; font-weight: 100;">${errorMessage}</p>`);
+            if (jsonResponse) {
+                errorMessage = jsonResponse.message;
+            }
             toastErrorMessage(`<p style="color: #fff; font-size: 1.27em; font-weight: 100;">${errorMessage}</p>`);
         }
     });

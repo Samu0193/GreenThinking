@@ -203,43 +203,6 @@ class LoginController extends BaseController
         return view('Login/forgot_password'); // METHOD = GET
     }
 
-    // *************************************************************************************************************************
-    //    ENVIO DE CORREO PARA RECUPERACION DE CONTRASEÑA:
-    public function sendEmail($email, $subject, $body)
-    {
-        $emailService = \Config\Services::email();
-        $config = [
-            'protocol' => 'smtp',
-            'SMTPHost' => 'smtp.gmail.com',
-            'SMTPUser' => 'davidsanse37@gmail.com',
-            'SMTPPass' => 'lgrz xtqg jopt mqiw',
-            'SMTPPort' => 587,
-            'SMTPCrypto' => 'tls',
-            'mailType' => 'html',
-            'charset' => 'utf-8',
-            'wordWrap' => true
-        ];
-
-        $emailService->initialize($config);
-        $emailService->setFrom('noreply', 'Green Thinking');
-        $emailService->setTo($email);
-        $emailService->setSubject($subject);
-        $emailService->setMessage($body);
-
-        // Adjuntar la imagen usando CID
-        // $emailService->attach(FCPATH . 'assets/images/logo.png', 'inline', 'logo.png', 'image/png');
-        // $cid = $emailService->setAttachmentCid(FCPATH . 'assets/images/logo.png');
-
-        $emailService->attach(FCPATH . 'assets/images/logoGT.jpeg', 'inline', 'logoGT.jpeg', 'image/jpeg');
-        $cid = $emailService->setAttachmentCid(FCPATH . 'assets/images/logoGT.jpeg');
-        $body = str_replace('../img/logoGT.jpeg', "cid:$cid", $body);
-
-        // log_message('debug', $body);
-        $emailService->setMessage($body);
-
-        return $emailService->send();
-    }
-
     // ****************************************************************************************************************************
     // *!*   CAMBIAR CONTRASEÑA:
     // ****************************************************************************************************************************
@@ -291,4 +254,42 @@ class LoginController extends BaseController
 
         return redirect()->to(site_url('login/forgotPassword'));
     }
+
+    // *************************************************************************************************************************
+    //    ENVIO DE CORREO PARA RECUPERACION DE CONTRASEÑA:
+    public function sendEmail($email, $subject, $body)
+    {
+        $emailService = \Config\Services::email();
+        $config = [
+            'protocol' => 'smtp',
+            'SMTPHost' => 'smtp.gmail.com',
+            'SMTPUser' => 'davidsanse37@gmail.com',
+            'SMTPPass' => 'lgrz xtqg jopt mqiw',
+            'SMTPPort' => 587,
+            'SMTPCrypto' => 'tls',
+            'mailType' => 'html',
+            'charset' => 'utf-8',
+            'wordWrap' => true
+        ];
+
+        $emailService->initialize($config);
+        $emailService->setFrom('noreply', 'Green Thinking');
+        $emailService->setTo($email);
+        $emailService->setSubject($subject);
+        $emailService->setMessage($body);
+
+        // Adjuntar la imagen usando CID
+        // $emailService->attach(FCPATH . 'assets/images/logo.png', 'inline', 'logo.png', 'image/png');
+        // $cid = $emailService->setAttachmentCid(FCPATH . 'assets/images/logo.png');
+
+        $emailService->attach(FCPATH . 'assets/images/logoGT.jpeg', 'inline', 'logoGT.jpeg', 'image/jpeg');
+        $cid = $emailService->setAttachmentCid(FCPATH . 'assets/images/logoGT.jpeg');
+        $body = str_replace('../img/logoGT.jpeg', "cid:$cid", $body);
+
+        // log_message('debug', $body);
+        $emailService->setMessage($body);
+
+        return $emailService->send();
+    }
+    
 }

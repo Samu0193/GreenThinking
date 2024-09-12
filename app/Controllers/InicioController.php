@@ -172,7 +172,7 @@ class InicioController extends BaseController
 
                 $departamentos = $this->modelVol->getDepartamentos();
                 if (!$departamentos) {
-                    $jsonResponse = $this->responseUtil->setResponse(404, "not_found", 'No hay registros.', []);
+                    $jsonResponse = $this->responseUtil->setResponse(404, "not_found", 'No hay registros en departamentos.', []);
                     return $this->response->setStatusCode(404)->setJSON($jsonResponse);
                 }
 
@@ -207,7 +207,7 @@ class InicioController extends BaseController
 
                 $municipio = $this->modelVol->getMunicipios($id_departamento);
                 if (!$municipio) {
-                    $jsonResponse = $this->responseUtil->setResponse(404, "not_found", 'No hay registros.', []);
+                    $jsonResponse = $this->responseUtil->setResponse(404, "not_found", "No hay registros de municipios en departamento $id_departamento.", []);
                     return $this->response->setStatusCode(404)->setJSON($jsonResponse);
                 }
 
