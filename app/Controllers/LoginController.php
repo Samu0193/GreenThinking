@@ -133,7 +133,7 @@ class LoginController extends BaseController
                     $hash_expiry = date('Y-m-d H:i', strtotime($currentDate . ' + 1 days'));
 
                     $data = [
-                        'hash_key' => $hash_string,
+                        'hash_key'    => $hash_string,
                         'hash_expiry' => $hash_expiry
                     ];
 

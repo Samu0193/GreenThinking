@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Libraries;
+namespace App\Utils;
 
 use App\Utils\ResponseUtil;
 use PHPMailer\PHPMailer\PHPMailer;
@@ -29,15 +29,9 @@ class PHPMailerService
     // ****************************************************************************************************************************
     public function sendMail($email, $subject, $body)
     {
-        // $html = '<img src="../img/logoletranegra.png" alt="LOGO" style="width: 125px;">';
-        // // Definir el nuevo valor del src
-        // $newSrc = 'cid:newImage.png';
-        // // Reemplazar el contenido de la etiqueta src usando preg_replace
-        // $html = preg_replace('/(<img[^>]+src=")[^"]+("[^>]*>)/i', '$1' . $newSrc . '$2', $html);
-
         try {
             // Configurar el remitente y destinatario
-            $this->mail->setFrom('davidsanse37@gmail.com', 'Green Thinking');
+            $this->mail->setFrom($this->mail->Username, 'Green Thinking');
             $this->mail->addAddress($email);
 
             // Configurar el correo como HTML
@@ -61,6 +55,12 @@ class PHPMailerService
 
     public static function ejemploPHPMailer()
     {
+        // $html = '<img src="../img/logoletranegra.png" alt="LOGO" style="width: 125px;">';
+        // // Definir el nuevo valor del src
+        // $newSrc = 'cid:newImage.png';
+        // // Reemplazar el contenido de la etiqueta src usando preg_replace
+        // $html = preg_replace('/(<img[^>]+src=")[^"]+("[^>]*>)/i', '$1' . $newSrc . '$2', $html);
+
         $mail = new PHPMailer(true);
         try {
             $mail->isSMTP();

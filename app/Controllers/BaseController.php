@@ -4,8 +4,8 @@ namespace App\Controllers;
 
 use App\Utils\ResponseUtil;
 use CodeIgniter\Controller;
+use App\Utils\PHPMailerService;
 use CodeIgniter\HTTP\CLIRequest;
-use App\Libraries\PHPMailerService;
 use CodeIgniter\HTTP\IncomingRequest;
 use CodeIgniter\HTTP\RequestInterface;
 use CodeIgniter\HTTP\ResponseInterface;
