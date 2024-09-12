@@ -5,6 +5,7 @@ namespace App\Controllers;
 use App\Utils\ResponseUtil;
 use CodeIgniter\Controller;
 use CodeIgniter\HTTP\CLIRequest;
+use App\Libraries\PHPMailerService;
 use CodeIgniter\HTTP\IncomingRequest;
 use CodeIgniter\HTTP\RequestInterface;
 use CodeIgniter\HTTP\ResponseInterface;
@@ -38,6 +39,13 @@ abstract class BaseController extends Controller
     protected $responseUtil;
 
     /**
+     * Instance of the main ResponseUtil object.
+     *
+     * @var PHPMailer
+     */
+    protected $phpMailer;
+
+    /**
      * An array of helpers to be loaded automatically upon
      * class instantiation. These helpers will be available
      * to all other controllers that extend BaseController.
@@ -65,7 +73,8 @@ abstract class BaseController extends Controller
         // Preload any models, libraries, etc, here.
 
         // E.g.: $this->session = \Config\Services::session();
-        $this->session = \Config\Services::session();
-        $this->responseUtil = new ResponseUtil(); 
+        $this->session      = \Config\Services::session();
+        $this->responseUtil = new ResponseUtil();
+        $this->phpMailer    = new PHPMailerService();
     }
 }

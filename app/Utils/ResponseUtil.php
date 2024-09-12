@@ -9,10 +9,10 @@ class ResponseUtil
 
         // Crea un array con la respuesta
         $response = [
-            'code' => $code,
-            'status' => $status,
+            'code'    => $code,
+            'status'  => $status,
             'message' => $message,
-            'data' => $data
+            'data'    => $data
         ];
 
         // Convierte el array a JSON para facilitar el logging

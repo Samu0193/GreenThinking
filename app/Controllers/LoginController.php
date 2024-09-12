@@ -2,7 +2,6 @@
 
 namespace App\Controllers;
 
-use App\Libraries\PHPMailerService;
 use App\Controllers\BaseController;
 use App\Models\LoginModel;
 
@@ -139,7 +138,7 @@ class LoginController extends BaseController
                     ];
 
                     $resetLink = site_url('login/password?hash=' . $hash_string);
-                    // $message =
+                    // $body =
                     //     '<div style="font-family: sans-serif; color:#000; text-align: center; padding: 1rem; width: 100%; height: 40vh; background-color: #EAEFFC;">
                     //             <h2>GREEN THINKING</h2>
                     //         <div style=" margin: 0 auto; text-align: center; padding: 1rem; width: 50%; background-color: #fff;
@@ -149,7 +148,7 @@ class LoginController extends BaseController
                     //             <a href="' . $resetLink . '" style="text-decoration: none; width: 150px; margin-bottom: 1rem; padding: 1rem; color: #fff; font-size: 16px; background-color: #325FEB; border: none; cursor: pointer; border-radius: 5px;"><b>Reestablecer Password</b></a>
                     //         </div>
                     //     </div>';
-                    // $message =
+                    // $body =
                     //     '<div style="font-family: sans-serif; color:#000; text-align: center; padding: 1rem; width: 100%; height: auto; background-color: #EAEFFC;">
                     //         <h1>Green Thinking</h1>
                     //         <div style="margin: 0 auto; text-align: left; padding: 1rem; width: 600px; background-color: #fff; border-radius: 12px;">
@@ -172,12 +171,12 @@ class LoginController extends BaseController
                     //     </div>';
 
                     // // Leer el contenido del archivo index.html
-                    $html       = file_get_contents(FCPATH . 'assets/templates/correo.html');
-                    $message    = str_replace('@USUARIO', $user, $html);
-                    $message    = str_replace('@LINK', $resetLink, $message);
-                    $subject    = "Restablecer contraseña.";
-                    // $sentStatus = $this->sendEmail($email, $subject, $message);
-                    $sentStatus = $this->sendEmailService($email, $subject, $message);
+                    $html    = file_get_contents(FCPATH . 'assets/templates/correo.html');
+                    $body    = str_replace('@USUARIO', $user, $html);
+                    $body    = str_replace('@LINK', $resetLink, $body);
+                    $subject = "Restablecer contraseña.";
+                    // $sentStatus = $this->sendEmail($email, $subject, $body);
+                    $sentStatus = $this->phpMailer->sendmail($email, $subject, $body);
 
                     if ($sentStatus) {
                         $this->loginModel->updatePasswordHash($data, $email);
@@ -206,39 +205,7 @@ class LoginController extends BaseController
 
     // *************************************************************************************************************************
     //    ENVIO DE CORREO PARA RECUPERACION DE CONTRASEÑA:
-    public function sendEmailService($to, $subject, $body)
-    {
-        $emailService = new PHPMailerService();
-        return $emailService->sendMail($to, $subject, $body);
-
-        // $mail = new \PHPMailer\PHPMailer\PHPMailer(true);
-        // try {
-        //     $mail->isSMTP();
-        //     $mail->Host = 'smtp.gmail.com';
-        //     $mail->SMTPAuth = true;
-        //     $mail->Username = 'davidsanse37@gmail.com';
-        //     $mail->Password = 'lgrz xtqg jopt mqiw';
-        //     $mail->SMTPSecure = \PHPMailer\PHPMailer\PHPMailer::ENCRYPTION_SMTPS;
-        //     $mail->Port = 465;
-        //     $mail->CharSet = 'utf-8';
-        //     $mail->setFrom('davidsanse37@gmail.com', 'Mailer');
-        //     $mail->addAddress($email);
-        //     $mail->isHTML(true);
-        //     $mail->Subject = $subject;
-        //     $mail->Body    = $message;
-        //     $mail->addEmbeddedImage(FCPATH . 'assets/img/logoGT.jpeg', 'image_cid');
-        //     $mail->Body    = 'HTML Body with image: <img src="cid:image_cid">';
-        //     $mail->AltBody = 'This is the body in plain text for non-HTML mail clients';
-        //     // $mail->send();
-        //     return $mail->send();
-        // } catch (\PHPMailer\PHPMailer\Exception $e) {
-        //     $this->responseUtil->logWithContext($this->responseUtil->setResponse(500, "error", 'Exception: ' . $e->getMessage() . "Message could not be sent. Mailer Error: {$mail->ErrorInfo}", []));
-        //     // echo "Message could not be sent. Mailer Error: {$mail->ErrorInfo}";
-        //     return false;
-        // }
-    }
-
-    public function sendEmail($email, $subject, $message)
+    public function sendEmail($email, $subject, $body)
     {
         $emailService = \Config\Services::email();
         $config = [
@@ -257,7 +224,7 @@ class LoginController extends BaseController
         $emailService->setFrom('noreply', 'Green Thinking');
         $emailService->setTo($email);
         $emailService->setSubject($subject);
-        // $emailService->setMessage($message);
+        $emailService->setMessage($body);
 
         // Adjuntar la imagen usando CID
         // $emailService->attach(FCPATH . 'assets/images/logo.png', 'inline', 'logo.png', 'image/png');
@@ -265,16 +232,17 @@ class LoginController extends BaseController
 
         $emailService->attach(FCPATH . 'assets/images/logoGT.jpeg', 'inline', 'logoGT.jpeg', 'image/jpeg');
         $cid = $emailService->setAttachmentCid(FCPATH . 'assets/images/logoGT.jpeg');
-        $message = str_replace('../img/logoGT.jpeg', "cid:$cid", $message);
+        $body = str_replace('../img/logoGT.jpeg', "cid:$cid", $body);
 
-        // log_message('debug', $message);
-        $emailService->setMessage($message);
+        // log_message('debug', $body);
+        $emailService->setMessage($body);
 
         return $emailService->send();
     }
 
-    // *************************************************************************************************************************
-    //    CAMBIAR CONTRASEÑA:
+    // ****************************************************************************************************************************
+    // *!*   CAMBIAR CONTRASEÑA:
+    // ****************************************************************************************************************************
     public function password()
     {
         $hash = $this->request->getGet('hash');
