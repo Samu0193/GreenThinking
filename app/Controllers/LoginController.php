@@ -96,6 +96,41 @@ class LoginController extends BaseController
     }
 
     // ****************************************************************************************************************************
+    // *!*   VALIDAR CORREO (AJAX):
+    // ****************************************************************************************************************************
+    public function validarEmail()
+    {
+        if ($this->request->isAJAX()) {
+
+            try {
+
+                $email = $this->request->getPost('email');
+                if (!$email) {
+                    $jsonResponse = $this->responseUtil->setResponse(400, "error", 'Email no proporcionado.', []);
+                    return $this->response->setStatusCode(400)->setJSON($jsonResponse);
+                }
+
+                $resultado = $this->loginModel->validateEmail($email);
+                if ($resultado) {
+                    $jsonResponse = $this->responseUtil->setResponse(200, "success", 'Email registrado.', true);
+                    return $this->response->setStatusCode(200)->setJSON($jsonResponse);
+                }
+
+                $jsonResponse = $this->responseUtil->setResponse(200, "success", 'Email no existe en la base de datos.', false);
+                return $this->response->setStatusCode(200)->setJSON($jsonResponse);
+
+            } catch (\Exception $e) {
+                $jsonResponse = $this->responseUtil->setResponse(500, "server_error", 'Error inesperado.', []);
+                $this->responseUtil->logWithContext($this->responseUtil->setResponse(500, "server_error", 'Exception: ' . $e->getMessage(), []));
+                return $this->response->setStatusCode(500)->setJSON($jsonResponse);
+            }
+
+        }
+
+        return redirect()->back();
+    }
+
+    // ****************************************************************************************************************************
     // *!*   RECUPERACION DE CONTRASEÑA:
     // ****************************************************************************************************************************
     public function forgotPassword()

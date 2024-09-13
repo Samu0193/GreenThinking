@@ -52,7 +52,10 @@
         var url = '<?= site_url(); ?>';
     </script>
 
+    <!-- ALERTAS JS -->
     <script src="<?= base_url('assets/js/sweetalert2.js'); ?>" type="text/javascript"></script>
+
+    <!-- MAIN JS -->
     <script src="<?= base_url('assets/script/Login/login.js'); ?>" type="text/javascript"></script>
 
     <!--Mensaje de error-->

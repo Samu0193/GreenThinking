@@ -357,7 +357,9 @@ function cargarImg(id_imagen) {
         data: { 'id_galeria': id_imagen },
         dataType: 'json',
         success: function (response) {
+            console.log(response.ruta_archivo);
             var imagenOriginal = response.ruta_archivo.replace(/^.*[\\\/]/, '');
+            console.log(imagenOriginal);
             $('#id_galeria').val(response.id_galeria);
             $('#imagen_original').val(imagenOriginal);
             $("#image-frame").html('<img src="' + response.ruta_archivo + '" class="print-image"/>');

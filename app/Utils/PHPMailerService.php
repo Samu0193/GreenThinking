@@ -31,7 +31,8 @@ class PHPMailerService
     {
         try {
             // Configurar el remitente y destinatario
-            $this->mail->setFrom('noreplay', 'Green Thinking');
+            // $this->mail->setFrom('noreplay', 'Green Thinking');
+            $this->mail->setFrom($this->mail->Username, 'Green Thinking');
             $this->mail->addAddress($email);
 
             // Configurar el correo como HTML

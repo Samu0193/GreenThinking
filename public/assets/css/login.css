@@ -68,9 +68,9 @@ form {
     border-bottom: 2px solid #d9d9d9;
 }
 
-.login-content .input-div.one {
+/* .login-content .input-div.one {
     margin-top: 0;
-}
+} */
 
 .i {
     color: #d9d9d9;
@@ -123,7 +123,7 @@ form {
 }
 
 .input-div.focus>div>h5 {
-    top: -5px;
+    top: -15px;
     font-size: 15px;
 }
 
@@ -186,6 +186,28 @@ a:hover {
     background-position: right;
 }
 
+label[class="error"] {
+    border: none !important;
+    position: relative;
+    color: #ff0800;
+    top: 60px;
+    /* left: -43px; */
+}
+
+.input-div.error {
+    transition: .4s;
+    margin: 45px 0;
+}
+
+/* Cambiar a rojo cuando el padre del input (input-div) tiene un error */
+.input-div.error:before,
+.input-div.error:after {
+    background-color: #f00; /* Rojo para el estado de error */
+}
+.input-div.error.focus>.i>i {
+    color: #f00;
+}
+
 @media screen and (max-width: 1050px) {
     .container {
         grid-gap: 5rem;
@@ -231,20 +253,19 @@ a:hover {
 }
 
 .form-content {
-display: flex;
-justify-content: flex-start;
-align-items: center;
-text-align: center;
-padding:1.5rem;
-box-shadow: 0 0 10px rgba(0,0,0,0.1);
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+    text-align: center;
+    padding:1.5rem;
+    box-shadow: 0 0 10px rgba(0,0,0,0.1);
 }
 
 .form-content .input-div {
-position: relative;
-display: grid;
-grid-template-columns: 7% 93%;
-margin: 25px 0;
-padding: 5px 0;
-border-bottom: 2px solid #d9d9d9;
-
+    position: relative;
+    display: grid;
+    grid-template-columns: 7% 93%;
+    margin: 25px 0;
+    padding: 5px 0;
+    border-bottom: 2px solid #d9d9d9;
 }

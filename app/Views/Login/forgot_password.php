@@ -21,8 +21,10 @@
             <img src="<?= base_url('assets/img/hojinobg.png'); ?>">
         </div>
         <div class="login-content">
-            <form id="form-forgot" action="<?= site_url('login/forgotPassword'); ?>" method="POST"
-                style="padding: 1rem; box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);">
+
+            <!-- COLOCAR MENSAJE DE ENVIO DE CORREO -->
+
+            <form id="form-forgot" novalidate style="padding: 1rem; /*box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);*/">
                 <h3 class="title">Actualizar Contraseña<br></h3>
 
                 <div class="input-div one">
@@ -31,10 +33,11 @@
                     </div>
                     <div class="div">
                         <h5><br>Correo Electrónico</h5>
-                        <input type="text" name="email" id="email" class="input">
+                        <input type="text" name="email" id="email" class="input" required>
                     </div>
                 </div>
-                <input type="submit" class="btn" value="Enviar Código">
+                <!-- <input type="submit" class="btn" value="Enviar Código"> -->
+                <button type="submit" class="btn">Enviar Código</button>
             </form>
         </div>
     </div>
@@ -43,9 +46,14 @@
         var url = '<?= site_url(); ?>';
     </script>
 
+    <!-- ALERTAS JS -->
+    <script src="<?= base_url('assets/js/sweetalert2.js'); ?>" type="text/javascript"></script>
+
+    <!-- VALIDACION DE CAMPOS-->
     <script src="<?= base_url('assets/js/jquery.validate.min.js'); ?>" type="text/javascript"></script>
     <script src="<?= base_url('assets/js/additional-methods.min.js'); ?>" type="text/javascript"></script>
-    <script src="<?= base_url('assets/js/sweetalert2.js'); ?>" type="text/javascript"></script>
+
+    <!-- MAIN JS -->
     <script src="<?= base_url('assets/script/Login/Forgot.js'); ?>" type="text/javascript"></script>
 
 </body>
