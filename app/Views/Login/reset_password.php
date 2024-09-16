@@ -19,8 +19,9 @@
 
         <div class="form-content">
 
-            <form method="POST" action="<?= site_url('login/password?hash=' . $hash); ?>" id="resetForgot">
-                <h2 class="title">Actualizar Contraseña</h2>
+        <!-- <form method="POST" action="<?= site_url('login/password?hash=' . $hash); ?>" id="form-reset" novalidate> -->
+            <form id="form-reset" novalidate>
+                <h2 class="forgot-title">Actualizar Contraseña</h2>
                 <div class="input-div one">
                     <input type="hidden" name="hash" id="hash" value="<?= $hash; ?>">
                     <div class="i">
@@ -28,7 +29,7 @@
                     </div>
                     <div class="div">
                         <h5>Nueva Contraseña</h5>
-                        <input type="password" name="password" class="input">
+                        <input type="password" name="password" id="password" class="input" required>
                     </div>
                 </div>
                 <div class="input-div pass">
@@ -36,8 +37,8 @@
                         <i class="fas fa-lock"></i>
                     </div>
                     <div class="div">
-                        <h5>Confirma Contraseña</h5>
-                        <input type="password" name="cpassword" class="input">
+                        <h5>Confirmar Contraseña</h5>
+                        <input type="password" name="re_password" id="re_password" class="input" required>
                     </div>
                 </div>
                 <input type="submit" class="btn" value="Guardar">
@@ -59,7 +60,14 @@
         var url = '<?= site_url(); ?>';
     </script>
 
+    <!-- ALERTAS JS -->
     <script src="<?= base_url('assets/js/sweetalert2.js'); ?>" type="text/javascript"></script>
+
+    <!-- VALIDACION DE CAMPOS-->
+    <script src="<?= base_url('assets/js/jquery.validate.min.js'); ?>" type="text/javascript"></script>
+    <script src="<?= base_url('assets/js/additional-methods.min.js'); ?>" type="text/javascript"></script>
+
+    <!-- MAIN JS -->
     <script src="<?= base_url('assets/script/Login/ResetPass.js'); ?>" type="text/javascript"></script>
 
 </body>

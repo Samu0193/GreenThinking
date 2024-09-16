@@ -243,7 +243,12 @@ class LoginController extends BaseController
     // ****************************************************************************************************************************
     public function password()
     {
-        $hash = $this->request->getGet('hash');
+        if ($this->request->getMethod() == 'GET') {
+            $hash = $this->request->getGet('hash');
+        } else {
+            $hash = $this->request->getPost('hash');
+        }
+        
         if ($hash) {
             $getHashDetails = $this->loginModel->getHashDetails($hash);
 
@@ -254,11 +259,11 @@ class LoginController extends BaseController
                 if ($currentDate < $hash_expiry) {
                     if ($this->request->getMethod() == 'POST') {
                         $newPassword = $this->request->getPost('password');
-                        $cnewPassword = $this->request->getPost('cpassword');
+                        $re_newPassword = $this->request->getPost('re_password');
 
-                        if (empty($newPassword) || empty($cnewPassword)) {
+                        if (empty($newPassword) || empty($re_newPassword)) {
                             return $this->response->setJSON(0);
-                        } elseif ($newPassword != $cnewPassword) {
+                        } elseif ($newPassword != $re_newPassword) {
                             return $this->response->setJSON(1);
                         } else {
                             $newPassword = sha1($newPassword);

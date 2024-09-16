@@ -11,7 +11,7 @@
     <link href="<?= base_url('assets/css/sweetalert2.css'); ?>" rel="stylesheet" type="text/css">
     <link href="https://fonts.googleapis.com/css?family=Poppins:600&display=swap" rel="stylesheet">
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
-    <!-- <script src="https://kit.fontawesome.com/a81368914c.js"></script> -->
+    <script src="https://kit.fontawesome.com/a81368914c.js"></script>
 </head>
 
 <body>
@@ -42,8 +42,8 @@
                         <input type="password" name="password" class="input">
                     </div>
                 </div>
-                <a href="<?= site_url('login/forgotPassword'); ?>">¿Olvidaste tu contraseña?</a>
                 <input type="submit" class="btn" value="Entrar">
+                <a href="<?= site_url('login/forgotPassword'); ?>">¿Olvidaste tu contraseña?</a>
             </form>
         </div>
     </div>

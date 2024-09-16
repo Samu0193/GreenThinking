@@ -15,31 +15,41 @@
 </head>
 
 <body>
+
     <img class="wave" src="<?= base_url('assets/img/wave.png'); ?>">
+
     <div class="container">
+
         <div class="img">
             <img src="<?= base_url('assets/img/hojinobg.png'); ?>">
         </div>
-        <div class="login-content">
+
+        <div class="login-content" id="login-content">
 
             <!-- COLOCAR MENSAJE DE ENVIO DE CORREO -->
+            <form id="form-forgot" class="form-forgot" novalidate>
+                <h2 class="forgot-title">Recuperaci&oacute;n de Cuenta</h2>
 
-            <form id="form-forgot" novalidate style="padding: 1rem; /*box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);*/">
-                <h3 class="title">Actualizar Contraseña<br></h3>
+                <p style="text-align: center; color: #333;">
+                    Ingrese su direcci&oacute;n de correo electr&oacute;nico y
+                    le enviaremos un enlace para restablecer su contrase&ntilde;a.
+                </p>
 
                 <div class="input-div one">
                     <div class="i">
                         <i class="fas fa-envelope"></i>
                     </div>
                     <div class="div">
-                        <h5><br>Correo Electrónico</h5>
+                        <h5>Correo Electrónico</h5>
                         <input type="text" name="email" id="email" class="input" required>
                     </div>
                 </div>
                 <!-- <input type="submit" class="btn" value="Enviar Código"> -->
                 <button type="submit" class="btn">Enviar Código</button>
             </form>
+
         </div>
+
     </div>
 
     <script type="text/javascript">

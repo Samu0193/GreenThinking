@@ -43,8 +43,8 @@ $routes->get('login/password',        'LoginController::password');
 $routes->post('login/password',       'LoginController::password');
 
 // USUARIO CONTROLLER
-$routes->post('usuario/tblUsuarios', 'UsuarioController::tblUsuarios');
 $routes->get('usuario',              'UsuarioController::index');
+$routes->post('usuario/tblUsuarios', 'UsuarioController::tblUsuarios');
 $routes->post('usuario/validarEmail', 'UsuarioController::validarEmail');
 $routes->post('usuario/validarUser', 'UsuarioController::validarUser');
 $routes->get('usuario/setRoles', 'UsuarioController::setRoles');
