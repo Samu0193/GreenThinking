@@ -21,7 +21,7 @@ inputs.forEach(input => {
 *!*     VALIDAR COMPARAR CONTRASEÑAS:
 ********************************************************************************************************************************************************/
 jQuery.validator.addMethod('equalPassword', function(value, element, param) {
-    return value === $(param).val();
+    return $(param).val() !== '' ? value === $(param).val() : true;
 }, 'Las contrase\u00f1as no coinciden.');
 
 $(document).ready(function() {
@@ -68,7 +68,7 @@ $(document).ready(function() {
                                 confirmButtonColor: "#343a40"
                             });
                             return; // Salir de la función para evitar ejecutar el resto del código
-                        
+
                             case 1:
                                 Swal.fire({
                                     toast: true,
@@ -79,7 +79,7 @@ $(document).ready(function() {
                                     confirmButtonColor: "#343a40"
                                 });
                                 return;
-                            
+
                             case 2:
                                 Swal.fire({
                                     title: 'Actualizando Contraseña...',
@@ -91,7 +91,7 @@ $(document).ready(function() {
                                         Swal.showLoading();
                                     }
                                 });
-            
+
                                 setTimeout(function() {
                                     Swal.fire({
                                         icon: 'success',
@@ -104,11 +104,11 @@ $(document).ready(function() {
                                         allowOutsideClick: false,
                                         timer: 2000
                                     });
-            
+
                                     setTimeout(function() {
                                         location.href = url + 'login';
                                     }, 2000)
-                                    
+
                                 }, 3000);
                                 return;
                     }

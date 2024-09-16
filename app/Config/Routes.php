@@ -41,6 +41,7 @@ $routes->post('login/forgotPassword', 'LoginController::forgotPassword');
 $routes->post('login/validarEmail',   'LoginController::validarEmail');
 $routes->get('login/password',        'LoginController::password');
 $routes->post('login/password',       'LoginController::password');
+$routes->post('updatePassword',       'LoginController::password');
 
 // USUARIO CONTROLLER
 $routes->get('usuario',              'UsuarioController::index');

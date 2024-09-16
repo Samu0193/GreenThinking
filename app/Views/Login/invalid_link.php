@@ -22,7 +22,7 @@
         <div class="img">
             <img src="<?= base_url('assets/img/hojinobg.png'); ?>">
         </div>
-        
+
         <div class="login-content">
             <!--Mensaje de error-->
             <?php if (session()->getFlashdata('message') != null) : ?>

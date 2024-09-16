@@ -295,6 +295,103 @@ class LoginController extends BaseController
         return redirect()->to(site_url('login/forgotPassword'));
     }
 
+    public function updatePassword()
+    {
+        if ($this->request->isAJAX()) {
+
+            try {
+
+                $hash = $this->request->getPost('hash');
+                if ($hash) {
+
+                    $getHashDetails = $this->loginModel->getHashDetails($hash);
+                    if ($getHashDetails) {
+
+                        $hash_expiry = $getHashDetails['hash_expiry'];
+                        $currentDate = date('Y-m-d H:i');
+                        if ($currentDate < $hash_expiry) {
+
+                            $data = $this->request->getPost();
+                            if (!$this->validate($this->loginModel->validatorPassword)) {
+                                $errors       = $this->validator->getErrors();
+                                $firstError   = reset($errors);
+                                $jsonResponse = $this->responseUtil->setResponse(400, "error", $errors, []);
+                                return $this->response->setStatusCode(400)->setJSON($jsonResponse);
+                            }
+
+
+                            $newPassword    = $this->request->getPost('password');
+                            $re_newPassword = $this->request->getPost('re_password');
+
+                            $newPassword = sha1($newPassword);
+                            $dataUpdate = [
+                                'password' => sha1($newPassword),
+                                'hash_key' => null,
+                                'hash_expiry' => null
+                            ];
+
+                            $this->loginModel->updateNewPassword($dataUpdate, $hash);
+                            return $this->response->setJSON(2);
+
+                            $resultado = $this->loginModel->updateNewPassword($dataUpdate, $hash);
+                            if ($resultado) {
+                                $jsonResponse = $this->responseUtil->setResponse(200, "success", 'Contraseña actualizada.', true);
+                                return $this->response->setStatusCode(200)->setJSON($jsonResponse);
+                            }
+
+                            $jsonResponse = $this->responseUtil->setResponse(200, "success", 'No se pudo actualizar la contraseña.', false);
+                            return $this->response->setStatusCode(200)->setJSON($jsonResponse);
+
+                        } else {
+
+                            // $this->session->setFlashdata('message', 'El Link Ha Expirado');
+                            // return view('Login/invalid_link');
+                            $jsonResponse = $this->responseUtil->setResponse(400, "error", 'El token ha expirado.', []);
+                            return $this->response->setStatusCode(400)->setJSON($jsonResponse);
+                        }
+
+                    } else {
+                        $this->session->setFlashdata('message', 'El Link no es v&aacute;lido');
+                        return view('Login/invalid_link');
+                    }
+
+                }
+
+                // return redirect()->to(site_url('login/forgotPassword'));
+                $jsonResponse = $this->responseUtil->setResponse(400, "error", 'Token no proporcionado.', []);
+                return $this->response->setStatusCode(400)->setJSON($jsonResponse);
+
+
+
+
+
+                $email = $this->request->getPost('email');
+                if (!$email) {
+                    $jsonResponse = $this->responseUtil->setResponse(400, "error", 'Email no proporcionado.', []);
+                    return $this->response->setStatusCode(400)->setJSON($jsonResponse);
+                }
+
+                $resultado = $this->loginModel->validateEmail($email);
+                if ($resultado) {
+                    $jsonResponse = $this->responseUtil->setResponse(200, "success", 'Email registrado.', true);
+                    return $this->response->setStatusCode(200)->setJSON($jsonResponse);
+                }
+
+                $jsonResponse = $this->responseUtil->setResponse(200, "success", 'Email no existe en la base de datos.', false);
+                return $this->response->setStatusCode(200)->setJSON($jsonResponse);
+
+            } catch (\Exception $e) {
+                $jsonResponse = $this->responseUtil->setResponse(500, "server_error", 'Error inesperado.', []);
+                $this->responseUtil->logWithContext($this->responseUtil->setResponse(500, "server_error", 'Exception: ' . $e->getMessage(), []));
+                return $this->response->setStatusCode(500)->setJSON($jsonResponse);
+            }
+
+        }
+
+        return redirect()->back();
+
+    }
+
     // *************************************************************************************************************************
     //    ENVIO DE CORREO PARA RECUPERACION DE CONTRASEÑA:
     public function sendEmail($email, $subject, $body)

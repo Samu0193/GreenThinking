@@ -20,6 +20,22 @@ class LoginModel extends Model
         'fecha_creacion'
     ];
 
+    public $validatorPassword = [
+        'password' => [
+            'rules'  => 'required',
+            'errors' => [
+                'required' => 'Contraseña requerida.'
+            ]
+        ],
+        're_password' => [
+            'rules'  => 'required|passwordMatch[password]',
+            'errors' => [
+                'required'      => 'Repetir contraseña requerido.',
+                'passwordMatch' => 'Las contraseñas no coinciden.'
+            ]
+        ]
+    ];
+
     // *************************************************************************************************************************
     //    VALIDAR USUARIO Y CONTRASEÑA:
     public function loginView($nombre, $password)
