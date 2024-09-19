@@ -40,13 +40,16 @@ class PHPMailerService
             $this->mail->Subject = $subject;
 
             // // Incrustar múltiples imágenes usando CID
-            // $this->mail->addEmbeddedImage(FCPATH . 'assets/img/pruebacorreos/imagen.png', 'image1_cid');
-            // $this->mail->addEmbeddedImage(FCPATH . 'assets/img/pruebacorreos/Horizontal Vector.png', 'image2_cid');
-            // $this->mail->addEmbeddedImage(FCPATH . 'assets/img/pruebacorreos/Vertical Vector.png', 'image3_cid');
-            // $this->mail->addEmbeddedImage(FCPATH . 'assets/img/pruebacorreos/Group 8.png', 'image4_cid');
-            // $this->mail->addEmbeddedImage(FCPATH . 'assets/img/pruebacorreos/Group 71.png', 'image5_cid');
-            // $this->mail->addEmbeddedImage(FCPATH . 'assets/img/pruebacorreos/Goes.png', 'image6_cid');
-            // $this->mail->addEmbeddedImage(FCPATH . 'assets/img/pruebacorreos/Social media.png', 'image7_cid');
+            // $this->mail->addEmbeddedImage(FCPATH . 'assets/img/logo-es.png', 'image1_cid');
+            // $this->mail->addEmbeddedImage(FCPATH . 'assets/img/email/esit-academia-header-email.jpg', 'image2_cid');
+            // $this->mail->addEmbeddedImage(FCPATH . 'assets/img/laptop_icon.png', 'image3_cid');
+            // $this->mail->addEmbeddedImage(FCPATH . 'assets/img/video_icon.png', 'image4_cid');
+            // $this->mail->addEmbeddedImage(FCPATH . 'assets/img/social-icon/goes.png', 'image5_cid');
+            // $this->mail->addEmbeddedImage(FCPATH . 'assets/img/social-icon/fb.png', 'image6_cid');
+            // $this->mail->addEmbeddedImage(FCPATH . 'assets/img/social-icon/x.png', 'image7_cid');
+            // $this->mail->addEmbeddedImage(FCPATH . 'assets/img/social-icon/insta.png', 'image8_cid');
+            // $this->mail->addEmbeddedImage(FCPATH . 'assets/img/social-icon/yt.png', 'image9_cid');
+            // $this->mail->addEmbeddedImage(FCPATH . 'assets/img/social-icon/tiktok.png', 'image10_cid');
 
             // // Reemplazar los placeholders en el HTML con los CIDs de las imágenes
             // $body = str_replace('@IMG_1', 'cid:image1_cid', $body);
@@ -56,6 +59,9 @@ class PHPMailerService
             // $body = str_replace('@IMG_5', 'cid:image5_cid', $body);
             // $body = str_replace('@IMG_6', 'cid:image6_cid', $body);
             // $body = str_replace('@IMG_7', 'cid:image7_cid', $body);
+            // $body = str_replace('@IMG_8', 'cid:image8_cid', $body);
+            // $body = str_replace('@IMG_9', 'cid:image9_cid', $body);
+            // $body = str_replace('@IMG_10', 'cid:image10_cid', $body);
 
             // // Establecer el cuerpo del correo
             // $this->mail->Body = $body;

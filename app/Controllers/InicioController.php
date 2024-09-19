@@ -84,6 +84,12 @@ class InicioController extends BaseController
 
             // Terminar la ejecución
             exit;
+
+        } catch (\CodeIgniter\Database\Exceptions\DatabaseException $dbException) {
+            $jsonResponse = $this->responseUtil->setResponse(500, "server_error", 'Error en la base de datos.', []);
+            $this->responseUtil->logWithContext($this->responseUtil->setResponse(500, "server_error", 'Database error: ' . $dbException->getMessage(), []));
+            return $this->response->setStatusCode(500)->setJSON($jsonResponse);
+
         } catch (\Exception $e) {
             $jsonResponse = $this->responseUtil->setResponse(500, "server_error", 'Error al generar el PDF.', []);
             $this->responseUtil->logWithContext($this->responseUtil->setResponse(500, "server_error", 'Exception: ' . $e->getMessage(), []));
@@ -124,6 +130,12 @@ class InicioController extends BaseController
 
             // Terminar la ejecución
             exit;
+
+        } catch (\CodeIgniter\Database\Exceptions\DatabaseException $dbException) {
+            $jsonResponse = $this->responseUtil->setResponse(500, "server_error", 'Error en la base de datos.', []);
+            $this->responseUtil->logWithContext($this->responseUtil->setResponse(500, "server_error", 'Database error: ' . $dbException->getMessage(), []));
+            return $this->response->setStatusCode(500)->setJSON($jsonResponse);
+
         } catch (\Exception $e) {
             $jsonResponse = $this->responseUtil->setResponse(500, "server_error", 'Error al generar el PDF.', []);
             $this->responseUtil->logWithContext($this->responseUtil->setResponse(500, "server_error", 'Exception: ' . $e->getMessage(), []));
@@ -180,6 +192,11 @@ class InicioController extends BaseController
                 $jsonResponse = $this->responseUtil->setResponse(200, "success", $message, $departamentos);
                 return $this->response->setStatusCode(200)->setJSON($jsonResponse);
 
+            } catch (\CodeIgniter\Database\Exceptions\DatabaseException $dbException) {
+                $jsonResponse = $this->responseUtil->setResponse(500, "server_error", 'Error en la base de datos.', []);
+                $this->responseUtil->logWithContext($this->responseUtil->setResponse(500, "server_error", 'Database error: ' . $dbException->getMessage(), []));
+                return $this->response->setStatusCode(500)->setJSON($jsonResponse);
+
             } catch (\Exception $e) {
                 $jsonResponse = $this->responseUtil->setResponse(500, "server_error", 'Error inesperado.', []);
                 $this->responseUtil->logWithContext($this->responseUtil->setResponse(500, "server_error", 'Exception: ' . $e->getMessage(), []));
@@ -220,6 +237,11 @@ class InicioController extends BaseController
                 //     $options .= "<option value='" . $i['id_municipio'] . "'>" . $i['nombre_municipio'] . "</option>";
                 // }
                 // return $this->response->setBody($options);
+
+            } catch (\CodeIgniter\Database\Exceptions\DatabaseException $dbException) {
+                $jsonResponse = $this->responseUtil->setResponse(500, "server_error", 'Error en la base de datos.', []);
+                $this->responseUtil->logWithContext($this->responseUtil->setResponse(500, "server_error", 'Database error: ' . $dbException->getMessage(), []));
+                return $this->response->setStatusCode(500)->setJSON($jsonResponse);
 
             } catch (\Exception $e) {
                 $jsonResponse = $this->responseUtil->setResponse(500, "server_error", 'Error inesperado.', []);
@@ -285,6 +307,11 @@ class InicioController extends BaseController
                 return $this->response->setStatusCode(200)->setJSON($jsonResponse);
                 // return $this->response->setJSON(['result' => $resultado ? 1 : 0]);
 
+            } catch (\CodeIgniter\Database\Exceptions\DatabaseException $dbException) {
+                $jsonResponse = $this->responseUtil->setResponse(500, "server_error", 'Error en la base de datos.', []);
+                $this->responseUtil->logWithContext($this->responseUtil->setResponse(500, "server_error", 'Database error: ' . $dbException->getMessage(), []));
+                return $this->response->setStatusCode(500)->setJSON($jsonResponse);
+
             } catch (\Exception $e) {
                 $jsonResponse = $this->responseUtil->setResponse(500, "server_error", 'Error inesperado.', []);
                 $this->responseUtil->logWithContext($this->responseUtil->setResponse(500, "server_error", 'Exception: ' . $e->getMessage(), []));
@@ -320,6 +347,11 @@ class InicioController extends BaseController
                 $jsonResponse = $this->responseUtil->setResponse(200, "success", 'Este teléfono ya está registrado.', false);
                 return $this->response->setStatusCode(200)->setJSON($jsonResponse);
 
+            } catch (\CodeIgniter\Database\Exceptions\DatabaseException $dbException) {
+                $jsonResponse = $this->responseUtil->setResponse(500, "server_error", 'Error en la base de datos.', []);
+                $this->responseUtil->logWithContext($this->responseUtil->setResponse(500, "server_error", 'Database error: ' . $dbException->getMessage(), []));
+                return $this->response->setStatusCode(500)->setJSON($jsonResponse);
+
             } catch (\Exception $e) {
                 $jsonResponse = $this->responseUtil->setResponse(500, "server_error", 'Error inesperado.', []);
                 $this->responseUtil->logWithContext($this->responseUtil->setResponse(500, "server_error", 'Exception: ' . $e->getMessage(), []));
@@ -354,6 +386,11 @@ class InicioController extends BaseController
 
                 $jsonResponse = $this->responseUtil->setResponse(200, "success", 'Este email ya está registrado.', false);
                 return $this->response->setStatusCode(200)->setJSON($jsonResponse);
+
+            } catch (\CodeIgniter\Database\Exceptions\DatabaseException $dbException) {
+                $jsonResponse = $this->responseUtil->setResponse(500, "server_error", 'Error en la base de datos.', []);
+                $this->responseUtil->logWithContext($this->responseUtil->setResponse(500, "server_error", 'Database error: ' . $dbException->getMessage(), []));
+                return $this->response->setStatusCode(500)->setJSON($jsonResponse);
 
             } catch (\Exception $e) {
                 $jsonResponse = $this->responseUtil->setResponse(500, "server_error", 'Error inesperado.', []);
@@ -437,6 +474,11 @@ class InicioController extends BaseController
                 $jsonResponse = $this->responseUtil->setResponse(500, "server_error", 'Error al guardar la información.', false);
                 return $this->response->setStatusCode(500)->setJSON($jsonResponse);
                 // return $this->response->setBody($persona && $voluntario && $solicitud ? 'true' : 'false');
+
+            } catch (\CodeIgniter\Database\Exceptions\DatabaseException $dbException) {
+                $jsonResponse = $this->responseUtil->setResponse(500, "server_error", 'Error en la base de datos.', []);
+                $this->responseUtil->logWithContext($this->responseUtil->setResponse(500, "server_error", 'Database error: ' . $dbException->getMessage(), []));
+                return $this->response->setStatusCode(500)->setJSON($jsonResponse);
 
             } catch (\Exception $e) {
                 $jsonResponse = $this->responseUtil->setResponse(500, "server_error", 'Error inesperado.', []);
@@ -549,6 +591,11 @@ class InicioController extends BaseController
                 //         'referencia' => $datos_per_referencia,
                 //         'solicitud' => $datos_solicitud
                 //     ], 200);
+
+            } catch (\CodeIgniter\Database\Exceptions\DatabaseException $dbException) {
+                $jsonResponse = $this->responseUtil->setResponse(500, "server_error", 'Error en la base de datos.', []);
+                $this->responseUtil->logWithContext($this->responseUtil->setResponse(500, "server_error", 'Database error: ' . $dbException->getMessage(), []));
+                return $this->response->setStatusCode(500)->setJSON($jsonResponse);
 
             } catch (\Exception $e) {
                 $jsonResponse = $this->responseUtil->setResponse(500, "server_error", 'Error inesperado.', []);

@@ -121,7 +121,7 @@ class GaleriaController extends BaseController
         $editar = $this->galeriaModel->cambiarImgModel('galeria', $datos, ['id_galeria' => $id_galeria]);
 
         if ($editar) {
-            return redirect()->to('/Galeria');
+            return redirect()->to('/galeria');
         }
     }
 }

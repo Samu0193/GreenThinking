@@ -2,8 +2,8 @@
 
 namespace App\Controllers;
 
-use App\Controllers\BaseController;
 use App\Models\LoginModel;
+use App\Controllers\BaseController;
 
 class LoginController extends BaseController
 {
@@ -13,6 +13,7 @@ class LoginController extends BaseController
     {
         $this->loginModel = new LoginModel();
     }
+
 
     // ****************************************************************************************************************************
     // *!*   CARGAR LA VISTA DE LOGIN:
@@ -29,6 +30,7 @@ class LoginController extends BaseController
         return view('Login/index');
         // return redirect()->to(site_url('login'));
     }
+
 
     // ****************************************************************************************************************************
     // *!*   VALIDA INICIO DE SESION:
@@ -50,8 +52,8 @@ class LoginController extends BaseController
                 }
 
                 // Verificación del usuario
-                $res = $this->loginModel->loginView($nombre, $password);
-                if (!$res || !isset($res['id_usuario'])) {
+                $resultado = $this->loginModel->loginView($nombre, $password);
+                if (!$resultado || !isset($resultado['id_usuario'])) {
                     $jsonResponse = $this->responseUtil->setResponse(400, "error", 'Verifica tus credenciales...', false);
                     return $this->response->setStatusCode(400)->setJSON($jsonResponse);
                     // return $this->response->setJSON(['status' => 1, 'message' => 'Verifica tus credenciales...']);
@@ -59,11 +61,11 @@ class LoginController extends BaseController
 
                 // Respuesta con la URL a redirigir
                 $sessionData = [
-                    'id_usuario'          => $res['id_usuario'],
-                    'id_persona'          => $res['id_persona'],
-                    'id_rol'              => $res['id_rol'],
-                    'usuario'             => $res['usuario'],
-                    'estado'              => $res['estado'],
+                    'id_usuario'          => $resultado['id_usuario'],
+                    'id_persona'          => $resultado['id_persona'],
+                    'id_rol'              => $resultado['id_rol'],
+                    'usuario'             => $resultado['usuario'],
+                    'estado'              => $resultado['estado'],
                     'is_logged'           => true,
                     'currently_logged_in' => 1
                 ];
@@ -88,6 +90,7 @@ class LoginController extends BaseController
         return redirect()->back();
 
     }
+
 
     // ****************************************************************************************************************************
     // *!*   CERRAR SESION:
@@ -133,12 +136,12 @@ class LoginController extends BaseController
 
                 $resultado = $this->loginModel->validateEmail($email);
                 if ($resultado) {
-                    $jsonResponse = $this->responseUtil->setResponse(200, "success", 'Email registrado.', true);
+                    $jsonResponse = $this->responseUtil->setResponse(200, "success", 'Email registrado.', []);
                     return $this->response->setStatusCode(200)->setJSON($jsonResponse);
                 }
 
-                $jsonResponse = $this->responseUtil->setResponse(200, "success", 'Email no existe en la base de datos.', false);
-                return $this->response->setStatusCode(200)->setJSON($jsonResponse);
+                $jsonResponse = $this->responseUtil->setResponse(404, "not_found", 'Email no existe en la base de datos.', []);
+                return $this->response->setStatusCode(404)->setJSON($jsonResponse);
 
             } catch (\CodeIgniter\Database\Exceptions\DatabaseException $dbException) {
                 $jsonResponse = $this->responseUtil->setResponse(500, "server_error", 'Error en la base de datos.', []);
@@ -191,47 +194,14 @@ class LoginController extends BaseController
                     'hash_expiry' => $hash_expiry
                 ];
 
-                $resetLink = site_url('changePassword?hash=' . $hash_string);
-                // $body =
-                //     '<div style="font-family: sans-serif; color:#000; text-align: center; padding: 1rem; width: 100%; height: 40vh; background-color: #EAEFFC;">
-                //             <h2>GREEN THINKING</h2>
-                //         <div style=" margin: 0 auto; text-align: center; padding: 1rem; width: 50%; background-color: #fff;
-                //         border-radius: 5px;">                
-                //             <h3>Actualizar Clave de Acceso</h3>
-                //             <p>Pulsa a Restablecer Password para Cambiar tu Clave de Acceso</p><br>
-                //             <a href="' . $resetLink . '" style="text-decoration: none; width: 150px; margin-bottom: 1rem; padding: 1rem; color: #fff; font-size: 16px; background-color: #325FEB; border: none; cursor: pointer; border-radius: 5px;"><b>Reestablecer Password</b></a>
-                //         </div>
-                //     </div>';
-                // $body =
-                //     '<div style="font-family: sans-serif; color:#000; text-align: center; padding: 1rem; width: 100%; height: auto; background-color: #EAEFFC;">
-                //         <h1>Green Thinking</h1>
-                //         <div style="margin: 0 auto; text-align: left; padding: 1rem; width: 600px; background-color: #fff; border-radius: 12px;">
-                //             <div style="padding: 20px; border: 1px solid #DBDBDB; border-radius: 12px; font-family: Sans-serif;">
-                //                 <h2>Restablecer contraseña</h2>
-                //                 <p style="margin-bottom: 25px;">
-                //                     Estimado/a&nbsp;<b>' . $user . '</b>:
-                //                 </p>
-                //                 <p style="margin-bottom: 25px;">
-                //                     Se solicitó un restablecimiento de contraseña para tu cuenta, haz clic en el botón
-                //                     que aparece a continuación para cambiar tu contraseña.
-                //                 </p>
-                //                 <a style="padding: 12px; border-radius: 12px; background-color: #3ca230; color: #fff; text-decoration: none;" href="' . $resetLink . '"
-                //                     target="_blank">
-                //                     Cambiar contraseña
-                //                 </a>
-                //                 <p style="margin-top: 25px;">Gracias.</p>
-                //             </div>
-                //         </div>
-                //     </div>';
-
-                // // Leer el contenido del archivo index.html
-                // $html    = file_get_contents(FCPATH . 'assets/templates/prueba.html');
-                $html    = file_get_contents(FCPATH . 'assets/templates/correo.html');
-                $body    = str_replace('@USUARIO', $user, $html);
-                $body    = str_replace('@LINK', $resetLink, $body);
-                $subject = "Restablecer contraseña.";
-                // $sentStatus = $this->sendEmail($email, $subject, $body);
+                $resetLink  = site_url('changePassword?hash=' . $hash_string);
+                $html       = file_get_contents(FCPATH . 'assets/templates/correo.html');
+                $body       = str_replace('@USUARIO', $user, $html);
+                $body       = str_replace('@LINK', $resetLink, $body);
+                $subject    = "Restablecer contraseña.";
                 $sentStatus = $this->phpMailer->sendmail($email, $subject, $body);
+                // $sentStatus = $this->phpMailer->sendmail($email, $subject, file_get_contents(FCPATH . 'assets/templates/prueba_correo.html'));
+                // $sentStatus = $this->sendEmail($email, $subject, $body);
 
                 if ($sentStatus) {
                     $this->loginModel->updatePasswordHash($data, $email);
@@ -259,6 +229,7 @@ class LoginController extends BaseController
 
         return redirect()->back();
     }
+
 
     // ****************************************************************************************************************************
     // *!*   CARGAR VISTA PARA CAMBIAR CONTRASEÑA:
@@ -300,6 +271,7 @@ class LoginController extends BaseController
             return view('Login/invalid_link');
         }
     }
+
 
     // ****************************************************************************************************************************
     // *!*   CAMBIAR CONTRASEÑA:
@@ -381,6 +353,7 @@ class LoginController extends BaseController
         return redirect()->back();
 
     }
+
 
     // *************************************************************************************************************************
     //    ENVIO DE CORREO PARA RECUPERACION DE CONTRASEÑA:

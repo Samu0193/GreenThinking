@@ -37,39 +37,37 @@ $(document).ready(function() {
     correo.on('change keyup blur', function() { // VALIDAR CORREO EXISTENTE
         if (/^\b[A-Z0-9._%-]+@[A-Z0-9.-]+\.[A-Z]{2,4}\b$/i.test(correo.val())) {
 
+            var validator = $('#form-forgot').validate();
             $.ajax({
                 url: `${url}login/validarEmail`,
                 data: { 'email': correo.val() },
                 type: 'POST',
                 dataType: 'json',
                 success: function (jsonResponse) {
-                    var validator = $('#form-forgot').validate();
-                    if (jsonResponse.data === false) {
 
-                        // correo.addClass('error');
-                        // correo.after(`<label id="${correo.attr('name')}-error" class="error" for="${correo.attr('name')}">${jsonResponse.message}</label>`);
-                        // Agregar clase de error al input
-                        correo.addClass('error');   // Correo no existe o no es válido
-                        correoValido = false;       // Marcar el correo como no válido
-                        validator.showErrors({
-                            [ correo.attr('name') ]: jsonResponse.message
-                        });
+                    // $(`#${correo.attr('name')}-error`).remove();
+                    // Si es válido, eliminar clase de error
+                    correo.removeClass('error');    // Correo válido
+                    correoValido = true;            // Marcar el correo como válido
+                    validator.element(correo);      // Validar el campo con el validador
 
-                    } else {
-
-                        // $(`#${correo.attr('name')}-error`).remove();
-                        // Si es válido, eliminar clase de error
-                        correo.removeClass('error');    // Correo válido
-                        correoValido = true;            // Marcar el correo como válido
-                        validator.element(correo);      // Validar el campo con el validador
-                    }
                 },
                 error: function(jqXHR, textStatus, errorThrown) {
+                    
                     let errorMessage = 'Ocurrió un problema al procesar su solicitud. Por favor, inténtelo de nuevo más tarde.';
                     let jsonResponse = jqXHR.responseJSON;
                     if (jsonResponse) {
                         errorMessage = jsonResponse.message;
                     }
+
+                    // correo.addClass('error');
+                    // correo.after(`<label id="${correo.attr('name')}-error" class="error" for="${correo.attr('name')}">${jsonResponse.message}</label>`);
+                    // Agregar clase de error al input
+                    correo.addClass('error');   // Correo no existe o no es válido
+                    correoValido = false;       // Marcar el correo como no válido
+                    validator.showErrors({
+                        [ correo.attr('name') ]: jsonResponse.message
+                    });
                     console.log(errorMessage);
                 }
             });

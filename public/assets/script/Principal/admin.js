@@ -5,6 +5,7 @@ $(document).ready(function () {
     let modal = $("#modal");
     let title_form = $('#title-form');
     $(".modal-productos").on('click', function () {
+        $('body').addClass('no-scroll'); // Deshabilitar el scroll
         modal.fadeIn();
         title_form.html('Nuevo Producto');
         $('#form-productos')[0].reset();
@@ -18,6 +19,7 @@ $(document).ready(function () {
     });
 
     $(".modal-usuario").on('click', function () {
+        $('body').addClass('no-scroll'); // Deshabilitar el scroll
         loadRoles();
         modal.fadeIn();
         title_form.html('Nuevo Usuario');
@@ -27,17 +29,20 @@ $(document).ready(function () {
     });
 
     $("#close").on('click', function () {
+        $('body').removeClass('no-scroll'); // Deshabilitar el scroll
         modal.hide(300);
     });
 
     $(window).on('click', function (e) {
         if (e.target === $("#modal-flex")[0]) {
+            $('body').removeClass('no-scroll'); // Deshabilitar el scroll
             modal.hide(300);
         }
     });
 
     $(window).on('keyup', function (e) {
         if (e.key === 'Escape') {
+            $('body').removeClass('no-scroll'); // Deshabilitar el scroll
             modal.hide(300);
         }
     });
@@ -45,7 +50,7 @@ $(document).ready(function () {
     let pagina = window.location.href;
     if (pagina === (url + 'productos') || pagina === (url + 'galeria')) {
         // Cargar imagen
-        var img = document.getElementById('upload'),
+        var img    = document.getElementById('upload'),
             nombre = document.getElementById('nombre_imagen');
         img.addEventListener('change', function () {
 
@@ -66,8 +71,8 @@ $(document).ready(function () {
                             var fileReader = new FileReader();
                             fileReader.onload = function (fileLoadedEvent) {
                                 var srcData = fileLoadedEvent.target.result;
-                                document.getElementById("image-frame").innerHTML = '<img src="' + srcData +
-                                    '" class="print-image"/>';
+                                document.getElementById("image-frame").innerHTML =
+                                `<img src="${srcData}" class="print-image"/>`;
                             };
                             fileReader.readAsDataURL(fileToLoad);
                         }
@@ -93,7 +98,7 @@ $(document).ready(function () {
         "processing": true,
         "serverSide": true,
         "ajax": {
-            "url": url + "usuario/tblUsuarios",
+            "url": `${url}usuario/tblUsuarios`,
             "type": "POST",
             "beforeSend": function () {
                 // console.log('dataTables_processing: Iniciado')
@@ -111,7 +116,7 @@ $(document).ready(function () {
         "processing": true,
         "serverSide": true,
         "ajax": {
-            "url": url + "galeria/tblGaleria",
+            "url": `${url}galeria/tblGaleria`,
             "type": "GET",
             "beforeSend": function () {
                 $('.dataTables_wrapper .dataTables_processing').css({ 'display': 'flex' });
@@ -125,7 +130,7 @@ $(document).ready(function () {
         "processing": true,
         "serverSide": true,
         "ajax": {
-            "url": url + "productos/tblProductos",
+            "url": `${url}productos/tblProductos`,
             "type": "GET",
             "beforeSend": function () {
                 $('.dataTables_wrapper .dataTables_processing').css({ 'display': 'flex' });
@@ -139,7 +144,7 @@ $(document).ready(function () {
         "processing": true,
         "serverSide": true,
         "ajax": {
-            "url": url + "solicitudes/verSolicitudMayores",
+            "url": `${url}solicitudes/verSolicitudMayores`,
             "type": "GET",
             "beforeSend": function () {
                 $('.dataTables_wrapper .dataTables_processing').css({ 'display': 'flex' });
@@ -153,7 +158,7 @@ $(document).ready(function () {
         "processing": true,
         "serverSide": true,
         "ajax": {
-            "url": url + "solicitudes/verSolicitudMenores",
+            "url": `${url}solicitudes/verSolicitudMenores`,
             "type": "GET",
             "beforeSend": function () {
                 $('.dataTables_wrapper .dataTables_processing').css({ 'display': 'flex' });
@@ -206,26 +211,30 @@ function loadRoles() {
 /********************************************************************************************************************************************************
 *!*     COMPARAR CONTRASEÑAS:
 ********************************************************************************************************************************************************/
-var password   = $('#password');
-var rePassword = $('#re_password');
+jQuery.validator.addMethod('equalPassword', function (value, element, param) {
+    return $(param).val() !== '' ? value === $(param).val() : true;
+}, 'Las contrase\u00f1as no coinciden.');
 
-password.change(function () {
-    if ($(this).val() !== rePassword.val() && rePassword.val() !== '') {
-        rePassword.addClass('error');
-        rePassword.after(`<label id="${rePassword.attr('name')}-error" class="error" for="${rePassword.attr('name')}">Las contrase\u00f1as no coinciden!</label>`);
-        rePassword.val('');
-        // modalErrorMessage(`<p style="color: #fff; font-size: 1.18em; font-weight: 100;">Las contrase\u00f1as no coinciden!</p>`);
-    }
-});
+// var password   = $('#password');
+// var rePassword = $('#re_password');
 
-rePassword.change(function () {
-    if (password.val() !== $(this).val()) {
-        $(this).addClass('error');
-        $(this).after(`<label id="${$(this).attr('name')}-error" class="error" for="${$(this).attr('name')}">Las contrase\u00f1as no coinciden!</label>`);
-        $(this).val('');
-        // modalErrorMessage(`<p style="color: #fff; font-size: 1.18em; font-weight: 100;">Las contrase\u00f1as no coinciden!</p>`);
-    }
-});
+// password.change(function () {
+//     if ($(this).val() !== rePassword.val() && rePassword.val() !== '') {
+//         rePassword.addClass('error');
+//         rePassword.after(`<label id="${rePassword.attr('name')}-error" class="error" for="${rePassword.attr('name')}">Las contrase\u00f1as no coinciden!</label>`);
+//         rePassword.val('');
+//         // modalErrorMessage(`<p style="color: #fff; font-size: 1.18em; font-weight: 100;">Las contrase\u00f1as no coinciden!</p>`);
+//     }
+// });
+
+// rePassword.change(function () {
+//     if (password.val() !== $(this).val()) {
+//         $(this).addClass('error');
+//         $(this).after(`<label id="${$(this).attr('name')}-error" class="error" for="${$(this).attr('name')}">Las contrase\u00f1as no coinciden!</label>`);
+//         $(this).val('');
+//         // modalErrorMessage(`<p style="color: #fff; font-size: 1.18em; font-weight: 100;">Las contrase\u00f1as no coinciden!</p>`);
+//     }
+// });
 
 /********************************************************************************************************************************************************
 *!*     INSERTAR USUARIO:
@@ -241,7 +250,7 @@ $(function () {
             telefono: { required: true },
             nombre_usuario: { required: true },
             password: { required: true },
-            re_password: { required: true }
+            re_password: { required: true, equalPassword: password }
         },
         messages: {
             nombres: { required: 'Nombres requeridos.' },
@@ -333,6 +342,7 @@ $(function () {
                             CARGAR IMAGEN
 ****************************************************************************/
 function cargarImg(id_imagen) {
+    $('body').addClass('no-scroll'); // Deshabilitar el scroll
     let modal = $("#modal");
     let title_form = $('#title-form');
     modal.fadeIn();
