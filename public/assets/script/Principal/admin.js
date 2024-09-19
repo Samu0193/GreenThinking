@@ -279,18 +279,6 @@ $(function () {
                     $('#usuarios').DataTable().ajax.reload(null, false);
                 },
                 error: function (jqXHR, textStatus, errorThrown) {
-                    // console.error(`Error en la solicitud AJAX:\nStatus: ${textStatus}\nError Thrown: ${errorThrown}\nMessage: ${jqXHR.responseJSON.message}`);
-                    console.error('Error details:');
-                    console.error('Text Status (textStatus): ', textStatus); // Texto del estado (error, timeout, parsererror, abort)
-                    console.error('Error Thrown (errorThrown): ', errorThrown); // Detalle del error arrojado (opcional)
-                    console.error('State (jqXHR.readyState): ', jqXHR.readyState); // Estado de la solicitud AJAX (por ejemplo, 0 para no iniciada, 4 para completada).
-                    console.error('Status Code (jqXHR.status): ', jqXHR.status); // Código de estado HTTP (por ejemplo, 404 para no encontrado, 500 para error interno del servidor)
-                    console.error('Status (jqXHR.statusText): ', jqXHR.statusText); // Texto del estado HTTP (por ejemplo, "Not Found" o "Internal Server Error")
-                    console.error('Headers (jqXHR.getAllResponseHeaders()): ', jqXHR.getAllResponseHeaders()); // Devuelve todas las cabeceras de respuesta HTTP en forma de una cadena (string)
-                    console.error('Header name (jqXHR.getResponseHeader(Content-Type)): ', jqXHR.getResponseHeader('Content-Type')); // Devuelve el valor de una cabecera específica de la respuesta
-                    console.error('Response Text (jqXHR.responseText): ', jqXHR.responseText); // Muestra la respuesta como texto
-                    console.error('Response XML(jqXHR.responseXML): ', jqXHR.responseXML); // Muestra la respuesta en formato XML.
-                    console.error('Response Json (jqXHR.responseJson): ', jqXHR.responseJSON); // Muestra la respuesta en formato JSON
 
                     // Limpia las clases de error previas
                     $(form).find('.invalid-feedback').remove();

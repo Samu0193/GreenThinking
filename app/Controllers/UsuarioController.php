@@ -159,7 +159,7 @@ class UsuarioController extends BaseController
     public function create()
     {
         if ($this->request->isAJAX()) {
-            
+
             try {
 
                 $data = $this->request->getPost();

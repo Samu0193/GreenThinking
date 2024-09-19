@@ -69,6 +69,22 @@ class LoginModel extends Model
     //    ACTUALIZA EL HASH Y LA CONTRASEÑA:
     public function updateNewPassword($data, $hash)
     {
+        // try {
+        //     // Verificamos si la columna 'hash_keys' existe antes de hacer la consulta
+        //     if ($this->db->fieldExists('hash_keys', 'usuarios')) {
+        //         // Realizar la actualización
+        //         return $this->where('hash_keys', $hash)->set($data)->update();
+        //     } else {
+        //         // Lanza una excepción personalizada si la columna no existe
+        //         log_message('debug', 'El campo hash_keys no existe en la base de datos.');
+        //         throw new \Exception('El campo hash_keys no existe en la base de datos.');
+        //     }
+        // } catch (\Exception $e) {
+        //     // Manejo del error (logearlo o devolver un mensaje amigable)
+        //     log_message('debug', 'Error ocurrio' . $e->getMessage());
+        //     return false; // o un mensaje de error más amigable
+        // }
         return $this->where('hash_key', $hash)->set($data)->update();
     }
+
 }

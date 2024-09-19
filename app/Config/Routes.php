@@ -34,14 +34,13 @@ $routes->post('inicio/createVolMayor',  'InicioController::createVolMayor');
 $routes->post('inicio/createVolMenor',  'InicioController::createVolMenor');
 
 // LOGIN CONTROLLER
-$routes->post('login/verifica',       'LoginController::verifica');
-$routes->get('login/logout',          'LoginController::logout');
-$routes->get('login/forgotPassword',  'LoginController::forgotPassword');
-$routes->post('login/forgotPassword', 'LoginController::forgotPassword');
-$routes->post('login/validarEmail',   'LoginController::validarEmail');
-$routes->get('login/password',        'LoginController::password');
-$routes->post('login/password',       'LoginController::password');
-$routes->post('updatePassword',       'LoginController::password');
+$routes->post('login/verifica',         'LoginController::verifica');
+$routes->get('login/logout',            'LoginController::logout');
+$routes->get('resetPassword',           'LoginController::resetPassword');
+$routes->post('login/validarEmail',     'LoginController::validarEmail');
+$routes->post('sendPasswordResetEmail', 'LoginController::sendPasswordResetEmail');
+$routes->get('changePassword',          'LoginController::changePassword');
+$routes->post('updatePassword',         'LoginController::updatePassword');
 
 // USUARIO CONTROLLER
 $routes->get('usuario',              'UsuarioController::index');

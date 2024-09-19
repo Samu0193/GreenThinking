@@ -27,6 +27,7 @@
             <!--Mensaje de error-->
             <?php if (session()->getFlashdata('message') != null) : ?>
                 <h2><br><?= session()->getFlashdata('message'); ?></h2>
+                <?= session()->setFlashdata('message', ''); ?>
             <?php endif; ?>
         </div>
     </div>

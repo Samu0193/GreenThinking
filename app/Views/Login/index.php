@@ -43,7 +43,7 @@
                     </div>
                 </div>
                 <input type="submit" class="btn" value="Entrar">
-                <a href="<?= site_url('login/forgotPassword'); ?>">¿Olvidaste tu contraseña?</a>
+                <a href="<?= site_url('resetPassword'); ?>">¿Olvidaste tu contraseña?</a>
             </form>
         </div>
     </div>
@@ -65,8 +65,7 @@
                 icon: 'error',
                 iconColor: '#fff',
                 background: '#f00',
-                title: '<p style="color: #fff; font-size: 1.18em;">' +
-                    '<?= session()->getFlashdata('message'); ?>' + '</p>',
+                title: `<p style="color: #fff; font-size: 1.18em;"><?= session()->getFlashdata('message'); ?></p>`,
                 confirmButtonColor: "#343a40"
             });
         </script>

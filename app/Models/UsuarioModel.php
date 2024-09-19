@@ -162,7 +162,7 @@ class UsuarioModel extends Model
     public function getTotalUsuarios($searchValue)
     {
         // Consulta base desde la vista
-        $builder = $this->db->table('vw_usuarios');
+        $builder = $this->db->table('vw_usuarios')->where('id_rol', 2);
 
         // Total sin filtro
         $totalRecords = $builder->countAllResults(false); // Evita reiniciar el builder
@@ -187,7 +187,7 @@ class UsuarioModel extends Model
     public function getUsuariosPaginados($start, $length, $searchValue)
     {
         // Consulta base desde la vista
-        $builder = $this->db->table('vw_usuarios');
+        $builder = $this->db->table('vw_usuarios')->where('id_rol', 2);
 
         // Filtro de búsqueda
         if ($searchValue) {

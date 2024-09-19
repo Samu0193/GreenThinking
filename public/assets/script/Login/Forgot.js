@@ -127,7 +127,7 @@ $(document).ready(function() {
                 });
 
                 $.ajax({
-                    url: `${url}login/forgotPassword`,
+                    url: `${url}sendPasswordResetEmail`,
                     type: 'POST',
                     data: $(form).serialize(),
                     success: function(jsonResponse) {

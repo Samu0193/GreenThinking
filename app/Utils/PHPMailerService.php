@@ -39,33 +39,33 @@ class PHPMailerService
             $this->mail->isHTML(true);
             $this->mail->Subject = $subject;
 
-            // Incrustar múltiples imágenes usando CID
-            $this->mail->addEmbeddedImage(FCPATH . 'assets/img/pruebacorreos/imagen.png', 'image1_cid');
-            $this->mail->addEmbeddedImage(FCPATH . 'assets/img/pruebacorreos/Horizontal Vector.png', 'image2_cid');
-            $this->mail->addEmbeddedImage(FCPATH . 'assets/img/pruebacorreos/Vertical Vector.png', 'image3_cid');
-            $this->mail->addEmbeddedImage(FCPATH . 'assets/img/pruebacorreos/Group 8.png', 'image4_cid');
-            $this->mail->addEmbeddedImage(FCPATH . 'assets/img/pruebacorreos/Group 71.png', 'image5_cid');
-            $this->mail->addEmbeddedImage(FCPATH . 'assets/img/pruebacorreos/Goes.png', 'image6_cid');
-            $this->mail->addEmbeddedImage(FCPATH . 'assets/img/pruebacorreos/Social media.png', 'image7_cid');
+            // // Incrustar múltiples imágenes usando CID
+            // $this->mail->addEmbeddedImage(FCPATH . 'assets/img/pruebacorreos/imagen.png', 'image1_cid');
+            // $this->mail->addEmbeddedImage(FCPATH . 'assets/img/pruebacorreos/Horizontal Vector.png', 'image2_cid');
+            // $this->mail->addEmbeddedImage(FCPATH . 'assets/img/pruebacorreos/Vertical Vector.png', 'image3_cid');
+            // $this->mail->addEmbeddedImage(FCPATH . 'assets/img/pruebacorreos/Group 8.png', 'image4_cid');
+            // $this->mail->addEmbeddedImage(FCPATH . 'assets/img/pruebacorreos/Group 71.png', 'image5_cid');
+            // $this->mail->addEmbeddedImage(FCPATH . 'assets/img/pruebacorreos/Goes.png', 'image6_cid');
+            // $this->mail->addEmbeddedImage(FCPATH . 'assets/img/pruebacorreos/Social media.png', 'image7_cid');
 
-            // Reemplazar los placeholders en el HTML con los CIDs de las imágenes
-            $body = str_replace('@IMG_1', 'cid:image1_cid', $body);
-            $body = str_replace('@IMG_2', 'cid:image2_cid', $body);
-            $body = str_replace('@IMG_3', 'cid:image3_cid', $body);
-            $body = str_replace('@IMG_4', 'cid:image4_cid', $body);
-            $body = str_replace('@IMG_5', 'cid:image5_cid', $body);
-            $body = str_replace('@IMG_6', 'cid:image6_cid', $body);
-            $body = str_replace('@IMG_7', 'cid:image7_cid', $body);
+            // // Reemplazar los placeholders en el HTML con los CIDs de las imágenes
+            // $body = str_replace('@IMG_1', 'cid:image1_cid', $body);
+            // $body = str_replace('@IMG_2', 'cid:image2_cid', $body);
+            // $body = str_replace('@IMG_3', 'cid:image3_cid', $body);
+            // $body = str_replace('@IMG_4', 'cid:image4_cid', $body);
+            // $body = str_replace('@IMG_5', 'cid:image5_cid', $body);
+            // $body = str_replace('@IMG_6', 'cid:image6_cid', $body);
+            // $body = str_replace('@IMG_7', 'cid:image7_cid', $body);
 
-            // Establecer el cuerpo del correo
-            $this->mail->Body = $body;
+            // // Establecer el cuerpo del correo
+            // $this->mail->Body = $body;
 
 
             // Incrustar la imagen usando CID
-            // $this->mail->addEmbeddedImage(FCPATH . 'assets/img/favicon.png', 'image_cid');
+            $this->mail->addEmbeddedImage(FCPATH . 'assets/img/favicon.png', 'image_cid');
 
             // Reemplazar el src de la imagen en el HTML
-            // $this->mail->Body = preg_replace('/(<img[^>]+src=")[^"]+("[^>]*>)/i', '$1cid:image_cid$2', $body);
+            $this->mail->Body = preg_replace('/(<img[^>]+src=")[^"]+("[^>]*>)/i', '$1cid:image_cid$2', $body);
 
             // Enviar el correo y devolver respuesta (true o false)
             return $this->mail->send();
