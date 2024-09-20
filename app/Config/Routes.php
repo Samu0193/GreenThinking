@@ -24,6 +24,7 @@ $routes->get('galeria',          'GaleriaController::index');
 $routes->get('productos',        'ProductosController::index');
 $routes->get('solicitudes',      'SolicitudesController::index');
 
+
 /**************************************************************************************************************************************************
     RUTAS PARA METODOS CON AJAX:
 **************************************************************************************************************************************************/
@@ -55,7 +56,6 @@ $routes->post('usuario/create', 'UsuarioController::create');
 $routes->post('usuario/cambiarEstado', 'UsuarioController::cambiarEstado');
 
 // GALERIA CONTROLLER
-$routes->get('galeria/printImgGalery', 'GaleriaController::printImgGalery');
 $routes->post('galeria/cargarImg', 'GaleriaController::cargarImg');
 $routes->post('galeria/cambiarImg', 'GaleriaController::cambiarImg');
 $routes->get('galeria/tblGaleria', 'GaleriaController::tblGaleria');

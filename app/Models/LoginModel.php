@@ -20,6 +20,21 @@ class LoginModel extends Model
         'fecha_creacion'
     ];
 
+    public $validatorLogin = [
+        'nombre' => [
+            'rules'  => 'required',
+            'errors' => [
+                'required' => 'Nombre de usuario requerido.'
+            ]
+        ],
+        'password' => [
+            'rules'  => 'required',
+            'errors' => [
+                'required' => 'Contraseña requerida.'
+            ]
+        ]
+    ];
+
     public $validatorPassword = [
         'password' => [
             'rules'  => 'required',

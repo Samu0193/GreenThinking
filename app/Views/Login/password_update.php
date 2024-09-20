@@ -19,9 +19,9 @@
 
         <div class="form-content">
 
-            <form id="form-reset" novalidate>
+            <form id="form-update" novalidate>
                 <h2 class="forgot-title">Actualizar Contraseña</h2>
-                <div class="input-div one" style="text-align: left;">
+                <div class="input-div one">
                     <input type="hidden" name="hash" id="hash" value="<?= $hash; ?>">
                     <div class="i">
                         <i class="fas fa-lock"></i>
@@ -31,7 +31,7 @@
                         <input type="password" name="password" id="password" class="input" required>
                     </div>
                 </div>
-                <div class="input-div pass" style="text-align: left;">
+                <div class="input-div pass">
                     <div class="i">
                         <i class="fas fa-lock"></i>
                     </div>
@@ -67,7 +67,7 @@
     <script src="<?= base_url('assets/js/additional-methods.min.js'); ?>" type="text/javascript"></script>
 
     <!-- MAIN JS -->
-    <script src="<?= base_url('assets/script/Login/ResetPass.js'); ?>" type="text/javascript"></script>
+    <script src="<?= base_url('assets/script/login.js'); ?>" type="text/javascript"></script>
 
 </body>
 

@@ -27,10 +27,10 @@ class ProductosController extends BaseController
             ];
 
             // Cargar vistas
-            return  view('Layout/Header', $data) .
-                view('Layout/Navegacion') .
-                view('Productos/Productos') .
-                view('Layout/Footer');
+            return  view('layout/header', $data) .
+                    view('layout/navegacion') .
+                    view('productos/index') .
+                    view('layout/footer');
         }
 
         return redirect()->to(site_url('login'))->with('message', 'Usted no se ha identificado.');

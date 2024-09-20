@@ -26,9 +26,8 @@
 
         <div class="login-content" id="login-content">
 
-            <!-- COLOCAR MENSAJE DE ENVIO DE CORREO -->
-            <form id="form-forgot" class="form-forgot" novalidate>
-                <h2 class="forgot-title">Recuperaci&oacute;n de Cuenta</h2>
+            <form id="form-reset" class="form-reset" novalidate>
+                <h2 class="reset-title">Recuperaci&oacute;n de Cuenta</h2>
 
                 <p style="text-align: center; color: #333;">
                     Ingrese su direcci&oacute;n de correo electr&oacute;nico y
@@ -44,8 +43,7 @@
                         <input type="text" name="email" id="email" class="input" required>
                     </div>
                 </div>
-                <!-- <input type="submit" class="btn" value="Enviar Código"> -->
-                <button type="submit" class="btn">Enviar Código</button>
+                <input type="submit" class="btn" value="Enviar Código">
             </form>
 
         </div>
@@ -64,7 +62,7 @@
     <script src="<?= base_url('assets/js/additional-methods.min.js'); ?>" type="text/javascript"></script>
 
     <!-- MAIN JS -->
-    <script src="<?= base_url('assets/script/Login/Forgot.js'); ?>" type="text/javascript"></script>
+    <script src="<?= base_url('assets/script/login.js'); ?>" type="text/javascript"></script>
 
 </body>
 

@@ -15,6 +15,32 @@ class GaleriaModel extends Model
         'fecha_creacion'
     ]; // Campos permitidos para inserción/actualización
 
+    public $validator = [
+        'id_galeria' => [
+            'rules'  => 'required|integer',
+            'errors' => [
+                'required' => 'ID de la imagen requerido',
+                'integer'  => 'ID de la imagen deber ser un número entero'
+            ]
+        ],
+        'nom_last_img' => [
+            'label'  => 'Imagen',
+            'rules'  => 'required',
+            'errors' => [
+                'required' => 'Nombre de la imagen a reemplazar requerido'
+            ]
+        ],
+        'file-upload' => [
+            'label'  => 'Imagen',  // Define el nombre amigable para el campo
+            'rules'  => 'uploaded[file-upload]|is_image[file-upload]|mime_in[file-upload,image/jpg,image/jpeg,image/png]',
+            'errors' => [
+                'uploaded' => 'La {field} es requerida',  // Aquí {field} será reemplazado por "Imagen"
+                'is_image' => 'La {field} debe ser un archivo válido',
+                'mime_in'  => 'Solo se permiten archivos con formato jpg, jpeg o png'
+            ]
+        ]
+    ];
+
     // IMPRIMIR GALERIA
     public function printImgGaleryModel()
     {
@@ -30,9 +56,9 @@ class GaleriaModel extends Model
     }
 
     // OBTENER
-    public function cargarImgModel($where)
+    public function cargarImgModel($valor)
     {
-        return $this->where($where)->first(); // Devuelve el primer registro que coincide con la condición
+        return $this->where('id_galeria', $valor)->first(); // Devuelve el primer registro que coincide con la condición
     }
 
     public function cambiarImgModel($tablename, $data, $where)

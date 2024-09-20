@@ -37,7 +37,7 @@
     </script>
 
     <script src="<?= base_url('assets/js/sweetalert2.js'); ?>" type="text/javascript"></script>
-    <script src="<?= base_url('assets/script/Login/Forgot.js'); ?>" type="text/javascript"></script>
+    <script src="<?= base_url('assets/script/login.js'); ?>" type="text/javascript"></script>
 
 </body>
 

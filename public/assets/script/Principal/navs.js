@@ -1,6 +1,8 @@
 /********************************************************************************************************************************************************
 *!*     MENSAJES:
 ********************************************************************************************************************************************************/
+let errorMsgEstandar = 'Ocurrió un problema al procesar su solicitud. Por favor, inténtelo de nuevo más tarde';
+
 function toastSuccesMessageLong(mensaje) {
     Swal.fire({
         toast: true,
@@ -181,7 +183,7 @@ function valDui(input) {
             }
         },
         error: function(jqXHR, textStatus, errorThrown) {
-            let errorMessage = 'Ocurrió un problema al procesar su solicitud. Por favor, inténtelo de nuevo más tarde.';
+            let errorMessage = errorMsgEstandar;
             let jsonResponse = jqXHR.responseJSON;
             if (jsonResponse) {
                 errorMessage = jsonResponse.message;
@@ -204,7 +206,7 @@ function valTel(input) {
             }
         },
         error: function(jqXHR, textStatus, errorThrown) {
-            let errorMessage = 'Ocurrió un problema al procesar su solicitud. Por favor, inténtelo de nuevo más tarde.';
+            let errorMessage = errorMsgEstandar;
             let jsonResponse = jqXHR.responseJSON;
             if (jsonResponse) {
                 errorMessage = jsonResponse.message;
@@ -227,7 +229,7 @@ function valEmail(input) {
             }
         },
         error: function(jqXHR, textStatus, errorThrown) {
-            let errorMessage = 'Ocurrió un problema al procesar su solicitud. Por favor, inténtelo de nuevo más tarde.';
+            let errorMessage = errorMsgEstandar;
             let jsonResponse = jqXHR.responseJSON;
             if (jsonResponse) {
                 errorMessage = jsonResponse.message;
@@ -250,7 +252,7 @@ function valEmailUser(input) {
             }
         },
         error: function(jqXHR, textStatus, errorThrown) {
-            let errorMessage = 'Ocurrió un problema al procesar su solicitud. Por favor, inténtelo de nuevo más tarde.';
+            let errorMessage = errorMsgEstandar;
             let jsonResponse = jqXHR.responseJSON;
             if (jsonResponse) {
                 errorMessage = jsonResponse.message;
@@ -273,7 +275,7 @@ $("[name='nombre_usuario']").change(function () {
             }
         },
         error: function(jqXHR, textStatus, errorThrown) {
-            let errorMessage = 'Ocurrió un problema al procesar su solicitud. Por favor, inténtelo de nuevo más tarde.';
+            let errorMessage = errorMsgEstandar;
             let jsonResponse = jqXHR.responseJSON;
             if (jsonResponse) {
                 errorMessage = jsonResponse.message;

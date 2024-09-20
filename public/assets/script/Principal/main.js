@@ -64,7 +64,7 @@ function loadDepartamentos() {
             $("[name='departamento_residencia']").html(options);
         },
         error: function(jqXHR, textStatus, errorThrown) {
-            let errorMessage = 'Ocurrió un problema al procesar su solicitud. Por favor, inténtelo de nuevo más tarde.';
+            let errorMessage = errorMsgEstandar;
             let jsonResponse = jqXHR.responseJSON;
             if (jsonResponse) {
                 errorMessage = jsonResponse.message;
@@ -96,7 +96,7 @@ jQuery(document).ready(function () {
                 $("[name='municipio_residencia']").html(options);
             },
             error: function(jqXHR, textStatus, errorThrown) {
-                let errorMessage = 'Ocurrió un problema al procesar su solicitud. Por favor, inténtelo de nuevo más tarde.';
+                let errorMessage = errorMsgEstandar;
                 let jsonResponse = jqXHR.responseJSON;
                 if (jsonResponse) {
                     errorMessage = jsonResponse.message;
@@ -214,21 +214,21 @@ $(function () {
             fecha_finalizacion: { required: true, minFin: true, maxFin: true }
         },
         messages: {
-            nombres: { required: 'Nombres requeridos.' },
-            apellidos: { required: 'Apellidos requeridos.' },
+            nombres: { required: 'Nombres requeridos' },
+            apellidos: { required: 'Apellidos requeridos' },
             f_nacimiento_mayor: {
-                required: 'Fecha de nacimiento requerida.',
-                min: 'Edad m\u00e1xima 40 a\u00f1os.',
-                max: 'Edad m\u00ednima 18 a\u00f1os.'
+                required: 'Fecha de nacimiento requerida',
+                min: 'Edad m\u00e1xima 40 a\u00f1os',
+                max: 'Edad m\u00ednima 18 a\u00f1os'
             },
-            DUI: { required: 'DUI requerido.' },
-            email: { required: 'Email requerido.' },
-            departamento_residencia: 'Departamento requerido.',
-            municipio_residencia: 'Municipio requerido.',
-            direccion: 'Direcci\u00f3n requerida.',
-            telefono: 'Tel\u00f3fono requerido.',
+            DUI: { required: 'DUI requerido' },
+            email: { required: 'Email requerido' },
+            departamento_residencia: 'Departamento requerido',
+            municipio_residencia: 'Municipio requerido',
+            direccion: 'Direcci\u00f3n requerida',
+            telefono: 'Tel\u00f3fono requerido',
             fecha_finalizacion: {
-                required: 'Fecha de finalizaci\u00f3n requerida.',
+                required: 'Fecha de finalizaci\u00f3n requerida',
                 min: `Debe ser mayor o igual a: ${f_MinFin(0)}`,
                 max: `Debe ser menor o igual a: ${f_MaxFin(0)}`
             }
@@ -258,7 +258,7 @@ $(function () {
                     // Limpia las clases de error previas
                     $(form).find('.invalid-feedback').remove();
                     $(form).find('.error').removeClass('error');
-                    let errorMessage = 'Ocurrió un problema al procesar su solicitud. Por favor, inténtelo de nuevo más tarde.';
+                    let errorMessage = errorMsgEstandar;
                     let jsonResponse = jqXHR.responseJSON;
 
                     $.each(jsonResponse.message, function (campo, mensaje) {
@@ -305,30 +305,30 @@ $(function () {
             fecha_finalizacion: { required: true, minFin: true, maxFin: true }
         },
         messages: {
-            parentesco: { required: 'Parentezco requerido.' },
-            nombres_ref: { required: 'Nombres requeridos.' },
-            apellidos_ref: { required: 'Apellidos requeridos.' },
+            parentesco: { required: 'Parentezco requerido' },
+            nombres_ref: { required: 'Nombres requeridos' },
+            apellidos_ref: { required: 'Apellidos requeridos' },
             f_nacimiento_ref: {
-                required: 'Fecha de nacimiento requerida.',
-                min: 'Edad m\u00e1xima 70 a\u00f1os.',
-                max: 'Edad m\u00ednima 20 a\u00f1os.'
+                required: 'Fecha de nacimiento requerida',
+                min: 'Edad m\u00e1xima 70 a\u00f1os',
+                max: 'Edad m\u00ednima 20 a\u00f1os'
             },
-            DUI_ref: { required: 'DUI requerido.' },
-            telefono_ref: 'Tel\u00f3fono requerido.',
-            nombres_menor: { required: 'Nombres requeridos.' },
-            apellidos_menor: { required: 'Apellidos requeridos.' },
+            DUI_ref: { required: 'DUI requerido' },
+            telefono_ref: 'Tel\u00f3fono requerido',
+            nombres_menor: { required: 'Nombres requeridos' },
+            apellidos_menor: { required: 'Apellidos requeridos' },
             f_nacimiento_menor: {
-                required: 'Fecha de nacimiento requerida.',
-                min: 'Edad m\u00e1xima 17 a\u00f1os.',
-                max: 'Edad m\u00ednima 12 a\u00f1os.'
+                required: 'Fecha de nacimiento requerida',
+                min: 'Edad m\u00e1xima 17 a\u00f1os',
+                max: 'Edad m\u00ednima 12 a\u00f1os'
             },
-            email: { required: 'Email requerido.', correo: 'Ingrese un email v\u00e1lido.' },
-            departamento_residencia: { required: 'Departamento requerido.' },
-            municipio_residencia: 'Municipio requerido.',
-            direccion: 'Direcci\u00f3n requerida.',
-            telefono_menor: 'Tel\u00f3fono requerido.',
+            email: { required: 'Email requerido', correo: 'Ingrese un email v\u00e1lido' },
+            departamento_residencia: { required: 'Departamento requerido' },
+            municipio_residencia: 'Municipio requerido',
+            direccion: 'Direcci\u00f3n requerida',
+            telefono_menor: 'Tel\u00f3fono requerido',
             fecha_finalizacion: {
-                required: 'Fecha de finalizaci\u00f3n requerida.',
+                required: 'Fecha de finalizaci\u00f3n requerida',
                 min: `Debe ser mayor o igual a: ${f_MinFin(0)}`,
                 max: `Debe ser menor o igual a: ${f_MaxFin(0)}`
             }
@@ -359,7 +359,7 @@ $(function () {
                     // Limpia las clases de error previas
                     $(form).find('.invalid-feedback').remove();
                     $(form).find('.error').removeClass('error');
-                    let errorMessage = 'Ocurrió un problema al procesar su solicitud. Por favor, inténtelo de nuevo más tarde.';
+                    let errorMessage = errorMsgEstandar;
                     let jsonResponse = jqXHR.responseJSON;
                     console.error(`Error en la solicitud AJAX:\nStatus: ${textStatus}\nError Thrown: ${errorThrown}\nMessage: ${jsonResponse.message}`);
                     $.each(jsonResponse.message, function (campo, mensaje) {

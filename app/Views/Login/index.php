@@ -15,13 +15,15 @@
 </head>
 
 <body>
+
     <img class="wave" src="<?= base_url('assets/img/wave.png'); ?>">
     <div class="container">
         <div class="img">
             <img src="<?= base_url('assets/img/hojinobg.png'); ?>">
         </div>
+
         <div class="login-content">
-            <form action="<?= site_url('login/verifica'); ?>" id="Login" method="POST">
+            <form id="form-login" novalidate>
                 <img src="<?= base_url('assets/img/avatar.svg'); ?>">
                 <h2 class="title">Bienvenido</h2>
                 <div class="input-div one">
@@ -30,7 +32,7 @@
                     </div>
                     <div class="div">
                         <h5>Usuario</h5>
-                        <input type="text" name="nombre" class="input">
+                        <input type="text" name="nombre" class="input" required>
                     </div>
                 </div>
                 <div class="input-div pass">
@@ -39,13 +41,14 @@
                     </div>
                     <div class="div">
                         <h5>Contraseña</h5>
-                        <input type="password" name="password" class="input">
+                        <input type="password" name="password" class="input" required>
                     </div>
                 </div>
                 <input type="submit" class="btn" value="Entrar">
                 <a href="<?= site_url('resetPassword'); ?>">¿Olvidaste tu contraseña?</a>
             </form>
         </div>
+
     </div>
 
     <script type="text/javascript">
@@ -55,10 +58,14 @@
     <!-- ALERTAS JS -->
     <script src="<?= base_url('assets/js/sweetalert2.js'); ?>" type="text/javascript"></script>
 
-    <!-- MAIN JS -->
-    <script src="<?= base_url('assets/script/Login/login.js'); ?>" type="text/javascript"></script>
+    <!-- VALIDACION DE CAMPOS-->
+    <script src="<?= base_url('assets/js/jquery.validate.min.js'); ?>" type="text/javascript"></script>
+    <script src="<?= base_url('assets/js/additional-methods.min.js'); ?>" type="text/javascript"></script>
 
-    <!--Mensaje de error-->
+    <!-- MAIN JS -->
+    <script src="<?= base_url('assets/script/login.js'); ?>" type="text/javascript"></script>
+
+    <!-- MENSAJE DE ERROR -->
     <?php if (session()->getFlashdata('message') != null) : ?>
         <script type="text/javascript">
             Swal.fire({

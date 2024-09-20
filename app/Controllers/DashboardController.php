@@ -26,9 +26,9 @@ class DashboardController extends BaseController
             ];
 
             // Cargar vistas
-            return view('Layout/Header', $data) .
-                   view('Layout/Navegacion') .
-                   view('Layout/Footer');
+            return view('layout/header', $data) .
+                   view('layout/navegacion') .
+                   view('layout/footer');
         }
 
         // Establecer mensaje flash y redirigir

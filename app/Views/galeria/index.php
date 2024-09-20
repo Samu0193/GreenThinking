@@ -32,14 +32,16 @@
 
                         <div class="input-field" style="margin-bottom: 20px;">
                             <input type="hidden" name="id_galeria" id="id_galeria">
-                            <input type="hidden" name="imagen_original" id="imagen_original">
+                            <input type="hidden" name="nom_last_img" id="nom_last_img">
                             <div class="cont-image">
                                 <div class="image-frame" id="image-frame">
                                     <p>La imagen aparecerá aquí</p>
                                 </div>
                                 <input type="text" name="nombre_imagen" id="nombre_imagen" style="position: absolute; transform: translateY(-100%);">
-                                <label for="upload" class="btn"><i class="fas fa-upload"></i> Cargar</label>
-                                <input type="file" name="upload" id="upload" accept=".jpg,.jpeg,.png" style="display: none;" required>
+                                <label for="file-upload" class="btn">
+                                    <i class="fas fa-upload"></i> Cargar
+                                </label>
+                                <input type="file" name="file-upload" id="file-upload" accept=".jpg,.jpeg,.png" style="display: none;" required>
                             </div>
                             <button class="btn" type="submit" id="insert-producto" style="width: 100%;">
                                 <i class="far fa-images"></i> Actualizar

@@ -1,4 +1,166 @@
+/********************************************************************************************************************************************************
+*!*     COMPARAR CONTRASEÑAS:
+********************************************************************************************************************************************************/
+jQuery.validator.addMethod('equalPassword', function (value, element, param) {
+    return $(param).val() !== '' ? value === $(param).val() : true;
+}, 'Las contrase\u00f1as no coinciden');
+
+// var password   = $('#password');
+// var rePassword = $('#re_password');
+
+// password.change(function () {
+//     if ($(this).val() !== rePassword.val() && rePassword.val() !== '') {
+//         rePassword.addClass('error');
+//         rePassword.after(`<label id="${rePassword.attr('name')}-error" class="error" for="${rePassword.attr('name')}">Las contrase\u00f1as no coinciden!</label>`);
+//         rePassword.val('');
+//         // modalErrorMessage(`<p style="color: #fff; font-size: 1.18em; font-weight: 100;">Las contrase\u00f1as no coinciden!</p>`);
+//     }
+// });
+
+// rePassword.change(function () {
+//     if (password.val() !== $(this).val()) {
+//         $(this).addClass('error');
+//         $(this).after(`<label id="${$(this).attr('name')}-error" class="error" for="${$(this).attr('name')}">Las contrase\u00f1as no coinciden!</label>`);
+//         $(this).val('');
+//         // modalErrorMessage(`<p style="color: #fff; font-size: 1.18em; font-weight: 100;">Las contrase\u00f1as no coinciden!</p>`);
+//     }
+// });
+
+/****************************************************************************
+                                    REGISTRO
+****************************************************************************/
+function loadRoles() {
+    $.ajax({
+        url: `${url}usuario/setRoles`,
+        type: 'GET',
+        dataType: 'json',
+        cache: false,
+        success: function (data) {
+            var options = "<option selected disabled value=''>Seleccionar... </option>";
+            $.each(data, function (index, object) {
+                options += `<option value="${object.id_rol}">${object.rol}</option>`;
+            });
+            $("[name='id_rol']").html(options);
+        },
+        error: function (jqXHR, textStatus, errorThrown) {
+            let errorMessage = errorMsgEstandar;
+            let jsonResponse = jqXHR.responseJSON;
+            if (jsonResponse) {
+                errorMessage = jsonResponse.message;
+            }
+            console.log(errorMessage);
+        }
+    });
+}
+
+/****************************************************************************
+                            CARGAR IMAGEN
+****************************************************************************/
+function cargarImg(id_imagen) {
+    $.ajax({
+        url: `${url}galeria/cargarImg`,
+        method: 'POST',
+        data: { 'id_galeria': id_imagen },
+        dataType: 'json',
+        success: function (jsonResponse) {
+            let modal = $("#modal");
+            let title_form = $('#title-form');
+            title_form.html('Cambiar Imagen');
+            $('body').addClass('no-scroll'); // Deshabilitar el scroll
+            $('#form-galeria')[0].reset();
+            modal.fadeIn();
+
+            // console.log(jsonResponse);
+            let imagenOriginal = jsonResponse.data.ruta_archivo.replace(/^.*[\\\/]/, '');
+            console.log(imagenOriginal);
+            $('#id_galeria').val(jsonResponse.data.id_galeria);
+            $('#nom_last_img').val(imagenOriginal);
+            $("#image-frame").html(`<img src="${jsonResponse.data.ruta_archivo}" class="print-image"/>`);
+            $('#galeria').DataTable().ajax.reload(null, false);
+
+        },
+        error: function(jqXHR, textStatus, errorThrown) {
+
+            let errorMessage = errorMsgEstandar;
+            let jsonResponse = jqXHR.responseJSON;
+            if (jsonResponse) {
+                errorMessage = jsonResponse.message;
+            }
+            modalErrorMessage(`<p style="color: #fff; font-size: 1.27em; font-weight: 100;">${errorMessage}</p>`);
+        }
+    });
+}
+
+/****************************************************************************
+                            CAMBIAR ESTADO USUARIO
+****************************************************************************/
+function cambiarEstadoUsuario(usuario) {
+    $.ajax({
+        url: `${url}usuario/cambiarEstado`,
+        data: { 'id_usuario': usuario },
+        type: 'POST',
+        dataType: 'json',
+        success: function (jsonResponse) {
+            toastSuccesMessageShort(`<p style="color: white; font-size: 1.18em; font-weight: 100;">${jsonResponse.message}</p>`);
+            $('#usuarios').DataTable().ajax.reload(null, false);
+        },
+        error: function (jqXHR, textStatus, errorThrown) {
+
+            // Mensaje amigable para el usuario basado en el mensaje del servidor
+            let errorMessage = errorMsgEstandar;
+            let jsonResponse = jqXHR.responseJSON;
+            console.error(`Error en la solicitud AJAX:\nStatus: ${textStatus}\nError Thrown: ${errorThrown}\nMessage: ${jsonResponse.message}`);
+
+            if (jsonResponse) {
+                errorMessage = jsonResponse.message;
+            }
+            toastErrorMessage(`<p style="color: #fff; font-size: 1.27em; font-weight: 100;">${errorMessage}</p>`);
+        }
+    });
+}
+
+// function cambiarEstadoUsuario(usuario) {
+//     console.log('ID Usuario:', usuario); // Verifica que el valor sea correcto
+
+//     $.ajax({
+//         url: `${url}usuario/cambiarEstado/${usuario}`,
+//         type: 'GET',
+//         async: false,
+//         dataType: 'json',
+//         success: function(response) {
+//             console.log('Respuesta del servidor:', response.success); // Verifica la respuesta
+//             toastSuccesMessageShort(`<p style="color: white; font-size: 1.18em; font-weight: 100;">Estado cambiado!</p>`);
+//             $('#usuarios').DataTable().ajax.reload(null, false);
+//         },
+//         error: function(jqXHR, textStatus, errorThrown) {
+//             console.error('Error en la solicitud AJAX:', textStatus, errorThrown); // Mensajes de error
+//             toastErrorMessage(`<p style="color: #fff; font-size: 1.27em; font-weight: 100;">Error al cambiar estado!</p>`);
+//         }
+//     });
+// }
+
+/****************************************************************************
+                            CAMBIAR ESTADO PRODUCTO
+****************************************************************************/
+function cambiarEstadoProducto(producto) {
+    $.ajax({
+        url: `${url}productos/cambiarEstado/${producto}`,
+        data: { 'id_producto': producto },
+        type: 'POST',
+        async: false,
+        dataType: 'json',
+        success: function () {
+            toastSuccesMessageShort(`<p style="color: white; font-size: 1.18em; font-weight: 100;">Estado cambiado!</p>`);
+            $('#productos').DataTable().ajax.reload(null, false);
+        },
+        error: function () {
+            toastErrorMessage(`<p style="color: #fff; font-size: 1.18em; font-weight: 100;">Error al cambiar estado!</p>`);
+        }
+    });
+}
+
 $(document).ready(function () {
+
     /********************************************************************************************************************************************************
      *!*     VENTANA MODAL:
      ********************************************************************************************************************************************************/
@@ -48,9 +210,9 @@ $(document).ready(function () {
     });
 
     let pagina = window.location.href;
-    if (pagina === (url + 'productos') || pagina === (url + 'galeria')) {
+    if (pagina === (`${url}productos`) || pagina === (`${url}galeria`)) {
         // Cargar imagen
-        var img    = document.getElementById('upload'),
+        var img    = document.getElementById('file-upload'),
             nombre = document.getElementById('nombre_imagen');
         img.addEventListener('change', function () {
 
@@ -65,14 +227,14 @@ $(document).ready(function () {
                     if (ancho <= 2000 && alto <= 2000) {
                         nombre.value = img.files[0].name;
 
-                        var fileSelected = document.getElementById("upload").files;
+                        var fileSelected = document.getElementById("file-upload").files;
                         if (fileSelected.length > 0) {
                             var fileToLoad = fileSelected[0];
                             var fileReader = new FileReader();
                             fileReader.onload = function (fileLoadedEvent) {
                                 var srcData = fileLoadedEvent.target.result;
                                 document.getElementById("image-frame").innerHTML =
-                                `<img src="${srcData}" class="print-image"/>`;
+                                    `<img src="${srcData}" class="print-image"/>`;
                             };
                             fileReader.readAsDataURL(fileToLoad);
                         }
@@ -179,311 +341,222 @@ $(document).ready(function () {
         }
     });
 
-});
-
-/****************************************************************************
-                                    REGISTRO
-****************************************************************************/
-function loadRoles() {
-    $.ajax({
-        url: `${url}usuario/setRoles`,
-        type: 'GET',
-        dataType: 'json',
-        cache: false,
-        success: function (data) {
-            var options = "<option selected disabled value=''>Seleccionar... </option>";
-            $.each(data, function (index, object) {
-                options += `<option value="${object.id_rol}">${object.rol}</option>`;
-            });
-            $("[name='id_rol']").html(options);
-        },
-        error: function(jqXHR, textStatus, errorThrown) {
-            let errorMessage = 'Ocurrió un problema al procesar su solicitud. Por favor, inténtelo de nuevo más tarde.';
-            let jsonResponse = jqXHR.responseJSON;
-            if (jsonResponse) {
-                errorMessage = jsonResponse.message;
-            }
-            console.log(errorMessage);
-        }
-    });
-}
-
-/********************************************************************************************************************************************************
-*!*     COMPARAR CONTRASEÑAS:
-********************************************************************************************************************************************************/
-jQuery.validator.addMethod('equalPassword', function (value, element, param) {
-    return $(param).val() !== '' ? value === $(param).val() : true;
-}, 'Las contrase\u00f1as no coinciden.');
-
-// var password   = $('#password');
-// var rePassword = $('#re_password');
-
-// password.change(function () {
-//     if ($(this).val() !== rePassword.val() && rePassword.val() !== '') {
-//         rePassword.addClass('error');
-//         rePassword.after(`<label id="${rePassword.attr('name')}-error" class="error" for="${rePassword.attr('name')}">Las contrase\u00f1as no coinciden!</label>`);
-//         rePassword.val('');
-//         // modalErrorMessage(`<p style="color: #fff; font-size: 1.18em; font-weight: 100;">Las contrase\u00f1as no coinciden!</p>`);
-//     }
-// });
-
-// rePassword.change(function () {
-//     if (password.val() !== $(this).val()) {
-//         $(this).addClass('error');
-//         $(this).after(`<label id="${$(this).attr('name')}-error" class="error" for="${$(this).attr('name')}">Las contrase\u00f1as no coinciden!</label>`);
-//         $(this).val('');
-//         // modalErrorMessage(`<p style="color: #fff; font-size: 1.18em; font-weight: 100;">Las contrase\u00f1as no coinciden!</p>`);
-//     }
-// });
-
-/********************************************************************************************************************************************************
-*!*     INSERTAR USUARIO:
-********************************************************************************************************************************************************/
-$(function () {
-    $("#form-usuarios").validate({
-        rules: {
-            nombres: { required: true, alfaOespacio: true },
-            apellidos: { required: true, alfaOespacio: true },
-            f_nacimiento_mayor: { required: true, minEdadMay: true, maxEdadMay: true },
-            DUI: { required: true, isDUI: true },
-            email: { required: true, correo: true },
-            telefono: { required: true },
-            nombre_usuario: { required: true },
-            password: { required: true },
-            re_password: { required: true, equalPassword: password }
-        },
-        messages: {
-            nombres: { required: 'Nombres requeridos.' },
-            apellidos: { required: 'Apellidos requeridos.' },
-            f_nacimiento_mayor: {
-                required: 'Fecha de nacimiento requerida.',
-                min: 'Edad m\u00e1xima 40 a\u00f1os.',
-                max: 'Edad m\u00ednima 18 a\u00f1os.'
+    /********************************************************************************************************************************************************
+    *!*     INSERTAR USUARIO:
+    ********************************************************************************************************************************************************/
+    $(function () {
+        $("#form-usuarios").validate({
+            rules: {
+                nombres: { required: true, alfaOespacio: true },
+                apellidos: { required: true, alfaOespacio: true },
+                f_nacimiento_mayor: { required: true, minEdadMay: true, maxEdadMay: true },
+                DUI: { required: true, isDUI: true },
+                email: { required: true, correo: true },
+                telefono: { required: true },
+                nombre_usuario: { required: true },
+                password: { required: true },
+                re_password: { required: true, equalPassword: password }
             },
-            DUI: { required: 'DUI requerido.' },
-            email: { required: 'Email requerido.' },
-            telefono: 'Tel\u00f3fono requerido.',
-            nombre_usuario: 'Usuario requerido.',
-            password: 'Contrase\u00f1a requerida.',
-            re_password: 'Repetir contrase\u00f1a requerido.'
-        },
-        invalidHandler: function (error, element) {
-            // console.log(error, element);
-            modalErrorMessage(`<p style="color: #fff; font-size: 1.18em; font-weight: 100;">Formulario inválido!</p>`);
-        },
-        submitHandler: function (form, e) {
-            e.preventDefault();
-            $.ajax({
-                url: `${url}usuario/create`,
-                data: $(form).serialize(),
-                type: 'POST',
-                async: false,
-                dataType: 'json',
-                success: function (jsonResponse) {
-                    console.log(jsonResponse);
-                    toastSuccesMessageShort(`<p style="color: white; font-size: 1.06em; font-weight: 100;">${jsonResponse.message}</p>`);
-                    // form.submit();
-                    $("#modal").hide(300);
-                    $(form)[0].reset();
-                    $('#usuarios').DataTable().ajax.reload(null, false);
+            messages: {
+                nombres: { required: 'Nombres requeridos' },
+                apellidos: { required: 'Apellidos requeridos' },
+                f_nacimiento_mayor: {
+                    required: 'Fecha de nacimiento requerida',
+                    min: 'Edad m\u00e1xima 40 a\u00f1os',
+                    max: 'Edad m\u00ednima 18 a\u00f1os'
                 },
-                error: function (jqXHR, textStatus, errorThrown) {
+                DUI: { required: 'DUI requerido' },
+                email: { required: 'Email requerido' },
+                telefono: 'Tel\u00f3fono requerido',
+                nombre_usuario: 'Usuario requerido',
+                password: 'Contrase\u00f1a requerida',
+                re_password: 'Repetir contrase\u00f1a requerido'
+            },
+            invalidHandler: function (error, element) {
+                // console.log(error, element);
+                modalErrorMessage(`<p style="color: #fff; font-size: 1.18em; font-weight: 100;">Formulario inválido!</p>`);
+            },
+            submitHandler: function (form, e) {
+                e.preventDefault();
+                $.ajax({
+                    url: `${url}usuario/create`,
+                    data: $(form).serialize(),
+                    type: 'POST',
+                    async: false,
+                    dataType: 'json',
+                    success: function (jsonResponse) {
+                        console.log(jsonResponse);
+                        toastSuccesMessageShort(`<p style="color: white; font-size: 1.06em; font-weight: 100;">${jsonResponse.message}</p>`);
+                        // form.submit();
+                        $("#modal").hide(300);
+                        $(form)[0].reset();
+                        $('#usuarios').DataTable().ajax.reload(null, false);
+                    },
+                    error: function (jqXHR, textStatus, errorThrown) {
 
-                    // Limpia las clases de error previas
-                    $(form).find('.invalid-feedback').remove();
-                    $(form).find('.error').removeClass('error');
+                        // Limpia las clases de error previas
+                        $(form).find('.invalid-feedback').remove();
+                        $(form).find('.error').removeClass('error');
 
-                    // Mensaje amigable para el usuario basado en el mensaje del servidor
-                    let errorMessage = 'Ocurrió un problema al procesar su solicitud. Por favor, inténtelo de nuevo más tarde.';
-                    let jsonResponse = jqXHR.responseJSON;
-                    if (jsonResponse) {
-                        errorMessage = ''
+                        // Mensaje amigable para el usuario basado en el mensaje del servidor
+                        let errorMessage = errorMsgEstandar;
+                        let jsonResponse = jqXHR.responseJSON;
+                        if (jsonResponse) {
+                            errorMessage = ''
 
-                        if (Array.isArray(jsonResponse.message)) { // ErrorMessage es un array
-                            jsonResponse.message.forEach(function (item) {
-                                errorMessage += item + '\n';
-                            });
+                            if (Array.isArray(jsonResponse.message)) { // ErrorMessage es un array
+                                jsonResponse.message.forEach(function (item) {
+                                    errorMessage += item + '\n';
+                                });
 
-                        } else if (typeof jsonResponse.message === 'object') { // ErrorMessage es un objeto.
-                            $.each(jsonResponse.message, function (campo, mensaje) {
-                                // Encuentra el campo correspondiente y agrega una clase de error
-                                let input = $(form).find(`[name="${campo}"]`);
-                                if (input.length) {
-                                    input.addClass('error');
-                                    input.after(`<label id="${campo}-error" class="error" for="${campo}">${mensaje}</label>`);
-                                }
+                            } else if (typeof jsonResponse.message === 'object') { // ErrorMessage es un objeto.
+                                $.each(jsonResponse.message, function (campo, mensaje) {
+                                    // Encuentra el campo correspondiente y agrega una clase de error
+                                    let input = $(form).find(`[name="${campo}"]`);
+                                    if (input.length) {
+                                        input.addClass('error');
+                                        input.after(`<label id="${campo}-error" class="error" for="${campo}">${mensaje}</label>`);
+                                    }
 
-                                errorMessage += mensaje + '\n';
-                            });
+                                    errorMessage += mensaje + '\n';
+                                });
 
-                        } else if (typeof jsonResponse.message === 'string') { // ErrorMessage es un string
-                            errorMessage = jsonResponse.message;
+                            } else if (typeof jsonResponse.message === 'string') { // ErrorMessage es un string
+                                errorMessage = jsonResponse.message;
 
-                        } else { // ErrorMessage es otro tipo de dato
-                            console.log('Otro tipo de dato:', typeof jsonResponse.message);
+                            } else { // ErrorMessage es otro tipo de dato
+                                console.log('Otro tipo de dato:', typeof jsonResponse.message);
+                            }
+
                         }
-                        
+
+                        if (jsonResponse.code !== 500) {
+                            modalErrorMessage(`<p style="color: #fff; font-size: 1.18em; font-weight: 100;">Formulario inválido!</p>`);
+                        } else {
+                            toastErrorMessage(`<p style="color: #fff; font-size: 1.18em; font-weight: 100;">${jsonResponse.message}</p>`);
+                        }
                     }
-
-                    if (jsonResponse.code !== 500) {
-                        modalErrorMessage(`<p style="color: #fff; font-size: 1.18em; font-weight: 100;">Formulario inválido!</p>`);
-                    } else {
-                        toastErrorMessage(`<p style="color: #fff; font-size: 1.18em; font-weight: 100;">${jsonResponse.message}</p>`);
-                    }
-                }
-            });
-            return false;
-        }
-    });
-});
-
-
-/****************************************************************************
-                            CARGAR IMAGEN
-****************************************************************************/
-function cargarImg(id_imagen) {
-    $('body').addClass('no-scroll'); // Deshabilitar el scroll
-    let modal = $("#modal");
-    let title_form = $('#title-form');
-    modal.fadeIn();
-    title_form.html('Cambiar Imagen');
-    $('#form-galeria')[0].reset();
-
-    $.ajax({
-        url: `${url}galeria/cargarImg`,
-        method: 'POST',
-        data: { 'id_galeria': id_imagen },
-        dataType: 'json',
-        success: function (response) {
-            console.log(response.ruta_archivo);
-            var imagenOriginal = response.ruta_archivo.replace(/^.*[\\\/]/, '');
-            console.log(imagenOriginal);
-            $('#id_galeria').val(response.id_galeria);
-            $('#imagen_original').val(imagenOriginal);
-            $("#image-frame").html('<img src="' + response.ruta_archivo + '" class="print-image"/>');
-            $('#galeria').DataTable().ajax.reload(null, false);
-        }
-    });
-}
-
-/****************************************************************************
-                            CAMBIAR IMAGEN
-****************************************************************************/
-$(function () {
-    $('#form-galeria').submit(function (event) {
-        var forms = $('#form-galeria');
-        // let modal = $("#modal");
-        var validation = Array.prototype.filter.call(forms, function (form) {
-            if (!form.checkValidity()) {
-                event.preventDefault();
-                event.stopPropagation();
-                // modal.hide(300);
-                $('#form-galeria')[0].reset();
-                toastInfoMessage(`<p style="color:white; font-size: 1.3em; font-weight: 100;">Elije una nueva imagen!</p>`);
+                });
+                return false;
             }
         });
     });
-});
 
-/****************************************************************************
-                            INSERTAR PRODUCTO
-****************************************************************************/
-$(function () {
-    $("#form-productos").validate({
+    /****************************************************************************
+                                CAMBIAR IMAGEN
+    ****************************************************************************/
+    $('#form-galeri').validate({
         rules: {
-            nombre_producto: { required: true },
-            descripcion: { required: true },
-            precio: { required: true, decimal: true },
-            nombre_imagen: { required: true }
+            nombre: { required: true },
+            password: { required: true }
         },
         messages: {
-            nombre_producto: 'Nombre requerido.',
-            descripcion: 'Descripcion requerida.',
-            precio: { required: 'Precio requerido.' },
-            nombre_imagen: 'Imagen requerida.'
+            nombre: { required: 'Nombre de usuario requerido' },
+            password: { required: 'Contraseña requerida' }
         },
-        invalidHandler: function (error, element) {
-            modalErrorMessage(`<p style="color: #fff; font-size: 1.18em; font-weight: 100;">Formulario inv\u00e1lido!</p>`);
+        highlight: function (element) {
+            $(element).closest('.input-div').addClass('error'); // Agrega la clase 'error' al div padre
         },
-        submitHandler: function (form, e) {
-            e.preventDefault();
-            form.submit();
-            return false;
+        unhighlight: function (element) {
+            $(element).closest('.input-div').removeClass('error'); // Quita la clase 'error' del div padre
+        },
+        invalidHandler: function (event, validator) {
+            event.preventDefault(); // Evitar recarga de página
+        },
+        submitHandler: function(form, ev) {
+
+            ev.preventDefault(); // Evitar la acción predeterminada del formulario
+            let validator = $(form).validate();
+            $.ajax({
+                url: `${url}login/verifica`,
+                type: 'POST',
+                data: $(form).serialize(),
+                success: function(jsonResponse) {
+                    location.reload(); //devuelve una url con json
+                },
+                error: function (jqXHR, textStatus, errorThrown) {
+
+                    let errorMessage = 'Ocurrió un problema al procesar su solicitud. Por favor, inténtelo de nuevo más tarde';
+                    let jsonResponse = jqXHR.responseJSON;
+                    if (jsonResponse) {
+                        if (typeof jsonResponse.message === 'object') {
+
+                            $.each(jsonResponse.message, function (campo, mensaje) {
+                                let input = $(form).find(`[name="${campo}"]`);
+                                if (input.length) {
+                                    validator.showErrors({
+                                        [campo]: mensaje
+                                    });
+                                }
+                                errorMessage += mensaje + '\n';
+                            });
+
+                        } else {
+                            errorMessage = jsonResponse.message;
+                        }
+                    }
+
+                    if (typeof jsonResponse.message === 'object') {
+                        toastErrorMessage(`<p style="color: #fff; font-size: 1.18em; font-weight: 100;">Error al procesar la solicitud.</p>`);
+                    } else {
+                        toastErrorMessage(`<p style="color: #fff; font-size: 1.18em; font-weight: 100;">${errorMessage}</p>`);
+                    }
+                }
+            });
+
+            return false; // Evitar que el formulario se envíe dos veces
         }
     });
-    $('#form-productos').submit(function (event) {
-        if ($("#nombre_imagen").val() != '') {
-            $("#image-frame").css('border', '2px solid #e1e1e1');
-        } else {
-            $("#image-frame").css('border', '2px solid #ff0800');
-        }
-    });
-});
+    // $(function () {
+    //     $('#form-galeria').submit(function (event) {
+    //         var forms = $('#form-galeria');
+    //         // let modal = $("#modal");
+    //         var validation = Array.prototype.filter.call(forms, function (form) {
+    //             if (!form.checkValidity()) {
+    //                 event.preventDefault();
+    //                 event.stopPropagation();
+    //                 // modal.hide(300);
+    //                 $('#form-galeria')[0].reset();
+    //                 toastInfoMessage(`<p style="color:white; font-size: 1.3em; font-weight: 100;">Elije una nueva imagen!</p>`);
+    //             }
+    //         });
+    //     });
+    // });
 
-/****************************************************************************
-                            CAMBIAR ESTADO USUARIO
-****************************************************************************/
-function cambiarEstadoUsuario(usuario) {
-    $.ajax({
-        url: `${url}usuario/cambiarEstado`,
-        data: { 'id_usuario': usuario },
-        type: 'POST',
-        dataType: 'json',
-        success: function (jsonResponse) {
-            toastSuccesMessageShort(`<p style="color: white; font-size: 1.18em; font-weight: 100;">${jsonResponse.message}</p>`);
-            $('#usuarios').DataTable().ajax.reload(null, false);
-        },
-        error: function (jqXHR, textStatus, errorThrown) {
-
-            // Mensaje amigable para el usuario basado en el mensaje del servidor
-            let errorMessage = 'Ocurrió un problema al procesar su solicitud. Por favor, inténtelo de nuevo más tarde.';
-            let jsonResponse = jqXHR.responseJSON;
-            console.error(`Error en la solicitud AJAX:\nStatus: ${textStatus}\nError Thrown: ${errorThrown}\nMessage: ${jsonResponse.message}`);
-
-            if (jsonResponse) {
-                errorMessage = jsonResponse.message;
+    /****************************************************************************
+                                INSERTAR PRODUCTO
+    ****************************************************************************/
+    $(function () {
+        $("#form-productos").validate({
+            rules: {
+                nombre_producto: { required: true },
+                descripcion: { required: true },
+                precio: { required: true, decimal: true },
+                nombre_imagen: { required: true }
+            },
+            messages: {
+                nombre_producto: 'Nombre requerido',
+                descripcion: 'Descripcion requerida',
+                precio: { required: 'Precio requerido' },
+                nombre_imagen: 'Imagen requerida'
+            },
+            invalidHandler: function (error, element) {
+                modalErrorMessage(`<p style="color: #fff; font-size: 1.18em; font-weight: 100;">Formulario inv\u00e1lido!</p>`);
+            },
+            submitHandler: function (form, e) {
+                e.preventDefault();
+                form.submit();
+                return false;
             }
-            toastErrorMessage(`<p style="color: #fff; font-size: 1.27em; font-weight: 100;">${errorMessage}</p>`);
-        }
+        });
+
+        $('#form-productos').submit(function (event) {
+            if ($("#nombre_imagen").val() != '') {
+                $("#image-frame").css('border', '2px solid #e1e1e1');
+            } else {
+                $("#image-frame").css('border', '2px solid #ff0800');
+            }
+        });
     });
-}
 
-// function cambiarEstadoUsuario(usuario) {
-//     console.log('ID Usuario:', usuario); // Verifica que el valor sea correcto
-
-//     $.ajax({
-//         url: `${url}usuario/cambiarEstado/${usuario}`,
-//         type: 'GET',
-//         async: false,
-//         dataType: 'json',
-//         success: function(response) {
-//             console.log('Respuesta del servidor:', response.success); // Verifica la respuesta
-//             toastSuccesMessageShort(`<p style="color: white; font-size: 1.18em; font-weight: 100;">Estado cambiado!</p>`);
-//             $('#usuarios').DataTable().ajax.reload(null, false);
-//         },
-//         error: function(jqXHR, textStatus, errorThrown) {
-//             console.error('Error en la solicitud AJAX:', textStatus, errorThrown); // Mensajes de error
-//             toastErrorMessage(`<p style="color: #fff; font-size: 1.27em; font-weight: 100;">Error al cambiar estado!</p>`);
-//         }
-//     });
-// }
-
-/****************************************************************************
-                            CAMBIAR ESTADO PRODUCTO
-****************************************************************************/
-function cambiarEstadoProducto(producto) {
-    $.ajax({
-        url: `${url}productos/cambiarEstado/${producto}`,
-        data: { 'id_producto': producto },
-        type: 'POST',
-        async: false,
-        dataType: 'json',
-        success: function () {
-            toastSuccesMessageShort(`<p style="color: white; font-size: 1.18em; font-weight: 100;">Estado cambiado!</p>`);
-            $('#productos').DataTable().ajax.reload(null, false);
-        },
-        error: function () {
-            toastErrorMessage(`<p style="color: #fff; font-size: 1.18em; font-weight: 100;">Error al cambiar estado!</p>`);
-        }
-    });
-}
+});
