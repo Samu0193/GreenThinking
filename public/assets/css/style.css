@@ -911,16 +911,6 @@ body::-webkit-scrollbar-thumb:hover,
     overflow: hidden;
 }
 
-.form-modal .error {
-    border: 2px solid #ff0800;
-}
-
-.form-modal label[class="error"] {
-    color: #ff0800;
-    margin: 0;
-    border: none !important;
-}
-
 .form-modal .btn {
     flex-basis: 60%;
 }
@@ -942,21 +932,22 @@ body::-webkit-scrollbar-thumb:hover,
 
 .cont-image {
     border: none;
+    width: auto;
     margin: 20px auto 0;
-    width: 200px;
 }
 
 .cont-image .image-frame {
     display: flex;
     position: relative;
-    z-index: 1;
-    justify-content: center;
     align-items: center;
-    border: 2px solid;
-    height: 250px;
-    border-radius: 16px;
+    justify-content: center;
     background-color: #fff;
     border: 2px solid #e1e1e1;
+    border-radius: 16px;
+    height: 250px;
+    width: 200px;
+    z-index: 1;
+    margin: auto;
     /* box-shadow: 0 0 10px 1px rgba(0, 0, 0, 0.3); */
 }
 
@@ -971,11 +962,23 @@ body::-webkit-scrollbar-thumb:hover,
     border-radius: 13px;
 }
 
-#nombre_imagen {
+/* #nombre_imagen {
     position: absolute;
     transform: translateY(-100%);
     width: 150px;
     margin-left: 25px;
+} */
+
+#nombre_imagen,
+.file-galeria {
+    position: absolute !important;
+    transform: translateY(-100%) !important;
+    width: 150px !important;
+    margin-left: 55px !important;
+}
+#fileUpload-error {
+    text-align: center;
+    padding-top: 5px;
 }
 
 
@@ -1157,6 +1160,16 @@ body.swal2-toast-shown .swal2-container {
     animation: spin 1s linear infinite;
 }
 
+.form-modal .error {
+    border: 2px solid #ff0800;
+}
+
+.form-modal label[class="error"] {
+    color: #ff0800;
+    margin: 0;
+    border: none !important;
+}
+
 /* Animación de giro */
 @keyframes spin {
     0% {
@@ -1166,10 +1179,6 @@ body.swal2-toast-shown .swal2-container {
         transform: rotate(360deg);
     }
 }
-
-
-
-
 
 
 /*************************** Media Querys ***********************/

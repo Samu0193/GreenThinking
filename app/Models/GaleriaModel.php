@@ -58,7 +58,8 @@ class GaleriaModel extends Model
     // OBTENER
     public function cargarImgModel($valor)
     {
-        return $this->where('id_galeria', $valor)->first(); // Devuelve el primer registro que coincide con la condición
+        // Devuelve el primer registro que coincide con la condición
+        return $this->where('id_galeria', $valor)->first();
     }
 
     public function cambiarImgModel($tablename, $data, $where)

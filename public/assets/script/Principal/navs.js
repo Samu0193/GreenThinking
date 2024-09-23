@@ -463,14 +463,67 @@ jQuery.validator.addMethod("isDUI", function (value) {
 //     }
 // }, "DUI inválido");
 
+/********************************************************************************************************************************************************
+*!*     VALIDAR COMPARAR CONTRASEÑAS:
+********************************************************************************************************************************************************/
+jQuery.validator.addMethod('equalPassword', function (value, element, param) {
+    return $(param).val() !== '' ? value === $(param).val() : true;
+}, 'Las contrase\u00f1as no coinciden');
+
+// TIPOS DE ARCHIVOS
+$.validator.addMethod("fileType", function (value, element, param) {
+    // Si no hay archivos seleccionados, devolver true (sin error)
+    if (element.files.length === 0) return true;
+
+    const extension = value.split('.').pop().toLowerCase();
+    return $.inArray(extension, param) !== -1;
+}, "Solo se permiten archivos JPG, JPEG o PNG");
+
+// TAMAÑO MAXIMO DE ARCHIVOS
+$.validator.addMethod("fileSize", function (value, element, param) {
+    if (element.files.length === 0) return true;
+
+    const file = element.files[0];
+    return file.size <= param;
+}, "El tamaño máximo permitido es de 5MB");
+
+// Método para validar las dimensiones máximas (2000x2000)
+// $.validator.addMethod("imageDimensions", function (value, element, param) {
+//     if (element.files.length === 0) return true;
+
+//     const file = element.files[0];
+//     const _URL = window.URL || window.webkitURL;
+//     const imgFile = new Image();
+//     let isValid = false;
+    
+//     // Manejo sincrónico de la imagen
+//     imgFile.src = _URL.createObjectURL(file);
+//     console.log(imgFile);
+//     imgFile.onload = function () {
+//         const { width: ancho, height: alto } = imgFile;
+//         isValid = (ancho <= param.width && alto <= param.height);
+//         // console.log(`Imagen: ${ancho} x ${alto}`);
+//         console.log(isValid);
+//         console.log(`Permitido: ${param.width} x ${param.height}`);
+//     };
+    
+//     console.log(isValid);
+//     return isValid; // Retorna si la imagen es válida o no
+// }, "Las dimensiones máximas permitidas son 2000 x 2000 píxeles");
+
 function valSize(input) {
-    const fileSize = input.files[0].size / 1024 / 1024; // in MiB
-    if (fileSize < 5) {
-        return true;
-    } else {
-        return false;
-    }
+    const file = input.files[0];
+    return file.size <= 5242880; // 5MB en bytes
 }
+
+// function valSize(input) {
+//     const fileSize = input.files[0].size / 1024 / 1024; // in MiB
+//     if (fileSize < 5) {
+//         return true;
+//     } else {
+//         return false;
+//     }
+// }
 
 function valDimensions(imagen) {
     var _URL = window.URL || window.webkitURL;

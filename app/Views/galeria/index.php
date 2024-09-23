@@ -27,8 +27,7 @@
                         <i class="fa fa-times" id="close"></i>
                     </div>
 
-                    <form class="form-modal" id="form-galeria" autocomplete="off" method="POST"
-                        action="<?= site_url('galeria/cambiarImg'); ?>" enctype="multipart/form-data" novalidate>
+                    <form id="form-galeria" class="form-modal" autocomplete="off" enctype="multipart/form-data" novalidate>
 
                         <div class="input-field" style="margin-bottom: 20px;">
                             <input type="hidden" name="id_galeria" id="id_galeria">
@@ -37,13 +36,13 @@
                                 <div class="image-frame" id="image-frame">
                                     <p>La imagen aparecerá aquí</p>
                                 </div>
-                                <input type="text" name="nombre_imagen" id="nombre_imagen" style="position: absolute; transform: translateY(-100%);">
-                                <label for="file-upload" class="btn">
+                                <input type="text" name="nombre_imagen" id="nombre_imagen">
+                                <input type="file" name="fileUpload" id="fileUpload" class="file-galeria" required>
+                                <label for="fileUpload" class="btn">
                                     <i class="fas fa-upload"></i> Cargar
                                 </label>
-                                <input type="file" name="file-upload" id="file-upload" accept=".jpg,.jpeg,.png" style="display: none;" required>
                             </div>
-                            <button class="btn" type="submit" id="insert-producto" style="width: 100%;">
+                            <button class="btn" type="submit" id="submit-galeria" style="width: 100%;">
                                 <i class="far fa-images"></i> Actualizar
                             </button>
                         </div>

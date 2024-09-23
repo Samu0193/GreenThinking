@@ -1,9 +1,6 @@
 <?php
 
 use CodeIgniter\Router\RouteCollection;
-use App\Controllers\InicioController;
-use App\Controllers\LoginController;
-use App\Controllers\DashboardController;
 
 /**
  * @var RouteCollection $routes
@@ -48,21 +45,21 @@ $routes->get('changePassword',          'LoginController::changePassword');
 $routes->post('updatePassword',         'LoginController::updatePassword');
 
 // USUARIO CONTROLLER
-$routes->post('usuario/tblUsuarios', 'UsuarioController::tblUsuarios');
-$routes->post('usuario/validarEmail', 'UsuarioController::validarEmail');
-$routes->post('usuario/validarUser', 'UsuarioController::validarUser');
-$routes->get('usuario/setRoles', 'UsuarioController::setRoles');
-$routes->post('usuario/create', 'UsuarioController::create');
+$routes->post('usuario/tblUsuarios',   'UsuarioController::tblUsuarios');
+$routes->post('usuario/validarEmail',  'UsuarioController::validarEmail');
+$routes->post('usuario/validarUser',   'UsuarioController::validarUser');
+$routes->get('usuario/setRoles',       'UsuarioController::setRoles');
+$routes->post('usuario/create',        'UsuarioController::create');
 $routes->post('usuario/cambiarEstado', 'UsuarioController::cambiarEstado');
 
 // GALERIA CONTROLLER
-$routes->post('galeria/cargarImg', 'GaleriaController::cargarImg');
+$routes->post('galeria/cargarImg',  'GaleriaController::cargarImg');
 $routes->post('galeria/cambiarImg', 'GaleriaController::cambiarImg');
-$routes->get('galeria/tblGaleria', 'GaleriaController::tblGaleria');
+$routes->get('galeria/tblGaleria',  'GaleriaController::tblGaleria');
 
 // PRODUCTOS CONTROLLER
-$routes->get('productos/verProductos', 'ProductosController::verProductos');
-$routes->get('productos/tblProductos', 'ProductosController::tblProductos');
+$routes->get('productos/verProductos',   'ProductosController::verProductos');
+$routes->get('productos/tblProductos',   'ProductosController::tblProductos');
 $routes->post('productos/cambiarEstado', 'ProductosController::cambiarEstado');
 
 // SOLICITUDES CONTROLLER

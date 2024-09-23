@@ -210,46 +210,72 @@ $(document).ready(function () {
     });
 
     let pagina = window.location.href;
+    let imgValid = false;
     if (pagina === (`${url}productos`) || pagina === (`${url}galeria`)) {
-        // Cargar imagen
-        var img    = document.getElementById('file-upload'),
-            nombre = document.getElementById('nombre_imagen');
-        img.addEventListener('change', function () {
 
-            if (valSize(this)) {
-                var _URL = window.URL || window.webkitURL;
-                var imgFile = new Image();
-                imgFile.src = _URL.createObjectURL(this.files[0]);
+        // document.getElementById('fileUpload').addEventListener('change', function () {
+        $('#fileUpload').on('change keyup blur', function () {
+
+            let valid = $('#form-galeria').valid();
+            if (!valid) return;
+            const img = this;
+            const nombre = document.getElementById('nombre_imagen');
+            const imageFrame = document.getElementById('image-frame');
+
+            console.log(img.files.length);
+            if (img.files.length > 0) {
+                const file = img.files[0];
+                const _URL = window.URL || window.webkitURL;
+                const imgFile = new Image();
+                imgFile.src = _URL.createObjectURL(file);
                 imgFile.onload = function () {
-                    var ancho = imgFile.width;
-                    var alto = imgFile.height
-                    console.log(ancho + ' ' + alto);
+
+                    const { width: ancho, height: alto } = imgFile;
+                    console.log(`${ancho} x ${alto}`);
                     if (ancho <= 2000 && alto <= 2000) {
-                        nombre.value = img.files[0].name;
-
-                        var fileSelected = document.getElementById("file-upload").files;
-                        if (fileSelected.length > 0) {
-                            var fileToLoad = fileSelected[0];
-                            var fileReader = new FileReader();
-                            fileReader.onload = function (fileLoadedEvent) {
-                                var srcData = fileLoadedEvent.target.result;
-                                document.getElementById("image-frame").innerHTML =
-                                    `<img src="${srcData}" class="print-image"/>`;
-                            };
-                            fileReader.readAsDataURL(fileToLoad);
-                        }
+                        imgValid = true;
                     } else {
-                        img.value = ''; //for clearing with Jquery
-                        modalErrorMessage(`<p style="color: #fff; font-size: 1.18em; font-weight: 100;">Dimensiones m\u00e1ximas 2000x2000, elija una imagen adecuada...</p>`);
+                        var validator = $('#form-galeria').validate();
+                        imgValid = false;
+                        validator.showErrors({
+                            [img.name]: 'Dimensiones máximas 2000 x 2000, elija una imagen adecuada'
+                        });
                     }
-                }
-            } else {
-                this.value = ''; //for clearing with Jquery
-                nombre.value = '';
-                modalErrorMessage(`<p style="color: #fff; font-size: 1.18em; font-weight: 100;">Tama\u00f1o m\u00e1ximo 5Mb, elija una imagen menos pesada... </p>`);
-            }
 
+                    nombre.value = file.name;
+                    // Cargar la imagen seleccionada
+                    loadImage(file, imageFrame);
+                };
+
+                imgFile.onerror = function () {
+                    resetFileInput(img, nombre);
+                    modalErrorMessage(`<p style="color: #fff; font-size: 1.18em; font-weight: 100;">Hubo un error al cargar la imagen</p>`);
+                };
+
+            } else {
+                // imageFrame.innerHTML = `<img src=""/>`;
+                console.log('No hay archivo');
+                resetFileInput(img, nombre);
+            }
         });
+        
+        // Función para cargar la imagen y mostrarla en el contenedor
+        function loadImage(file, frame) {
+            const fileReader = new FileReader();
+            
+            fileReader.onload = function (event) {
+                const srcData = event.target.result;
+                frame.innerHTML = `<img src="${srcData}" class="print-image"/>`;
+            };
+        
+            fileReader.readAsDataURL(file);
+        }
+        
+        // Función para resetear el input file
+        function resetFileInput(imgInput, nombreInput) {
+            imgInput.value = ''; // Limpiar input file
+            nombreInput.value = ''; // Limpiar nombre
+        }
 
     }
 
@@ -445,64 +471,43 @@ $(document).ready(function () {
     /****************************************************************************
                                 CAMBIAR IMAGEN
     ****************************************************************************/
-    $('#form-galeri').validate({
+    $('#form-galeria').validate({
         rules: {
-            nombre: { required: true },
-            password: { required: true }
+            fileUpload: {
+                required: true,
+                extension: "jpg|jpeg|png",
+                fileSize: 5242880, // 5MB en bytes
+                // imageDimensions: { width: 2000, height: 2000 }, // Dimensiones máximas
+                // fileType: ["jpg", "jpeg", "png"]
+            }
         },
         messages: {
-            nombre: { required: 'Nombre de usuario requerido' },
-            password: { required: 'Contraseña requerida' }
+            fileUpload: {
+                required: 'Debes cambiar de imagen',
+                extension: 'Solo se permiten archivos JPG, JPEG o PNG'
+            }
         },
         highlight: function (element) {
-            $(element).closest('.input-div').addClass('error'); // Agrega la clase 'error' al div padre
+            $('#image-frame').addClass('error');
         },
         unhighlight: function (element) {
-            $(element).closest('.input-div').removeClass('error'); // Quita la clase 'error' del div padre
+            $('#image-frame').removeClass('error');
         },
         invalidHandler: function (event, validator) {
             event.preventDefault(); // Evitar recarga de página
         },
         submitHandler: function(form, ev) {
 
-            ev.preventDefault(); // Evitar la acción predeterminada del formulario
-            let validator = $(form).validate();
-            $.ajax({
-                url: `${url}login/verifica`,
-                type: 'POST',
-                data: $(form).serialize(),
-                success: function(jsonResponse) {
-                    location.reload(); //devuelve una url con json
-                },
-                error: function (jqXHR, textStatus, errorThrown) {
+            ev.preventDefault();
+            var validator = $(form).validate();
+            console.log(imgValid);
+            if (validator && imgValid) {
 
-                    let errorMessage = 'Ocurrió un problema al procesar su solicitud. Por favor, inténtelo de nuevo más tarde';
-                    let jsonResponse = jqXHR.responseJSON;
-                    if (jsonResponse) {
-                        if (typeof jsonResponse.message === 'object') {
-
-                            $.each(jsonResponse.message, function (campo, mensaje) {
-                                let input = $(form).find(`[name="${campo}"]`);
-                                if (input.length) {
-                                    validator.showErrors({
-                                        [campo]: mensaje
-                                    });
-                                }
-                                errorMessage += mensaje + '\n';
-                            });
-
-                        } else {
-                            errorMessage = jsonResponse.message;
-                        }
-                    }
-
-                    if (typeof jsonResponse.message === 'object') {
-                        toastErrorMessage(`<p style="color: #fff; font-size: 1.18em; font-weight: 100;">Error al procesar la solicitud.</p>`);
-                    } else {
-                        toastErrorMessage(`<p style="color: #fff; font-size: 1.18em; font-weight: 100;">${errorMessage}</p>`);
-                    }
-                }
-            });
+            } else {
+                validator.showErrors({
+                    fileUpload: 'Dimensiones máximas 2000 x 2000, elija una imagen adecuada'
+                });
+            }
 
             return false; // Evitar que el formulario se envíe dos veces
         }

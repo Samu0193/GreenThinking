@@ -36,7 +36,7 @@ class GaleriaController extends BaseController
         }
 
         // Redirigir con mensaje flash directamente y guardarlo
-        return redirect()->to(site_url('login'))->with('message', 'Usted no se ha identificado.');
+        return redirect()->to(site_url('login'))->with('message', 'Usted no se ha identificado');
     }
 
 
@@ -173,14 +173,14 @@ class GaleriaController extends BaseController
 
         $id_galeria   = $this->request->getPost('id_galeria');
         $nom_last_img = $this->request->getPost('nom_last_img');
-        $nom_new_img  = $this->guardarImagen($this->request->getFile('file-upload'), $id_galeria);
+        $nom_new_img  = $this->guardarImagen($this->request->getFile('fileUpload'), $id_galeria);
 
         // Elimina la imagen original
         if (file_exists("assets/img/galery/$nom_last_img")) {
             unlink("assets/img/galery/$nom_last_img");
         }
 
-        // $mi_archivo = 'file-upload'; // input file
+        // $mi_archivo = 'fileUpload'; // input file
         // $config = [
         //     'upload_path'   => "assets/img/galery/",
         //     'file_name'     => "galeria$id_galeria.$extension",
@@ -217,7 +217,7 @@ class GaleriaController extends BaseController
             unlink("assets/img/galery/$nom_last_img");
         }
 
-        $mi_archivo = 'file-upload'; // input file
+        $mi_archivo = 'fileUpload'; // input file
         $config = [
             'upload_path'   => "assets/img/galery/",
             'file_name'     => "galeria$id_galeria.$extension",
