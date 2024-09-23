@@ -56,6 +56,7 @@ function loadRoles() {
 /****************************************************************************
                             CARGAR IMAGEN
 ****************************************************************************/
+let imagenOriginal;
 function cargarImg(id_imagen) {
     $.ajax({
         url: `${url}galeria/cargarImg`,
@@ -65,18 +66,21 @@ function cargarImg(id_imagen) {
         success: function (jsonResponse) {
             let modal = $("#modal");
             let title_form = $('#title-form');
+            let nomImgOriginal = jsonResponse.data.ruta_archivo.replace(/^.*[\\\/]/, '');
+            imagenOriginal = `${url}${jsonResponse.data.ruta_archivo}`;
             title_form.html('Cambiar Imagen');
+            // console.log(nomImgOriginal);
+
             $('body').addClass('no-scroll'); // Deshabilitar el scroll
             $('#form-galeria')[0].reset();
-            modal.fadeIn();
-
-            // console.log(jsonResponse);
-            let imagenOriginal = jsonResponse.data.ruta_archivo.replace(/^.*[\\\/]/, '');
-            console.log(imagenOriginal);
+            $('#image-frame').removeClass('error');
+            $('#image-frame').attr('title', '');
+            $('#form-galeria').validate().resetForm();
             $('#id_galeria').val(jsonResponse.data.id_galeria);
-            $('#nom_last_img').val(imagenOriginal);
-            $("#image-frame").html(`<img src="${jsonResponse.data.ruta_archivo}" class="print-image"/>`);
+            $('#nom_last_img').val(nomImgOriginal);
+            $("#image-frame").html(`<img src="${imagenOriginal}" class="print-image"/>`);
             $('#galeria').DataTable().ajax.reload(null, false);
+            modal.fadeIn();
 
         },
         error: function(jqXHR, textStatus, errorThrown) {
@@ -213,17 +217,15 @@ $(document).ready(function () {
     let imgValid = false;
     if (pagina === (`${url}productos`) || pagina === (`${url}galeria`)) {
 
-        // document.getElementById('fileUpload').addEventListener('change', function () {
         $('#fileUpload').on('change keyup blur', function () {
-
-            let valid = $('#form-galeria').valid();
-            if (!valid) return;
-            const img = this;
-            const nombre = document.getElementById('nombre_imagen');
+            const img        = this;
+            const tagImg     = $('.print-image');
+            const nombre     = document.getElementById('nombre_imagen');
             const imageFrame = document.getElementById('image-frame');
+            const form       = $(`#form-${pagina.split('/').pop().toLowerCase()}`); 
+            const validator  = $(form).validate();
 
-            console.log(img.files.length);
-            if (img.files.length > 0) {
+            if (img.files.length > 0 && $('#form-galeria').valid()) {
                 const file = img.files[0];
                 const _URL = window.URL || window.webkitURL;
                 const imgFile = new Image();
@@ -231,19 +233,39 @@ $(document).ready(function () {
                 imgFile.onload = function () {
 
                     const { width: ancho, height: alto } = imgFile;
-                    console.log(`${ancho} x ${alto}`);
+                    $(imageFrame).attr('title', `Dimensiones actuales ${ancho} x ${alto}`);
+                    $(imageFrame).tooltip({
+                        position: {
+                            my: "center top+10",  // Posición del tooltip con respecto al div
+                            at: "center bottom"   // Mostrar el tooltip en la parte inferior del div
+                        },
+                        show: { effect: "fade", duration: 500 },  // Efecto de aparición con duración
+                        hide: { effect: "fade", duration: 500 }   // Efecto de desaparición
+                    });
+
+                    // $("#image-frame").tooltip({
+                    //     content: function() {
+                    //         return "Dimensiones máximas: 2000x2000 píxeles";  // Contenido dinámico
+                    //     }
+                    // });
+
+                    // $("#image-frame").tooltip({
+                    //     hide: false  // El tooltip no desaparece automáticamente
+                    // }).on("mouseleave", function() {
+                    //     $(this).tooltip("close");  // Cierra el tooltip cuando el mouse se aleja del div
+                    // });
+
                     if (ancho <= 2000 && alto <= 2000) {
                         imgValid = true;
                     } else {
-                        var validator = $('#form-galeria').validate();
                         imgValid = false;
                         validator.showErrors({
                             [img.name]: 'Dimensiones máximas 2000 x 2000, elija una imagen adecuada'
                         });
                     }
 
-                    nombre.value = file.name;
                     // Cargar la imagen seleccionada
+                    nombre.value = file.name;
                     loadImage(file, imageFrame);
                 };
 
@@ -253,21 +275,22 @@ $(document).ready(function () {
                 };
 
             } else {
-                // imageFrame.innerHTML = `<img src=""/>`;
-                console.log('No hay archivo');
+                validator.resetForm();
+                tagImg.attr('src', `${imagenOriginal}`)
+                $(imageFrame).attr('title', '');
                 resetFileInput(img, nombre);
             }
+
         });
-        
+
         // Función para cargar la imagen y mostrarla en el contenedor
         function loadImage(file, frame) {
             const fileReader = new FileReader();
-            
             fileReader.onload = function (event) {
                 const srcData = event.target.result;
                 frame.innerHTML = `<img src="${srcData}" class="print-image"/>`;
             };
-        
+
             fileReader.readAsDataURL(file);
         }
         
@@ -487,10 +510,10 @@ $(document).ready(function () {
                 extension: 'Solo se permiten archivos JPG, JPEG o PNG'
             }
         },
-        highlight: function (element) {
+        highlight: function () {
             $('#image-frame').addClass('error');
         },
-        unhighlight: function (element) {
+        unhighlight: function () {
             $('#image-frame').removeClass('error');
         },
         invalidHandler: function (event, validator) {
@@ -500,8 +523,58 @@ $(document).ready(function () {
 
             ev.preventDefault();
             var validator = $(form).validate();
-            console.log(imgValid);
             if (validator && imgValid) {
+
+                // Crear un objeto FormData
+                var formData = new FormData(form);
+                // Agregar otros datos adicionales si es necesario
+                // formData.append('extraData', 'some_extra_value');
+
+                $.ajax({
+                    url: `${url}galeria/cambiarImg`,
+                    type: 'POST',
+                    data: formData,
+                    contentType: false,
+                    processData: false,
+                    success: function(jsonResponse) {
+                        // Maneja la respuesta del servidor
+                        // console.log(jsonResponse);
+                        modal.hide(300);
+                        $(form)[0].reset();
+                        $('body').removeClass('no-scroll');
+                        $('#galeria').DataTable().ajax.reload(null, false);
+                        toastSuccesMessageShort(`<p style="color: white; font-size: 1.18em; font-weight: 100;">${jsonResponse.message}</p>`);
+                    },
+                    error: function (jqXHR, textStatus, errorThrown) {
+
+                        let errorMessage = errorMsgEstandar;
+                        let jsonResponse = jqXHR.responseJSON;
+                        if (jsonResponse) {
+                            if (typeof jsonResponse.message === 'object') {
+
+                                errorMessage = '';
+                                $.each(jsonResponse.message, function (campo, mensaje) {
+                                    let input = $(form).find(`[name="${campo}"]`);
+                                    if (input.length && campo === 'fileUpload') {
+                                        validator.showErrors({
+                                            [campo]: mensaje
+                                        });
+                                    }
+                                    errorMessage += mensaje + '\n';
+                                });
+
+                            } else {
+                                errorMessage = jsonResponse.message;
+                            }
+                        }
+
+                        if (typeof jsonResponse.message === 'object') {
+                            toastErrorMessage(`<p style="color: #fff; font-size: 1.18em; font-weight: 100;">Error al procesar la solicitud.</p>`);
+                        } else {
+                            toastErrorMessage(`<p style="color: #fff; font-size: 1.18em; font-weight: 100;">${errorMessage}</p>`);
+                        }
+                    }
+                });
 
             } else {
                 validator.showErrors({

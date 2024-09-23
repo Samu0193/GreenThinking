@@ -30,9 +30,9 @@ class GaleriaModel extends Model
                 'required' => 'Nombre de la imagen a reemplazar requerido'
             ]
         ],
-        'file-upload' => [
-            'label'  => 'Imagen',  // Define el nombre amigable para el campo
-            'rules'  => 'uploaded[file-upload]|is_image[file-upload]|mime_in[file-upload,image/jpg,image/jpeg,image/png]',
+        'fileUpload' => [
+            'label'  => 'imagen',  // Define el nombre amigable para el campo
+            'rules'  => 'uploaded[fileUpload]|is_image[fileUpload]|mime_in[fileUpload,image/jpg,image/jpeg,image/png]',
             'errors' => [
                 'uploaded' => 'La {field} es requerida',  // Aquí {field} será reemplazado por "Imagen"
                 'is_image' => 'La {field} debe ser un archivo válido',
@@ -62,10 +62,10 @@ class GaleriaModel extends Model
         return $this->where('id_galeria', $valor)->first();
     }
 
-    public function cambiarImgModel($tablename, $data, $where)
+    public function cambiarImgModel($data, $id_galeria)
     {
         // Nota: CodeIgniter 4 no usa `update()` de la misma manera si estás usando métodos del Query Builder.
         // Para una actualización simple, puedes usar el método `update` del propio modelo:
-        return $this->set($data)->where($where)->update(); // Actualiza el registro que coincide con la condición
+        return $this->where('id_galeria', $id_galeria)->set($data)->update(); // Actualiza el registro que coincide con la condición
     }
 }

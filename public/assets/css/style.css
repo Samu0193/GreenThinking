@@ -1164,10 +1164,25 @@ body.swal2-toast-shown .swal2-container {
     border: 2px solid #ff0800;
 }
 
+#image-frame.error {
+    border: 3px solid #ff0800;
+}
+
 .form-modal label[class="error"] {
     color: #ff0800;
     margin: 0;
     border: none !important;
+}
+
+/* Personalización del estilo del tooltip con CSS */
+.ui-tooltip {
+    background: #333;  /* Fondo oscuro */
+    color: white;  /* Texto blanco */
+    border: 1px solid #555;  /* Borde personalizado */
+    padding: 10px;  /* Espaciado interno */
+    font-size: 14px;  /* Tamaño de texto */
+    border-radius: 8px;  /* Bordes redondeados */
+    box-shadow: 0 0 5px rgba(0,0,0,0.3);  /* Sombra */
 }
 
 /* Animación de giro */

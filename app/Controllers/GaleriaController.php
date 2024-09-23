@@ -145,64 +145,94 @@ class GaleriaController extends BaseController
             'max_height'    => '2000'
         ];
 
-        // Mover el archivo a la carpeta de destino
-        if ($file->isValid() && !$file->hasMoved()) {
-            $file->move($config['upload_path'], $config['file_name']);
-        } else {
-            // Manejar el error en caso de que el archivo no sea válido o ya se haya movido
-            log_message('debug', 'Error al subir el archivo.');
-            throw new \RuntimeException('Error al subir el archivo.');
-            return false;
+        try {
+
+            // Mover el archivo a la carpeta de destino
+            if ($file->isValid() && !$file->hasMoved()) {
+                $file->move($config['upload_path'], $config['file_name']);
+                log_message('debug', 'Archivo subido correctamente.');
+                return 'assets/img/galery/' . $nombreArchivo;
+            } else {
+                $this->responseUtil->logWithContext($this->responseUtil->setResponse(500, 'server_error', 'Error al subir la imagen', []));
+                return ''; // Retorna vacío en caso de error
+            }
+
+        } catch (\Exception $e) {
+            $this->responseUtil->logWithContext($this->responseUtil->setResponse(500, 'server_error', 'Error al subir la imagen: ' . $e->getMessage(), []));
+            return ''; // Manejo del error retornando una cadena vacía
         }
 
-        // Devolver la ruta relativa del archivo guardado
-        return 'assets/img/galery/' . $nombreArchivo;
+        // // Mover el archivo a la carpeta de destino
+        // if ($file->isValid() && !$file->hasMoved()) {
+        //     $file->move($config['upload_path'], $config['file_name']);
+        //     log_message('debug', 'Archivo subido.');
+        //     return 'assets/img/galery/' . $nombreArchivo;
+        // } else {
+        //     // Manejar el error en caso de que el archivo no sea válido o ya se haya movido
+        //     log_message('debug', 'Error al subir el archivo.');
+        //     throw new \RuntimeException('Error al subir el archivo.');
+        //     return '';
+        // }
+
     }
 
 
     // CAMBIAR
     public function cambiarImg()
     {
-        $data = $this->request->getPost();
-        if (!$this->validate($this->galeriaModel->validator)) {
-            $errors       = $this->validator->getErrors();
-            $firstError   = reset($errors);
-            $jsonResponse = $this->responseUtil->setResponse(400, 'error', $errors, []);
-            return $this->response->setStatusCode(400)->setJSON($jsonResponse);
+        try {
+
+            $data = $this->request->getPost();
+            if (!$this->validate($this->galeriaModel->validator)) {
+                $errors       = $this->validator->getErrors();
+                $firstError   = reset($errors);
+                $jsonResponse = $this->responseUtil->setResponse(400, 'error', $errors, []);
+                return $this->response->setStatusCode(400)->setJSON($jsonResponse);
+            }
+
+            $id_galeria   = $this->request->getPost('id_galeria');
+            $nom_last_img = $this->request->getPost('nom_last_img');
+            $ruta_new_img = $this->guardarImagen($this->request->getFile('fileUpload'), $id_galeria);
+            // dd($ruta_new_img); pendiente para validar cadena vacia
+
+            if ($ruta_new_img == '') {
+                $jsonResponse = $this->responseUtil->setResponse(500, 'success', 'Error al subir la imagen', []);
+                return $this->response->setStatusCode(500)->setJSON($jsonResponse);
+            }
+
+            $datos = [
+                'ruta_archivo'  => $ruta_new_img,
+                'usuario_crea'  => $this->session->get('id_usuario'),
+                'fecha_creacion' => date('Y-m-d H:i:s')
+            ];
+
+            $resultado = $this->galeriaModel->cambiarImgModel($datos, $id_galeria);
+            if ($resultado) {
+                // Elimina la imagen original
+                if (file_exists("assets/img/galery/$nom_last_img")) {
+                    unlink("assets/img/galery/$nom_last_img");
+                }
+                $jsonResponse = $this->responseUtil->setResponse(200, 'success', 'Imagen cambiada exitosamente', []);
+                return $this->response->setStatusCode(200)->setJSON($jsonResponse);
+            }
+
+            // Elimina la imagen nueva (en caso de fallo de actualizacion)
+            if (file_exists($ruta_new_img)) {
+                unlink($ruta_new_img);
+            }
+            $jsonResponse = $this->responseUtil->setResponse(500, 'success', 'Error al cambiar la imagen', []);
+            return $this->response->setStatusCode(500)->setJSON($jsonResponse);
+
+        } catch (\CodeIgniter\Database\Exceptions\DatabaseException $dbException) {
+            $jsonResponse = $this->responseUtil->setResponse(500, 'server_error', 'Error en la base de datos', []);
+            $this->responseUtil->logWithContext($this->responseUtil->setResponse(500, 'server_error', 'Database error: ' . $dbException->getMessage(), []));
+            return $this->response->setStatusCode(500)->setJSON($jsonResponse);
+
+        } catch (\Exception $e) {
+            $jsonResponse = $this->responseUtil->setResponse(500, 'server_error', 'Error inesperado', []);
+            $this->responseUtil->logWithContext($this->responseUtil->setResponse(500, 'server_error', 'Exception: ' . $e->getMessage(), []));
+            return $this->response->setStatusCode(500)->setJSON($jsonResponse);
         }
-
-        $id_galeria   = $this->request->getPost('id_galeria');
-        $nom_last_img = $this->request->getPost('nom_last_img');
-        $nom_new_img  = $this->guardarImagen($this->request->getFile('fileUpload'), $id_galeria);
-
-        // Elimina la imagen original
-        if (file_exists("assets/img/galery/$nom_last_img")) {
-            unlink("assets/img/galery/$nom_last_img");
-        }
-
-        // $mi_archivo = 'fileUpload'; // input file
-        // $config = [
-        //     'upload_path'   => "assets/img/galery/",
-        //     'file_name'     => "galeria$id_galeria.$extension",
-        //     'allowed_types' => '*',
-        //     'max_size'      => '50000', // kb
-        //     'max_width'     => '2000',
-        //     'max_height'    => '2000'
-        // ];
-
-        // $file = $this->request->getFile($mi_archivo);
-        // $file->move($config['upload_path'], $config['file_name']);
-
-        // $datos = [
-        //     'ruta_archivo'  => "assets/img/galery/galeria$id_galeria.$extension",
-        //     'usuario_crea'  => $this->session->get('id_usuario'),
-        //     'fecha_creacion' => date('Y-m-d H:i:s')
-        // ];
-
-        // $editar = $this->galeriaModel->cambiarImgModel('galeria', $datos, ['id_galeria' => $id_galeria]);
-        // if ($editar) {
-        //     return redirect()->to('/galeria');
-        // }
     }
 
     public function _cambiarImg()

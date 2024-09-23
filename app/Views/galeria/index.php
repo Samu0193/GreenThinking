@@ -27,15 +27,15 @@
                         <i class="fa fa-times" id="close"></i>
                     </div>
 
-                    <form id="form-galeria" class="form-modal" autocomplete="off" enctype="multipart/form-data" novalidate>
-
+                    <form enctype="multipart/form-data" autocomplete="off" id="form-galeria" class="form-modal" novalidate>
                         <div class="input-field" style="margin-bottom: 20px;">
-                            <input type="hidden" name="id_galeria" id="id_galeria">
-                            <input type="hidden" name="nom_last_img" id="nom_last_img">
+
                             <div class="cont-image">
-                                <div class="image-frame" id="image-frame">
+                                <div class="image-frame" id="image-frame" title="">
                                     <p>La imagen aparecerá aquí</p>
                                 </div>
+                                <input type="hidden" name="id_galeria" id="id_galeria">
+                                <input type="hidden" name="nom_last_img" id="nom_last_img">
                                 <input type="text" name="nombre_imagen" id="nombre_imagen">
                                 <input type="file" name="fileUpload" id="fileUpload" class="file-galeria" required>
                                 <label for="fileUpload" class="btn">
@@ -45,8 +45,8 @@
                             <button class="btn" type="submit" id="submit-galeria" style="width: 100%;">
                                 <i class="far fa-images"></i> Actualizar
                             </button>
-                        </div>
 
+                        </div>
                     </form>
                     
                 </div>

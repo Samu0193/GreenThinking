@@ -13,6 +13,8 @@
     <script src="<?= base_url('assets/js/jquery.validate.min.js'); ?>" type="text/javascript"></script>
     <script src="<?= base_url('assets/js/additional-methods.min.js'); ?>" type="text/javascript"></script>
 
+    <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.min.js"></script>
+
     <!-- MAIN JS -->
     <script src="<?= base_url('assets/script/Principal/navs.js'); ?>" type="text/javascript"></script>
     <script src="<?= base_url('assets/script/Principal/admin.js'); ?>" type="text/javascript"></script>
