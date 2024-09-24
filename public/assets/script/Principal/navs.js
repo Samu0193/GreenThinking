@@ -53,7 +53,7 @@ function toastErrorMessage(mensaje) {
         background: '#f00',
         position: 'top-end',
         title: `${mensaje}`,
-        confirmButtonColor: "#343a40"
+        confirmButtonColor: '#343a40'
     });
 }
 
@@ -63,7 +63,7 @@ function modalErrorMessage(mensaje) {
         iconColor: '#fff',
         background: '#f00',
         title: `${mensaje}`,
-        confirmButtonColor: "#343a40"
+        confirmButtonColor: '#343a40'
     });
 }
 
@@ -74,89 +74,86 @@ function toastInfoMessage(mensaje) {
         background: '#f00',
         iconColor: 'white',
         title: `${mensaje}`,
-        confirmButtonColor: "#343a40"
+        confirmButtonColor: '#343a40'
     });
 }
 
 /********************************************************************************************************************************************************
 *!*     NAVEGACION:
 ********************************************************************************************************************************************************/
-if (navigator.appVersion.indexOf("Chrome/") != -1) {
-    $(".navbar ul li a").css("font-weight", "600");
+if (navigator.appVersion.indexOf('Chrome/') != -1) {
+    $('.navbar ul li a').css('font-weight', '600');
 }
 
-let logo         = $("#logo");
-let navbar       = $("#navbar");
-let sidebar      = $("#sidebar");
-let hamburguesa  = $(".hamburger");
-let bgSidebar    = $("#bg-sidebar");
-let menu         = $("#menu-mobile");
-let linksNavbar  = $(".navbar ul li a");
-let linksSidebar = $(".sidebar ul li a");
+let logo         = $('#logo');
+let navbar       = $('#navbar');
+let sidebar      = $('#sidebar');
+let hamburguesa  = $('.hamburger');
+let bgSidebar    = $('#bg-sidebar');
+let menu         = $('#menu-mobile');
+let linksNavbar  = $('.navbar ul li a');
+let linksSidebar = $('.sidebar ul li a');
 
 $(window).resize(function () {
-    if ($(window).width() < 1200 && sidebar.hasClass("sidebar-active")) {
-        navbar.addClass("bg-white");
-        logo.attr("src", url + "assets/img/logoletranegra.png");
-        hamburguesa.addClass("bg-black");
-    } else if (
-        sidebar.hasClass("sidebar-active") &&
-        $(window).scrollTop() < 250
-    ) {
-        navbar.removeClass("bg-white");
-        logo.attr("src", url + "assets/img/logoletrablanca.png");
-        hamburguesa.removeClass("bg-black");
+    if ($(window).width() < 1200 && sidebar.hasClass('sidebar-active')) {
+        navbar.addClass('bg-white');
+        logo.attr('src', `${url}assets/img/logoletranegra.png`);
+        hamburguesa.addClass('bg-black');
+    } else if (sidebar.hasClass('sidebar-active') && $(window).scrollTop() < 250) {
+        navbar.removeClass('bg-white');
+        logo.attr('src', `${url}assets/img/logoletrablanca.png`);
+        hamburguesa.removeClass('bg-black');
     }
 });
 
 menu.click(function () {
-    hamburguesa.eq(0).toggleClass("uno");
-    hamburguesa.eq(1).toggleClass("dos");
-    hamburguesa.eq(2).toggleClass("tres");
-    sidebar.toggleClass("sidebar-active");
-    bgSidebar.toggleClass("bg-sidebar-active");
-    if (sidebar.hasClass("sidebar-active")) {
-        gsap.from(".sidebar ul li a", {
+    hamburguesa.eq(0).toggleClass('uno');
+    hamburguesa.eq(1).toggleClass('dos');
+    hamburguesa.eq(2).toggleClass('tres');
+    sidebar.toggleClass('sidebar-active');
+    bgSidebar.toggleClass('bg-sidebar-active');
+    if (sidebar.hasClass('sidebar-active')) {
+        gsap.from('.sidebar ul li a', {
             duration: 0.2,
-            x: "100%",
+            x: '100%',
             stagger: 0.08,
         });
     } else {
-        gsap.from(".sidebar ul li a", {
+        gsap.from('.sidebar ul li a', {
             duration: 0,
-            x: "0%",
+            x: '0%',
         });
     }
     if ($(window).scrollTop() < 250) {
-        navbar.toggleClass("bg-white");
-        hamburguesa.toggleClass("bg-black");
-        if (sidebar.hasClass("sidebar-active")) {
-            logo.attr("src", "assets/img/logoletranegra.png");
+        navbar.toggleClass('bg-white');
+        hamburguesa.toggleClass('bg-black');
+        if (sidebar.hasClass('sidebar-active')) {
+            logo.attr('src', `${url}assets/img/logoletranegra.png`);
         } else {
-            logo.attr("src", "assets/img/logoletrablanca.png");
+            logo.attr('src', `${url}assets/img/logoletrablanca.png`);
         }
     }
 });
 
 linksSidebar.click(function () {
-    hamburguesa.eq(0).toggleClass("uno");
-    hamburguesa.eq(1).toggleClass("dos");
-    hamburguesa.eq(2).toggleClass("tres");
-    sidebar.toggleClass("sidebar-active");
-    bgSidebar.toggleClass("bg-sidebar-active");
+    hamburguesa.eq(0).toggleClass('uno');
+    hamburguesa.eq(1).toggleClass('dos');
+    hamburguesa.eq(2).toggleClass('tres');
+    sidebar.toggleClass('sidebar-active');
+    bgSidebar.toggleClass('bg-sidebar-active');
     if ($(window).scrollTop() < 250) {
-        navbar.toggleClass("bg-white");
-        hamburguesa.toggleClass("bg-black");
-        if (sidebar.hasClass("sidebar-active")) {
-            logo.attr("src", url + "assets/img/logoletranegra.png");
+        navbar.toggleClass('bg-white');
+        hamburguesa.toggleClass('bg-black');
+        if (sidebar.hasClass('sidebar-active')) {
+            logo.attr('src', `${url}assets/img/logoletranegra.png`);
         } else {
-            logo.attr("src", url + "assets/img/logoletrablanca.png");
+            logo.attr('src', `${url}assets/img/logoletrablanca.png`);
         }
     }
 });
 
-$(".user-info").click(function () {
-    $(".user-info p").toggleClass("dos");
+$('.user-info').click(function () {
+    $('.user-info p').toggleClass('dos');
 });
 
 
@@ -165,11 +162,11 @@ $(".user-info").click(function () {
 ********************************************************************************************************************************************************/
 
 // MASCARAS DE CAMPOS
-$("[name='DUI']").mask("99999999-9");
-$("[name='DUI_ref']").mask("99999999-9");
-$("[name='telefono']").mask("9999-9999");
-$("[name='telefono_ref']").mask("9999-9999");
-$("[name='telefono_menor']").mask("9999-9999");
+$('[name="DUI"]').mask('99999999-9');
+$('[name="DUI_ref"]').mask('99999999-9');
+$('[name="telefono"]').mask('9999-9999');
+$('[name="telefono_ref"]').mask('9999-9999');
+$('[name="telefono_menor"]').mask('9999-9999');
 
 // VALIDAR DUI
 function valDui(input) {
@@ -264,7 +261,7 @@ function valEmailUser(input) {
 }
 
 // VALIDAR USUARIO
-$("[name='nombre_usuario']").change(function () {
+$('[name="nombre_usuario"]').change(function () {
     $.ajax({
         type: 'POST',
         url: `${url}usuario/validarUser`,
@@ -272,7 +269,7 @@ $("[name='nombre_usuario']").change(function () {
         success: function (jsonResponse) {
             if (jsonResponse.data === false) {
                 // toastInfoMessage(`<p style="color: #fff; font-size: 1.18em; font-weight: 100;">${jsonResponse.message}</p>`);
-                // $("[name='nombre_usuario']").val('');
+                // $('[name="nombre_usuario"]').val('');
             }
         },
         error: function(jqXHR, textStatus, errorThrown) {
@@ -294,13 +291,13 @@ function calculaAnios(anios, formato) {
         mes = fecha.getMonth() + 1,
         dia = fecha.getDate();
 
-    if (mes < 10) mes = "0" + mes.toString();
-    if (dia < 10) dia = "0" + dia.toString();
+    if (mes < 10) mes = '0' + mes.toString();
+    if (dia < 10) dia = '0' + dia.toString();
 
     if (formato === 1) {
-        return anio + "-" + mes + "-" + dia;
+        return anio + '-' + mes + '-' + dia;
     } else {
-        return dia + "-" + mes + "-" + anio;
+        return dia + '-' + mes + '-' + anio;
     }
 }
 
@@ -312,13 +309,13 @@ function calculaMeses(meses, formato) {
         mes = fecha.getMonth() + 1,
         dia = fecha.getDate();
 
-    if (mes < 10) mes = "0" + mes.toString();
-    if (dia < 10) dia = "0" + dia.toString();
+    if (mes < 10) mes = '0' + mes.toString();
+    if (dia < 10) dia = '0' + dia.toString();
 
     if (formato === 1) {
-        return anio + "-" + mes + "-" + dia;
+        return anio + '-' + mes + '-' + dia;
     } else {
-        return dia + "-" + mes + "-" + anio;
+        return dia + '-' + mes + '-' + anio;
     }
 }
 
@@ -358,78 +355,78 @@ function f_MaxFin(formato) {
     return calculaAnios(+1, formato);
 }
 
-$("#f_nacimiento_mayor").prop("min", f_MinEdadMayor(1));
-$("#f_nacimiento_mayor").prop("max", f_MaxEdadMayor(1));
+$('#f_nacimiento_mayor').prop('min', f_MinEdadMayor(1));
+$('#f_nacimiento_mayor').prop('max', f_MaxEdadMayor(1));
 
-$("#f_nacimiento_ref").prop("min", f_MinEdadResponsable(1));
-$("#f_nacimiento_ref").prop("max", f_MaxEdadResponsable(1));
+$('#f_nacimiento_ref').prop('min', f_MinEdadResponsable(1));
+$('#f_nacimiento_ref').prop('max', f_MaxEdadResponsable(1));
 
-$("[name='f_nacimiento_menor']").prop("min", f_MinEdadMenor(1));
-$("[name='f_nacimiento_menor']").prop("max", f_MaxEdadMenor(1));
+$('[name="f_nacimiento_menor"]').prop('min', f_MinEdadMenor(1));
+$('[name="f_nacimiento_menor"]').prop('max', f_MaxEdadMenor(1));
 
-$("[name='fecha_finalizacion']").prop("min", f_MinFin(1));
-$("[name='fecha_finalizacion']").prop("max", f_MaxFin(1));
+$('[name="fecha_finalizacion"]').prop('min', f_MinFin(1));
+$('[name="fecha_finalizacion"]').prop('max', f_MaxFin(1));
 
 /********************************************************************************************************************************************************
 *!*     VALIDAR FECHAS PARA MAYORES Y MENORES (CÁLCULO DE EDAD):
 ********************************************************************************************************************************************************/
-jQuery.validator.addMethod("minEdadMay", function (value, element) {
+jQuery.validator.addMethod('minEdadMay', function (value, element) {
     return this.optional(element) || value >= f_MinEdadMayor(1);
-}, `Edad m\u00e1xima 40 a\u00f1os.`);
+}, `Edad m\u00e1xima 40 a\u00f1os`);
 
-jQuery.validator.addMethod("maxEdadMay", function (value, element) {
+jQuery.validator.addMethod('maxEdadMay', function (value, element) {
     return this.optional(element) || value <= f_MaxEdadMayor(1);
-}, `Edad m\u00ednima 18 a\u00f1os.`);
+}, `Edad m\u00ednima 18 a\u00f1os`);
 
-jQuery.validator.addMethod("minEdadRes", function (value, element) {
+jQuery.validator.addMethod('minEdadRes', function (value, element) {
     return this.optional(element) || value >= f_MinEdadResponsable(1);
-}, `Edad m\u00e1xima 70 a\u00f1os.`);
+}, `Edad m\u00e1xima 70 a\u00f1os`);
 
-jQuery.validator.addMethod("maxEdadRes", function (value, element) {
+jQuery.validator.addMethod('maxEdadRes', function (value, element) {
     return this.optional(element) || value <= f_MaxEdadResponsable(1);
-}, `Edad m\u00ednima 20 a\u00f1os.`);
+}, `Edad m\u00ednima 20 a\u00f1os`);
 
-jQuery.validator.addMethod("minEdadMen", function (value, element) {
+jQuery.validator.addMethod('minEdadMen', function (value, element) {
     return this.optional(element) || value >= f_MinEdadMenor(1);
-}, `Edad m\u00e1xima 17 a\u00f1os.`);
+}, `Edad m\u00e1xima 17 a\u00f1os`);
 
-jQuery.validator.addMethod("maxEdadMen", function (value, element) {
+jQuery.validator.addMethod('maxEdadMen', function (value, element) {
     return this.optional(element) || value <= f_MaxEdadMenor(1);
-}, `Edad m\u00ednima 12 a\u00f1os.`);
+}, `Edad m\u00ednima 12 a\u00f1os`);
 
-jQuery.validator.addMethod("minFin", function (value, element) {
+jQuery.validator.addMethod('minFin', function (value, element) {
     return this.optional(element) || value >= f_MinFin(1);
 }, `Debe ser mayor o igual a: <br>${f_MinFin(0)}`);
 
-jQuery.validator.addMethod("maxFin", function (value, element) {
+jQuery.validator.addMethod('maxFin', function (value, element) {
     return this.optional(element) || value <= f_MaxFin(1);
 }, `Debe ser menor o igual a: <br>${f_MaxFin(0)}`);
 
-jQuery.validator.addMethod("decimal", function (value, element) {
+jQuery.validator.addMethod('decimal', function (value, element) {
     return this.optional(element) || /^\d{1,2}(\.\d{1,2})?$/i.test(value);
-}, `Precio inv\u00e1lido.`);
+}, `Precio debe ser un número con hasta dos decimales`);
 
 /********************************************************************************************************************************************************
 *!*     VALIDAR LETRAS Y ESPACIOS:
 ********************************************************************************************************************************************************/
-jQuery.validator.addMethod("alfaOespacio", function (value, element) {
+jQuery.validator.addMethod('alfaOespacio', function (value, element) {
     return this.optional(element) || /^[ a-záéíóúüñ]*$/i.test(value);
-}, `S\u00f3lo letras o espacios.`);
+}, `S\u00f3lo letras o espacios`);
 
 /********************************************************************************************************************************************************
 *!*     VALIDAR FORMATO CORREO:
 ********************************************************************************************************************************************************/
-jQuery.validator.addMethod("correo", function (value, element) {
+jQuery.validator.addMethod('correo', function (value, element) {
     return (
         this.optional(element) ||
         /^\b[A-Z0-9._%-]+@[A-Z0-9.-]+\.[A-Z]{2,4}\b$/i.test(value)
     );
-}, `Ingrese un email v\u00e1lido.`);
+}, `Ingrese un email v\u00e1lido`);
 
 /********************************************************************************************************************************************************
 *!*     VALIDAR FORMATO DUI:
 ********************************************************************************************************************************************************/
-jQuery.validator.addMethod("isDUI", function (value) {
+jQuery.validator.addMethod('isDUI', function (value) {
     var regex = /(^\d{8})-(\d$)/,
         parts = value.match(regex);
     if (parts !== null) {
@@ -446,7 +443,7 @@ jQuery.validator.addMethod("isDUI", function (value) {
     }
 }, `DUI inv\u00e1lido`);
 
-// jQuery.validator.addMethod("isDUI", function (value) {
+// jQuery.validator.addMethod('isDUI', function (value) {
 //     // Verificar si el valor es '00000000-0'
 //     if (value === '00000000-0') {
 //         return false; // Invalida si es '00000000-0'
@@ -471,7 +468,7 @@ jQuery.validator.addMethod("isDUI", function (value) {
 //     } else {
 //         return false; // Formato inválido
 //     }
-// }, "DUI inválido");
+// }, 'DUI inválido');
 
 /********************************************************************************************************************************************************
 *!*     VALIDAR COMPARAR CONTRASEÑAS:
@@ -483,33 +480,33 @@ jQuery.validator.addMethod('equalPassword', function (value, element, param) {
 /********************************************************************************************************************************************************
 *!*     VALIDAR TIPOS DE ARCHIVOS:
 ********************************************************************************************************************************************************/
-$.validator.addMethod("fileType", function (value, element, param) {
+$.validator.addMethod('fileType', function (value, element, param) {
     // Si no hay archivos seleccionados, devolver true (sin error)
     if (element.files.length === 0) return true;
 
     const extension = value.split('.').pop().toLowerCase();
     return $.inArray(extension, param) !== -1;
-}, "Solo se permiten archivos JPG, JPEG o PNG");
+}, 'Solo se permiten archivos JPG, JPEG o PNG');
 
 /********************************************************************************************************************************************************
 *!*     VALIDAR TAMAÑO MAXIMO DE ARCHIVOS:
 ********************************************************************************************************************************************************/
-$.validator.addMethod("fileSize", function (value, element, param) {
+$.validator.addMethod('fileSize', function (value, element, param) {
     if (element.files.length === 0) return true;
 
     const file = element.files[0];
     return file.size <= param;
-}, "El tamaño máximo permitido es de 5MB");
+}, 'El tamaño máximo permitido es de 5MB');
 
 // Método para validar las dimensiones máximas (2000x2000)
-// $.validator.addMethod("imageDimensions", function (value, element, param) {
+// $.validator.addMethod('imageDimensions', function (value, element, param) {
 //     if (element.files.length === 0) return true;
 
 //     const file = element.files[0];
 //     const _URL = window.URL || window.webkitURL;
 //     const imgFile = new Image();
 //     let isValid = false;
-    
+
 //     // Manejo sincrónico de la imagen
 //     imgFile.src = _URL.createObjectURL(file);
 //     console.log(imgFile);
@@ -523,34 +520,4 @@ $.validator.addMethod("fileSize", function (value, element, param) {
     
 //     console.log(isValid);
 //     return isValid; // Retorna si la imagen es válida o no
-// }, "Las dimensiones máximas permitidas son 2000 x 2000 píxeles");
-
-function valSize(input) {
-    const file = input.files[0];
-    return file.size <= 5242880; // 5MB en bytes
-}
-
-// function valSize(input) {
-//     const fileSize = input.files[0].size / 1024 / 1024; // in MiB
-//     if (fileSize < 5) {
-//         return true;
-//     } else {
-//         return false;
-//     }
-// }
-
-function valDimensions(imagen) {
-    var _URL = window.URL || window.webkitURL;
-    var img = new Image();
-    img.src = _URL.createObjectURL(imagen);
-    img.onload = function () {
-        var ancho = img.width;
-        var alto = img.height;
-        console.log(ancho + " " + alto);
-        if (ancho >= 1000 && alto >= 900) {
-            document.getElementById("upload").value = '';
-            document.getElementById("nombre_imagen").value = '';
-            toastInfoMessage(`<p style="color: #fff; font-size: 1.18em; font-weight: 100;">Tama\u00f1o m\u00e1ximo 2000x2000 elija una imagen adecuada...</p>`);
-        }
-    };
-}
+// }, 'Las dimensiones máximas permitidas son 2000 x 2000 píxeles');

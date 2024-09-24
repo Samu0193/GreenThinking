@@ -47,17 +47,18 @@ function cargarImg(id_imagen) {
             let title_form = $('#title-form');
             let nomImgOriginal = jsonResponse.data.ruta_archivo.replace(/^.*[\\\/]/, '');
             imagenOriginal = `${url}${jsonResponse.data.ruta_archivo}`;
-            title_form.html('Cambiar Imagen');
+            title_form.html('Cambiar imagen');
             // console.log(nomImgOriginal);
 
             $('body').addClass('no-scroll'); // Deshabilitar el scroll
             $('#form-galeria')[0].reset();
-            $('#image-frame').removeClass('error');
-            $('#image-frame').attr('title', '');
+            $('.image-frame').removeClass('error');
+            $('.image-frame').attr('title', '');
             $('#form-galeria').validate().resetForm();
             $('#id_galeria').val(jsonResponse.data.id_galeria);
             $('#nom_last_img').val(nomImgOriginal);
-            $("#image-frame").html(`<img src="${imagenOriginal}" class="print-image"/>`);
+            // $(".print-image").attr('src', `${imagenOriginal}`);
+            $(".image-frame").html(`<img src="${imagenOriginal}" class="print-image"/>`);
             $('#galeria').DataTable().ajax.reload(null, false);
             modal.fadeIn();
 
@@ -142,24 +143,32 @@ function cambiarEstadoProducto(producto) {
     });
 }
 
+let modal;
+let pagina;
+let title_form;
+let formImgValid = true;
+let imgValid     = false;
 $(document).ready(function () {
+
+    pagina = window.location.href;
 
     /********************************************************************************************************************************************************
     *!*     VENTANA MODAL:
     ********************************************************************************************************************************************************/
-    let modal = $("#modal");
-    let title_form = $('#title-form');
+    modal = $("#modal");
+    title_form = $('#title-form');
     $(".modal-productos").on('click', function () {
         $('body').addClass('no-scroll'); // Deshabilitar el scroll
         modal.fadeIn();
-        title_form.html('Nuevo Producto');
+        title_form.html('Nuevo producto');
         $('#form-productos')[0].reset();
-        $('input').removeClass('error');
-        $('textarea').removeClass('error');
-        $('label[class="error"]').css('display', 'none');
-        $("#image-frame").css('border', '2px solid #e1e1e1');
-        $("#image-frame img").remove();
-        $("#image-frame").html('<p>La imágen aparecerá aquí</p>');
+        $('#form-productos').validate().resetForm();
+        // $('input').removeClass('error');
+        // $('textarea').removeClass('error');
+        // $('label[class="error"]').css('display', 'none');
+        // $(".image-frame").css('border', '2px solid #e1e1e1');
+        // $(".image-frame img").remove();
+        $(".image-frame").html('<p>La imágen aparecerá aquí</p>');
 
     });
 
@@ -282,21 +291,17 @@ $(document).ready(function () {
     });
 
     /********************************************************************************************************************************************************
-    *!*     URL ACTUAL (PARA GALERIA & PRODUCTOS):
+    *!*     CARGA DE IMAGENES (PARA GALERIA & PRODUCTOS):
     ********************************************************************************************************************************************************/
-    let pagina = window.location.href;
-    let imgValid = false;
-    if (pagina === (`${url}productos`) || pagina === (`${url}galeria`)) {
+    if (pagina === (`${url}galeria`) || pagina === (`${url}productos`)) {
 
         $('#fileUpload').on('change keyup blur', function () {
             const img        = this;
-            const tagImg     = $('.print-image');
-            const nombre     = document.getElementById('nombre_imagen');
             const imageFrame = document.getElementById('image-frame');
             const form       = $(`#form-${pagina.split('/').pop().toLowerCase()}`); 
             const validator  = $(form).validate();
 
-            if (img.files.length > 0 && $(form).valid()) {
+            if (img.files.length > 0 && (pagina === `${url}galeria` ? $(form).valid() : img.files.length > 0)) {
                 const file     = img.files[0];
                 const _URL     = window.URL || window.webkitURL;
                 const imgFile  = new Image();
@@ -314,13 +319,13 @@ $(document).ready(function () {
                         hide: { effect: "fade", duration: 500 }   // Efecto de desaparición
                     });
 
-                    // $("#image-frame").tooltip({
+                    // $(imageFrame).tooltip({
                     //     content: function() {
                     //         return "Dimensiones máximas: 2000x2000 píxeles";  // Contenido dinámico
                     //     }
                     // });
 
-                    // $("#image-frame").tooltip({
+                    // $(imageFrame).tooltip({
                     //     hide: false  // El tooltip no desaparece automáticamente
                     // }).on("mouseleave", function() {
                     //     $(this).tooltip("close");  // Cierra el tooltip cuando el mouse se aleja del div
@@ -328,28 +333,28 @@ $(document).ready(function () {
 
                     if (ancho <= 2000 && alto <= 2000) {
                         imgValid = true;
+                        validator.element(img);
+                        $(imageFrame).removeClass('error');
                     } else {
                         imgValid = false;
+                        $(imageFrame).addClass('error');
                         validator.showErrors({
                             [img.name]: 'Dimensiones máximas 2000 x 2000, elija una imagen adecuada'
                         });
                     }
 
                     // Cargar la imagen seleccionada
-                    nombre.value = file.name;
                     loadImage(file, imageFrame);
                 };
 
                 imgFile.onerror = function () {
-                    resetFileInput(img, nombre);
                     modalErrorMessage(`<p style="color: #fff; font-size: 1.18em; font-weight: 100;">Hubo un error al cargar la imagen</p>`);
                 };
 
             } else {
-                validator.resetForm();
-                tagImg.attr('src', `${imagenOriginal}`)
+                if ($(imageFrame).find('p').length > 0) return;
                 $(imageFrame).attr('title', '');
-                resetFileInput(img, nombre);
+                $(imageFrame).html(pagina === `${url}galeria` ? `<img src="${imagenOriginal}" class="print-image"/>` : '<p>La imágen aparecerá aquí</p>');
             }
 
         });
@@ -364,364 +369,358 @@ $(document).ready(function () {
 
             fileReader.readAsDataURL(file);
         }
-        
-        // Función para resetear el input file
-        function resetFileInput(imgInput, nombreInput) {
-            imgInput.value = ''; // Limpiar input file
-            nombreInput.value = ''; // Limpiar nombre
-        }
 
     }
 
-    /********************************************************************************************************************************************************
-    *!*     INSERTAR USUARIO:
-    ********************************************************************************************************************************************************/
-    $(function () {
-        $("#form-usuarios").validate({
-            rules: {
-                nombres: { required: true, alfaOespacio: true },
-                apellidos: { required: true, alfaOespacio: true },
-                f_nacimiento_mayor: { required: true, minEdadMay: true, maxEdadMay: true },
-                DUI: { required: true, isDUI: true },
-                email: { required: true, correo: true },
-                telefono: { required: true },
-                nombre_usuario: { required: true },
-                password: { required: true },
-                re_password: { required: true, equalPassword: password }
+});
+
+/********************************************************************************************************************************************************
+*!*     INSERTAR USUARIO:
+********************************************************************************************************************************************************/
+if (pagina === `${url}usuario`) {
+    $("#form-usuarios").validate({
+        rules: {
+            nombres: { required: true, alfaOespacio: true },
+            apellidos: { required: true, alfaOespacio: true },
+            f_nacimiento_mayor: { required: true, minEdadMay: true, maxEdadMay: true },
+            DUI: { required: true, isDUI: true },
+            email: { required: true, correo: true },
+            telefono: { required: true },
+            nombre_usuario: { required: true },
+            password: { required: true },
+            re_password: { required: true, equalPassword: password }
+        },
+        messages: {
+            nombres: { required: 'Nombres requeridos' },
+            apellidos: { required: 'Apellidos requeridos' },
+            f_nacimiento_mayor: {
+                required: 'Fecha de nacimiento requerida',
+                min: 'Edad m\u00e1xima 40 a\u00f1os',
+                max: 'Edad m\u00ednima 18 a\u00f1os'
             },
-            messages: {
-                nombres: { required: 'Nombres requeridos' },
-                apellidos: { required: 'Apellidos requeridos' },
-                f_nacimiento_mayor: {
-                    required: 'Fecha de nacimiento requerida',
-                    min: 'Edad m\u00e1xima 40 a\u00f1os',
-                    max: 'Edad m\u00ednima 18 a\u00f1os'
+            DUI: { required: 'DUI requerido' },
+            email: { required: 'Email requerido' },
+            telefono: 'Tel\u00f3fono requerido',
+            nombre_usuario: 'Usuario requerido',
+            password: 'Contrase\u00f1a requerida',
+            re_password: 'Repetir contrase\u00f1a requerido'
+        },
+        invalidHandler: function (error, element) {
+            // console.log(error, element);
+            modalErrorMessage(`<p style="color: #fff; font-size: 1.18em; font-weight: 100;">Formulario inválido!</p>`);
+        },
+        submitHandler: function (form, e) {
+            e.preventDefault();
+            $.ajax({
+                url: `${url}usuario/create`,
+                data: $(form).serialize(),
+                type: 'POST',
+                async: false,
+                dataType: 'json',
+                success: function (jsonResponse) {
+                    // console.log(jsonResponse);
+                    toastSuccesMessageShort(`<p style="color: white; font-size: 1.06em; font-weight: 100;">${jsonResponse.message}</p>`);
+                    // form.submit();
+                    $("#modal").hide(300);
+                    $(form)[0].reset();
+                    $('#usuarios').DataTable().ajax.reload(null, false);
                 },
-                DUI: { required: 'DUI requerido' },
-                email: { required: 'Email requerido' },
-                telefono: 'Tel\u00f3fono requerido',
-                nombre_usuario: 'Usuario requerido',
-                password: 'Contrase\u00f1a requerida',
-                re_password: 'Repetir contrase\u00f1a requerido'
-            },
-            invalidHandler: function (error, element) {
-                // console.log(error, element);
-                modalErrorMessage(`<p style="color: #fff; font-size: 1.18em; font-weight: 100;">Formulario inválido!</p>`);
-            },
-            submitHandler: function (form, e) {
-                e.preventDefault();
-                $.ajax({
-                    url: `${url}usuario/create`,
-                    data: $(form).serialize(),
-                    type: 'POST',
-                    async: false,
-                    dataType: 'json',
-                    success: function (jsonResponse) {
-                        console.log(jsonResponse);
-                        toastSuccesMessageShort(`<p style="color: white; font-size: 1.06em; font-weight: 100;">${jsonResponse.message}</p>`);
-                        // form.submit();
-                        $("#modal").hide(300);
-                        $(form)[0].reset();
-                        $('#usuarios').DataTable().ajax.reload(null, false);
-                    },
-                    error: function (jqXHR, textStatus, errorThrown) {
+                error: function (jqXHR, textStatus, errorThrown) {
 
-                        // Limpia las clases de error previas
-                        $(form).find('.invalid-feedback').remove();
-                        $(form).find('.error').removeClass('error');
+                    // Limpia las clases de error previas
+                    $(form).find('.invalid-feedback').remove();
+                    $(form).find('.error').removeClass('error');
 
-                        // Mensaje amigable para el usuario basado en el mensaje del servidor
-                        let errorMessage = errorMsgEstandar;
-                        let jsonResponse = jqXHR.responseJSON;
-                        if (jsonResponse) {
-                            errorMessage = ''
+                    // Mensaje amigable para el usuario basado en el mensaje del servidor
+                    let errorMessage = errorMsgEstandar;
+                    let jsonResponse = jqXHR.responseJSON;
+                    if (jsonResponse) {
+                        errorMessage = ''
 
-                            if (Array.isArray(jsonResponse.message)) { // ErrorMessage es un array
-                                jsonResponse.message.forEach(function (item) {
-                                    errorMessage += item + '\n';
-                                });
+                        if (Array.isArray(jsonResponse.message)) { // ErrorMessage es un array
+                            jsonResponse.message.forEach(function (item) {
+                                errorMessage += item + '\n';
+                            });
 
-                            } else if (typeof jsonResponse.message === 'object') { // ErrorMessage es un objeto.
-                                $.each(jsonResponse.message, function (campo, mensaje) {
-                                    // Encuentra el campo correspondiente y agrega una clase de error
-                                    let input = $(form).find(`[name="${campo}"]`);
-                                    if (input.length) {
-                                        input.addClass('error');
-                                        input.after(`<label id="${campo}-error" class="error" for="${campo}">${mensaje}</label>`);
-                                    }
+                        } else if (typeof jsonResponse.message === 'object') { // ErrorMessage es un objeto.
+                            $.each(jsonResponse.message, function (campo, mensaje) {
+                                // Encuentra el campo correspondiente y agrega una clase de error
+                                let input = $(form).find(`[name="${campo}"]`);
+                                if (input.length) {
+                                    input.addClass('error');
+                                    input.after(`<label id="${campo}-error" class="error" for="${campo}">${mensaje}</label>`);
+                                }
 
-                                    errorMessage += mensaje + '\n';
-                                });
+                                errorMessage += mensaje + '\n';
+                            });
 
-                            } else if (typeof jsonResponse.message === 'string') { // ErrorMessage es un string
-                                errorMessage = jsonResponse.message;
+                        } else if (typeof jsonResponse.message === 'string') { // ErrorMessage es un string
+                            errorMessage = jsonResponse.message;
 
-                            } else { // ErrorMessage es otro tipo de dato
-                                console.log('Otro tipo de dato:', typeof jsonResponse.message);
-                            }
-
+                        } else { // ErrorMessage es otro tipo de dato
+                            console.log('Otro tipo de dato:', typeof jsonResponse.message);
                         }
 
-                        if (jsonResponse.code !== 500) {
-                            modalErrorMessage(`<p style="color: #fff; font-size: 1.18em; font-weight: 100;">Formulario inválido!</p>`);
-                        } else {
-                            toastErrorMessage(`<p style="color: #fff; font-size: 1.18em; font-weight: 100;">${jsonResponse.message}</p>`);
-                        }
                     }
-                });
-                return false;
-            }
-        });
+
+                    if (jsonResponse.code !== 500) {
+                        modalErrorMessage(`<p style="color: #fff; font-size: 1.18em; font-weight: 100;">Formulario inválido!</p>`);
+                    } else {
+                        toastErrorMessage(`<p style="color: #fff; font-size: 1.18em; font-weight: 100;">${jsonResponse.message}</p>`);
+                    }
+                }
+            });
+            return false;
+        }
     });
+}
 
-    /****************************************************************************
-                                CAMBIAR IMAGEN
-    ****************************************************************************/
-    $('#form-galeria').validate({
-        rules: {
-            fileUpload: {
-                required: true,
-                extension: "jpg|jpeg|png",
-                fileSize: 5242880, // 5MB en bytes
-                // imageDimensions: { width: 2000, height: 2000 }, // Dimensiones máximas
-                // fileType: ["jpg", "jpeg", "png"]
-            }
-        },
-        messages: {
-            fileUpload: {
-                required: 'Debes cambiar de imagen',
-                extension: 'Solo se permiten archivos JPG, JPEG o PNG'
-            }
-        },
-        highlight: function () {
-            $('#image-frame').addClass('error');
-        },
-        unhighlight: function () {
-            $('#image-frame').removeClass('error');
-        },
-        invalidHandler: function (event, validator) {
-            event.preventDefault(); // Evitar recarga de página
-        },
-        submitHandler: function(form, ev) {
+/********************************************************************************************************************************************************
+*!*     CAMBIAR IMAGEN GALERIA:
+********************************************************************************************************************************************************/
+$('#form-galeria').validate({
+    rules: {
+        fileUpload: {
+            required: true,
+            extension: "jpg|jpeg|png",
+            fileSize: 5242880, // 5MB en bytes
+            // imageDimensions: { width: 2000, height: 2000 }, // Dimensiones máximas
+            // fileType: ["jpg", "jpeg", "png"]
+        }
+    },
+    messages: {
+        fileUpload: {
+            required: 'Debes cambiar de imagen',
+            extension: 'Solo se permiten archivos JPG, JPEG o PNG'
+        }
+    },
+    highlight: function () {
+        $('.image-frame').addClass('error');
+    },
+    unhighlight: function () {
+        $('.image-frame').removeClass('error');
+    },
+    invalidHandler: function (event, validator) {
+        event.preventDefault(); // Evitar recarga de página
+        // console.log(validator);
+    },
+    submitHandler: function(form, ev) {
 
-            ev.preventDefault();
-            var validator = $(form).validate();
-            if (validator && imgValid) {
+        ev.preventDefault();
+        var validator = $(form).validate();
+        if (validator && imgValid) {
 
-                // Crear un objeto FormData
-                var formData = new FormData(form);
-                // Agregar otros datos adicionales si es necesario
-                // formData.append('extraData', 'some_extra_value');
+            // Crear un objeto FormData
+            var formData = new FormData(form);
+            // Agregar otros datos adicionales si es necesario
+            // formData.append('extraData', 'some_extra_value');
 
-                $.ajax({
-                    url: `${url}galeria/cambiarImg`,
-                    type: 'POST',
-                    data: formData,
-                    contentType: false,
-                    processData: false,
-                    success: function(jsonResponse) {
-                        // Maneja la respuesta del servidor
-                        // console.log(jsonResponse);
-                        modal.hide(300);
-                        $(form)[0].reset();
-                        $('body').removeClass('no-scroll');
-                        $('#galeria').DataTable().ajax.reload(null, false);
-                        toastSuccesMessageShort(`<p style="color: white; font-size: 1.18em; font-weight: 100;">${jsonResponse.message}</p>`);
-                    },
-                    error: function (jqXHR, textStatus, errorThrown) {
+            $.ajax({
+                url: `${url}galeria/cambiarImg`,
+                type: 'POST',
+                data: formData,
+                contentType: false,
+                processData: false,
+                success: function(jsonResponse) {
+                    // Maneja la respuesta del servidor
+                    // console.log(jsonResponse);
+                    modal.hide(300);
+                    $(form)[0].reset();
+                    $('#galeria').DataTable().ajax.reload(null, false);
+                    toastSuccesMessageShort(`<p style="color: white; font-size: 1.18em; font-weight: 100;">${jsonResponse.message}</p>`);
+                },
+                error: function (jqXHR, textStatus, errorThrown) {
 
-                        let errorMessage = errorMsgEstandar;
-                        let jsonResponse = jqXHR.responseJSON;
-                        if (jsonResponse) {
-                            if (typeof jsonResponse.message === 'object') {
-
-                                errorMessage = '';
-                                $.each(jsonResponse.message, function (campo, mensaje) {
-                                    let input = $(form).find(`[name="${campo}"]`);
-                                    if (input.length && campo === 'fileUpload') {
-                                        validator.showErrors({
-                                            [campo]: mensaje
-                                        });
-                                    }
-                                    errorMessage += mensaje + '\n';
-                                });
-
-                            } else {
-                                errorMessage = jsonResponse.message;
-                            }
-                        }
-
+                    let errorMessage = errorMsgEstandar;
+                    let jsonResponse = jqXHR.responseJSON;
+                    if (jsonResponse) {
                         if (typeof jsonResponse.message === 'object') {
-                            toastErrorMessage(`<p style="color: #fff; font-size: 1.18em; font-weight: 100;">Error al procesar la solicitud.</p>`);
+
+                            errorMessage = '';
+                            $.each(jsonResponse.message, function (campo, mensaje) {
+                                let input = $(form).find(`[name="${campo}"]`);
+                                if (input.length && campo === 'fileUpload') {
+                                    validator.showErrors({
+                                        [campo]: mensaje
+                                    });
+                                }
+                                errorMessage += mensaje + '\n';
+                            });
+
                         } else {
-                            toastErrorMessage(`<p style="color: #fff; font-size: 1.18em; font-weight: 100;">${errorMessage}</p>`);
+                            errorMessage = jsonResponse.message;
                         }
                     }
-                });
 
-            } else {
-                validator.showErrors({
-                    fileUpload: 'Dimensiones máximas 2000 x 2000, elija una imagen adecuada'
-                });
-            }
-
-            return false; // Evitar que el formulario se envíe dos veces
-        }
-    });
-    // $(function () {
-    //     $('#form-galeria').submit(function (event) {
-    //         var forms = $('#form-galeria');
-    //         // let modal = $("#modal");
-    //         var validation = Array.prototype.filter.call(forms, function (form) {
-    //             if (!form.checkValidity()) {
-    //                 event.preventDefault();
-    //                 event.stopPropagation();
-    //                 // modal.hide(300);
-    //                 $('#form-galeria')[0].reset();
-    //                 toastInfoMessage(`<p style="color:white; font-size: 1.3em; font-weight: 100;">Elije una nueva imagen!</p>`);
-    //             }
-    //         });
-    //     });
-    // });
-
-    /****************************************************************************
-                                INSERTAR PRODUCTO
-    ****************************************************************************/
-    $('#form-producto').validate({
-        rules: {
-            nombre_producto: { required: true },
-            descripcion: { required: true },
-            precio: { required: true, decimal: true },
-            fileUpload: {
-                required: true,
-                extension: "jpg|jpeg|png|svg|tiff",
-                fileSize: 5242880
-            }
-        },
-        messages: {
-            nombre_producto: { required: 'Nombre requerido' },
-            descripcion: { required: 'Descripcion requerida' },
-            precio: { required: 'Precio requerido' },
-            fileUpload: {
-                required: 'Imagen requerida',
-                extension: 'Solo se permiten archivos JPG, JPEG, PNG, SVG o TIFF'
-            }
-        },
-        highlight: function () {
-            $('#image-frame').addClass('error');
-        },
-        unhighlight: function () {
-            $('#image-frame').removeClass('error');
-        },
-        invalidHandler: function (event, validator) {
-            modalErrorMessage(`<p style="color: #fff; font-size: 1.18em; font-weight: 100;">Formulario inv\u00e1lido!</p>`);
-            // event.preventDefault(); // Evitar recarga de página
-        },
-        submitHandler: function(form, ev) {
-
-            ev.preventDefault();
-            var validator = $(form).validate();
-            if (validator && imgValid) {
-
-                // Crear un objeto FormData
-                var formData = new FormData(form);
-                // Agregar otros datos adicionales si es necesario
-                // formData.append('extraData', 'some_extra_value');
-
-                // $.ajax({
-                //     url: `${url}productos/guardar`,
-                //     type: 'POST',
-                //     data: formData,
-                //     contentType: false,
-                //     processData: false,
-                //     success: function(jsonResponse) {
-                //         // Maneja la respuesta del servidor
-                //         // console.log(jsonResponse);
-                //         modal.hide(300);
-                //         $(form)[0].reset();
-                //         $('body').removeClass('no-scroll');
-                //         $('#galeria').DataTable().ajax.reload(null, false);
-                //         toastSuccesMessageShort(`<p style="color: white; font-size: 1.18em; font-weight: 100;">${jsonResponse.message}</p>`);
-                //     },
-                //     error: function (jqXHR, textStatus, errorThrown) {
-
-                //         let errorMessage = errorMsgEstandar;
-                //         let jsonResponse = jqXHR.responseJSON;
-                //         if (jsonResponse) {
-                //             if (typeof jsonResponse.message === 'object') {
-
-                //                 errorMessage = '';
-                //                 $.each(jsonResponse.message, function (campo, mensaje) {
-                //                     let input = $(form).find(`[name="${campo}"]`);
-                //                     if (input.length && campo === 'fileUpload') {
-                //                         validator.showErrors({
-                //                             [campo]: mensaje
-                //                         });
-                //                     }
-                //                     errorMessage += mensaje + '\n';
-                //                 });
-
-                //             } else {
-                //                 errorMessage = jsonResponse.message;
-                //             }
-                //         }
-
-                //         if (typeof jsonResponse.message === 'object') {
-                //             toastErrorMessage(`<p style="color: #fff; font-size: 1.18em; font-weight: 100;">Error al procesar la solicitud.</p>`);
-                //         } else {
-                //             toastErrorMessage(`<p style="color: #fff; font-size: 1.18em; font-weight: 100;">${errorMessage}</p>`);
-                //         }
-                //     }
-                // });
-
-            } else {
-                validator.showErrors({
-                    fileUpload: 'Dimensiones máximas 2000 x 2000, elija una imagen adecuada'
-                });
-            }
-
-            return false; // Evitar que el formulario se envíe dos veces
-        }
-    });
-
-    $(function () {
-        $("#form-productos").validate({
-            rules: {
-                nombre_producto: { required: true },
-                descripcion: { required: true },
-                precio: { required: true, decimal: true },
-                fileUpload: {
-                    required: true,
-                    extension: "jpg|jpeg|png|svg|tiff",
-                    fileSize: 5242880
+                    if (typeof jsonResponse.message === 'object') {
+                        toastErrorMessage(`<p style="color: #fff; font-size: 1.18em; font-weight: 100;">Error al procesar la solicitud.</p>`);
+                    } else {
+                        toastErrorMessage(`<p style="color: #fff; font-size: 1.18em; font-weight: 100;">${errorMessage}</p>`);
+                    }
                 }
-            },
-            messages: {
-                nombre_producto: { required: 'Nombre requerido' },
-                descripcion: { required: 'Descripcion requerida' },
-                precio: { required: 'Precio requerido' },
-                fileUpload: {
-                    required: 'Imagen requerida',
-                    extension: 'Solo se permiten archivos JPG, JPEG, PNG, SVG o TIFF'
-                }
-            },
-            invalidHandler: function (error, element) {
-                modalErrorMessage(`<p style="color: #fff; font-size: 1.18em; font-weight: 100;">Formulario inv\u00e1lido!</p>`);
-            },
-            submitHandler: function (form, e) {
-                e.preventDefault();
-                form.submit();
-                return false;
-            }
-        });
+            });
 
-        // $('#form-productos').submit(function (event) {
-        //     if ($("#nombre_imagen").val() != '') {
-        //         $("#image-frame").css('border', '2px solid #e1e1e1');
-        //     } else {
-        //         $("#image-frame").css('border', '2px solid #ff0800');
-        //     }
-        // });
-    });
+        } else {
+            validator.showErrors({
+                fileUpload: 'Dimensiones máximas 2000 x 2000, elija una imagen adecuada'
+            });
+        }
+
+        return false; // Evitar que el formulario se envíe dos veces
+    }
+});
+// $(function () {
+//     $('#form-galeria').submit(function (event) {
+//         var forms = $('#form-galeria');
+//         // let modal = $("#modal");
+//         var validation = Array.prototype.filter.call(forms, function (form) {
+//             if (!form.checkValidity()) {
+//                 event.preventDefault();
+//                 event.stopPropagation();
+//                 // modal.hide(300);
+//                 $('#form-galeria')[0].reset();
+//                 toastInfoMessage(`<p style="color:white; font-size: 1.3em; font-weight: 100;">Elije una nueva imagen!</p>`);
+//             }
+//         });
+//     });
+// });
+
+/********************************************************************************************************************************************************
+*!*     INSERTAR PRODUCTO:
+********************************************************************************************************************************************************/
+$('#form-productos').validate({
+    rules: {
+        nombre_producto: { required: true },
+        descripcion: { required: true },
+        precio: { required: true, decimal: true },
+        fileUpload: {
+            required: true,
+            extension: "jpg|jpeg|png|svg|tiff",
+            fileSize: 5242880
+        }
+    },
+    messages: {
+        nombre_producto: { required: 'Nombre requerido' },
+        descripcion: { required: 'Descripcion requerida' },
+        precio: { required: 'Precio requerido' },
+        fileUpload: {
+            required: 'Imagen requerida',
+            extension: 'Solo se permiten archivos JPG, JPEG, PNG, SVG o TIFF'
+        }
+    },
+    invalidHandler: function (event, validator) {
+        event.preventDefault();
+        modalErrorMessage(`<p style="color: #fff; font-size: 1.18em; font-weight: 100;">Formulario inv\u00e1lido!</p>`);
+        if (validator.invalid['fileUpload']) {
+            // formImgValid = false;
+            $('.image-frame').addClass('error')
+        } else {
+            // formImgValid = true;
+            $('.image-frame').removeClass('error')
+        }
+    },
+    submitHandler: function(form, ev) {
+
+        ev.preventDefault();
+        var validator = $(form).validate();
+        if (validator && imgValid) {
+
+            $.ajax({
+                url: `${url}productos/guardar`,
+                type: 'POST',
+                data: new FormData(form),
+                contentType: false,
+                processData: false,
+                success: function(jsonResponse) {
+                    modal.hide(300);
+                    $(form)[0].reset();
+                    $('#productos').DataTable().ajax.reload(null, false);
+                    toastSuccesMessageShort(`<p style="color: white; font-size: 1.18em; font-weight: 100;">${jsonResponse.message}</p>`);
+                },
+                error: function (jqXHR, textStatus, errorThrown) {
+
+                    let errorMessage = errorMsgEstandar;
+                    let jsonResponse = jqXHR.responseJSON;
+                    if (jsonResponse) {
+                        if (typeof jsonResponse.message === 'object') {
+
+                            errorMessage = '';
+                            $.each(jsonResponse.message, function (campo, mensaje) {
+                                let input = $(form).find(`[name="${campo}"]`);
+                                if (input.length) {
+                                    if (campo === 'fileUpload') $('.image-frame').addClass('error');
+                                    validator.showErrors({
+                                        [campo]: mensaje
+                                    });
+                                }
+                                errorMessage += mensaje + '\n';
+                            });
+
+                        } else {
+                            errorMessage = jsonResponse.message;
+                        }
+                    }
+
+                    if (typeof jsonResponse.message === 'object') {
+                        toastErrorMessage(`<p style="color: #fff; font-size: 1.18em; font-weight: 100;">Error al procesar la solicitud.</p>`);
+                    } else {
+                        toastErrorMessage(`<p style="color: #fff; font-size: 1.18em; font-weight: 100;">${errorMessage}</p>`);
+                    }
+                }
+            });
+
+        } else {
+            validator.showErrors({
+                fileUpload: 'Dimensiones máximas 2000 x 2000, elija una imagen adecuada'
+            });
+        }
+
+        return false; // Evitar que el formulario se envíe dos veces
+    }
 
 });
+
+// $(function () {
+//     $("#form-product").validate({
+//         rules: {
+//             nombre_producto: { required: true },
+//             descripcion: { required: true },
+//             precio: { required: true, decimal: true },
+//             fileUpload: {
+//                 required: true,
+//                 extension: "jpg|jpeg|png|svg|tiff",
+//                 fileSize: 5242880
+//             }
+//         },
+//         messages: {
+//             nombre_producto: { required: 'Nombre requerido' },
+//             descripcion: { required: 'Descripcion requerida' },
+//             precio: { required: 'Precio requerido' },
+//             fileUpload: {
+//                 required: 'Imagen requerida',
+//                 extension: 'Solo se permiten archivos JPG, JPEG, PNG, SVG o TIFF'
+//             }
+//         },
+//         invalidHandler: function (event, validator) {
+//             event.preventDefault();
+//             // if (validator.invalid['fileUpload']) {
+//             //     console.log("El campo 'fileUpload' es inválido.");
+//             //     $('.image-frame').addClass('error');
+//             // }
+//             // modalErrorMessage(`<p style="color: #fff; font-size: 1.18em; font-weight: 100;">Formulario inv\u00e1lido!</p>`);
+//         },
+//         submitHandler: function (form, e) {
+//             e.preventDefault();
+//             // form.submit();
+//             return false;
+//         }
+//     });
+
+//     // $('#form-productos').submit(function (event) {
+//     //     if ($("#nombre_imagen").val() != '') {
+//     //         $(".image-frame").css('border', '2px solid #e1e1e1');
+//     //     } else {
+//     //         $(".image-frame").css('border', '2px solid #ff0800');
+//     //     }
+//     // });
+// });

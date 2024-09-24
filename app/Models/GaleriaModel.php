@@ -6,9 +6,9 @@ use CodeIgniter\Model;
 
 class GaleriaModel extends Model
 {
-    protected $table = 'galeria'; // Define la tabla por defecto para este modelo
-    protected $primaryKey = 'id_galeria'; // Define la clave primaria
-    protected $returnType = 'array'; // Tipo de dato devuelto, puede ser 'array' o 'object'
+    protected $table         = 'galeria';    // Define la tabla por defecto para este modelo
+    protected $primaryKey    = 'id_galeria'; // Define la clave primaria
+    protected $returnType    = 'array';      // Tipo de dato devuelto, puede ser 'array' o 'object'
     protected $allowedFields = [
         'ruta_archivo',
         'usuario_crea',

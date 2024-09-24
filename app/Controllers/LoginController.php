@@ -184,11 +184,11 @@ class LoginController extends BaseController
 
                 // Respuesta con la URL a redirigir
                 $sessionData = [
-                    'id_usuario'          => $resultado['id_usuario'],
-                    'id_persona'          => $resultado['id_persona'],
-                    'id_rol'              => $resultado['id_rol'],
+                    'id_usuario'          => (int)$resultado['id_usuario'],
+                    'id_persona'          => (int)$resultado['id_persona'],
+                    'id_rol'              => (int)$resultado['id_rol'],
                     'usuario'             => $resultado['usuario'],
-                    'estado'              => $resultado['estado'],
+                    'estado'              => (int)$resultado['estado'],
                     'is_logged'           => true,
                     'currently_logged_in' => 1
                 ];

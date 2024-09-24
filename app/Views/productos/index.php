@@ -51,12 +51,14 @@
                         </div>
                         <div class="input-field">
                             <div class="cont-image">
-                                <div class="image-frame" id="image-frame">
+                                <div class="image-frame" id="image-frame" title="">
                                     <p>La imágen aparecerá aquí</p>
                                 </div>
                                 <input type="text" name="nombre_imagen" id="nombre_imagen">
                                 <input type="file" name="fileUpload" id="fileUpload" class="file-img" required>
-                                <label for="fileUpload" class="btn"><i class="fas fa-fileUpload"></i> Cargar</label>
+                                <label for="fileUpload" class="btn">
+                                    <i class="fas fa-upload"></i> Cargar
+                                </label>
 
                                 <!-- <label for="fileUpload" class="error"> Imagen requerida</label> -->
                             </div>

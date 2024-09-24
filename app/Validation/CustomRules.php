@@ -196,4 +196,32 @@ class CustomRules
         return isset($data[$fields]) && $value === $data[$fields];
     }
 
+    function check_image_type(?string $str, string $field, array $data): bool
+    {
+        // Obtener el archivo desde la solicitud
+        $file = \Config\Services::request()->getFile($field);
+
+        // Verificar si el archivo fue cargado correctamente
+        if (!$file->isValid()) {
+            return false; // O maneja este caso con un mensaje personalizado si lo prefieres
+        }
+
+        // Obtener el tipo MIME del archivo
+        $mimeType = $file->getMimeType();
+
+        // Validar si es un SVG
+        if ($mimeType === 'image/svg+xml') {
+            return true; // SVG es válido
+        } 
+
+        // Validar imágenes convencionales (JPG, PNG, TIFF)
+        if (in_array($mimeType, ['image/jpg', 'image/jpeg', 'image/png', 'image/tiff'])) {
+            return true; // El archivo es una imagen válida
+        }
+
+        // Si no es un tipo de imagen permitido
+        return false;
+    }
+
+
 }

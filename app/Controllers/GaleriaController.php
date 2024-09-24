@@ -51,7 +51,7 @@ class GaleriaController extends BaseController
 
 
     // ****************************************************************************************************************************
-    // *!*   MOSTRAR TODAS LAS IMAGENES DE LA GALERIA (AJAX DATATABLE):
+    // *!*   MOSTRAR TODAS LAS IMAGENES DE LA GALERIA EN LA VISTA DE ADMINISTRADOR (AJAX DATATABLE):
     // ****************************************************************************************************************************
     public function tblGaleria()
     {
@@ -131,11 +131,14 @@ class GaleriaController extends BaseController
     //     return 'assets/img/galery/' . $nombreArchivo;
     // }
 
+    // ****************************************************************************************************************************
+    // *!*   GUARDAR IMAGEN EN EL PROYECTO:
+    // ****************************************************************************************************************************
     private function guardarImagen($file, $id_file)
     {
         $nombreArchivo = pathinfo($file->getName(), PATHINFO_FILENAME);
-        $extension = strtolower($file->getExtension());
-        $nombreArchivo = $id_file . '_' . str_replace(' ', '_', $nombreArchivo) . '.' . $extension;
+        $extension     = strtolower($file->getExtension());
+        $nombreArchivo = strtolower($id_file . '_' . str_replace(' ', '_', $nombreArchivo) . '.' . $extension);
         $config = [
             'upload_path'   => "assets/img/galery/",
             'file_name'     => $nombreArchivo,
@@ -153,13 +156,15 @@ class GaleriaController extends BaseController
                 log_message('debug', 'Archivo subido correctamente.');
                 return 'assets/img/galery/' . $nombreArchivo;
             } else {
-                $this->responseUtil->logWithContext($this->responseUtil->setResponse(500, 'server_error', 'Error al subir la imagen', []));
-                return ''; // Retorna vacío en caso de error
+                $mensaje = 'Error al subir la imagen' . $file->getErrorString();
+                $this->responseUtil->logWithContext($this->responseUtil->setResponse(500, 'server_error', $mensaje, []));
+                return '';
             }
 
         } catch (\Exception $e) {
-            $this->responseUtil->logWithContext($this->responseUtil->setResponse(500, 'server_error', 'Error al subir la imagen: ' . $e->getMessage(), []));
-            return ''; // Manejo del error retornando una cadena vacía
+            $mensaje = 'Error al subir la imagen: ' . $e->getMessage();
+            $this->responseUtil->logWithContext($this->responseUtil->setResponse(500, 'server_error', $mensaje, []));
+            return '';
         }
 
         // // Mover el archivo a la carpeta de destino
@@ -176,63 +181,64 @@ class GaleriaController extends BaseController
 
     }
 
-
-    // CAMBIAR
+    // ****************************************************************************************************************************
+    // *!*   CAMBIAR IMAGEN DE LA GALERIA:
+    // ****************************************************************************************************************************
     public function cambiarImg()
     {
-        try {
+        if ($this->request->isAJAX()) {
 
-            $data = $this->request->getPost();
-            if (!$this->validate($this->galeriaModel->validator)) {
-                $errors       = $this->validator->getErrors();
-                $firstError   = reset($errors);
-                $jsonResponse = $this->responseUtil->setResponse(400, 'error', $errors, []);
-                return $this->response->setStatusCode(400)->setJSON($jsonResponse);
-            }
-
-            $id_galeria   = $this->request->getPost('id_galeria');
-            $nom_last_img = $this->request->getPost('nom_last_img');
-            $ruta_new_img = $this->guardarImagen($this->request->getFile('fileUpload'), $id_galeria);
-            // dd($ruta_new_img); pendiente para validar cadena vacia
-
-            if ($ruta_new_img == '') {
-                $jsonResponse = $this->responseUtil->setResponse(500, 'success', 'Error al subir la imagen', []);
+            try {
+    
+                $data = $this->request->getPost();
+                if (!$this->validate($this->galeriaModel->validator)) {
+                    $errors       = $this->validator->getErrors();
+                    $firstError   = reset($errors);
+                    $jsonResponse = $this->responseUtil->setResponse(400, 'error', $errors, []);
+                    return $this->response->setStatusCode(400)->setJSON($jsonResponse);
+                }
+    
+                $id_galeria   = $this->request->getPost('id_galeria');
+                $nom_last_img = $this->request->getPost('nom_last_img');
+                $ruta_new_img = $this->guardarImagen($this->request->getFile('fileUpload'), $id_galeria);
+                if ($ruta_new_img == '') {
+                    $jsonResponse = $this->responseUtil->setResponse(500, 'success', 'Error al subir la imagen', []);
+                    return $this->response->setStatusCode(500)->setJSON($jsonResponse);
+                }
+    
+                $datos = [
+                    'ruta_archivo'  => $ruta_new_img,
+                    'usuario_crea'  => $this->session->get('id_usuario'),
+                    'fecha_creacion' => date('Y-m-d H:i:s')
+                ];
+    
+                $resultado = $this->galeriaModel->cambiarImgModel($datos, $id_galeria);
+                if ($resultado) {
+                    // Elimina la imagen original
+                    if (file_exists("assets/img/galery/$nom_last_img")) unlink("assets/img/galery/$nom_last_img");
+                    $jsonResponse = $this->responseUtil->setResponse(200, 'success', 'Imagen cambiada exitosamente', []);
+                    return $this->response->setStatusCode(200)->setJSON($jsonResponse);
+                }
+    
+                // Elimina la imagen nueva (en caso de fallo de actualizacion)
+                if (file_exists($ruta_new_img)) unlink($ruta_new_img);
+                $jsonResponse = $this->responseUtil->setResponse(500, 'success', 'Error al cambiar la imagen', []);
+                return $this->response->setStatusCode(500)->setJSON($jsonResponse);
+    
+            } catch (\CodeIgniter\Database\Exceptions\DatabaseException $dbException) {
+                $jsonResponse = $this->responseUtil->setResponse(500, 'server_error', 'Error en la base de datos', []);
+                $this->responseUtil->logWithContext($this->responseUtil->setResponse(500, 'server_error', 'Database error: ' . $dbException->getMessage(), []));
+                return $this->response->setStatusCode(500)->setJSON($jsonResponse);
+    
+            } catch (\Exception $e) {
+                $jsonResponse = $this->responseUtil->setResponse(500, 'server_error', 'Error inesperado', []);
+                $this->responseUtil->logWithContext($this->responseUtil->setResponse(500, 'server_error', 'Exception: ' . $e->getMessage(), []));
                 return $this->response->setStatusCode(500)->setJSON($jsonResponse);
             }
 
-            $datos = [
-                'ruta_archivo'  => $ruta_new_img,
-                'usuario_crea'  => $this->session->get('id_usuario'),
-                'fecha_creacion' => date('Y-m-d H:i:s')
-            ];
-
-            $resultado = $this->galeriaModel->cambiarImgModel($datos, $id_galeria);
-            if ($resultado) {
-                // Elimina la imagen original
-                if (file_exists("assets/img/galery/$nom_last_img")) {
-                    unlink("assets/img/galery/$nom_last_img");
-                }
-                $jsonResponse = $this->responseUtil->setResponse(200, 'success', 'Imagen cambiada exitosamente', []);
-                return $this->response->setStatusCode(200)->setJSON($jsonResponse);
-            }
-
-            // Elimina la imagen nueva (en caso de fallo de actualizacion)
-            if (file_exists($ruta_new_img)) {
-                unlink($ruta_new_img);
-            }
-            $jsonResponse = $this->responseUtil->setResponse(500, 'success', 'Error al cambiar la imagen', []);
-            return $this->response->setStatusCode(500)->setJSON($jsonResponse);
-
-        } catch (\CodeIgniter\Database\Exceptions\DatabaseException $dbException) {
-            $jsonResponse = $this->responseUtil->setResponse(500, 'server_error', 'Error en la base de datos', []);
-            $this->responseUtil->logWithContext($this->responseUtil->setResponse(500, 'server_error', 'Database error: ' . $dbException->getMessage(), []));
-            return $this->response->setStatusCode(500)->setJSON($jsonResponse);
-
-        } catch (\Exception $e) {
-            $jsonResponse = $this->responseUtil->setResponse(500, 'server_error', 'Error inesperado', []);
-            $this->responseUtil->logWithContext($this->responseUtil->setResponse(500, 'server_error', 'Exception: ' . $e->getMessage(), []));
-            return $this->response->setStatusCode(500)->setJSON($jsonResponse);
         }
+
+        return redirect()->back();
     }
 
     public function _cambiarImg()
