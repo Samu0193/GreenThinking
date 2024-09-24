@@ -5,30 +5,9 @@ jQuery.validator.addMethod('equalPassword', function (value, element, param) {
     return $(param).val() !== '' ? value === $(param).val() : true;
 }, 'Las contrase\u00f1as no coinciden');
 
-// var password   = $('#password');
-// var rePassword = $('#re_password');
-
-// password.change(function () {
-//     if ($(this).val() !== rePassword.val() && rePassword.val() !== '') {
-//         rePassword.addClass('error');
-//         rePassword.after(`<label id="${rePassword.attr('name')}-error" class="error" for="${rePassword.attr('name')}">Las contrase\u00f1as no coinciden!</label>`);
-//         rePassword.val('');
-//         // modalErrorMessage(`<p style="color: #fff; font-size: 1.18em; font-weight: 100;">Las contrase\u00f1as no coinciden!</p>`);
-//     }
-// });
-
-// rePassword.change(function () {
-//     if (password.val() !== $(this).val()) {
-//         $(this).addClass('error');
-//         $(this).after(`<label id="${$(this).attr('name')}-error" class="error" for="${$(this).attr('name')}">Las contrase\u00f1as no coinciden!</label>`);
-//         $(this).val('');
-//         // modalErrorMessage(`<p style="color: #fff; font-size: 1.18em; font-weight: 100;">Las contrase\u00f1as no coinciden!</p>`);
-//     }
-// });
-
-/****************************************************************************
-                                    REGISTRO
-****************************************************************************/
+/********************************************************************************************************************************************************
+*!*     LLENAR SELECT DE ROLES:
+********************************************************************************************************************************************************/
 function loadRoles() {
     $.ajax({
         url: `${url}usuario/setRoles`,
@@ -36,11 +15,11 @@ function loadRoles() {
         dataType: 'json',
         cache: false,
         success: function (data) {
-            var options = "<option selected disabled value=''>Seleccionar... </option>";
+            var options = `<option selected disabled value="">Seleccionar... </option>`;
             $.each(data, function (index, object) {
                 options += `<option value="${object.id_rol}">${object.rol}</option>`;
             });
-            $("[name='id_rol']").html(options);
+            $('[name="id_rol"]').html(options);
         },
         error: function (jqXHR, textStatus, errorThrown) {
             let errorMessage = errorMsgEstandar;
@@ -53,9 +32,9 @@ function loadRoles() {
     });
 }
 
-/****************************************************************************
-                            CARGAR IMAGEN
-****************************************************************************/
+/********************************************************************************************************************************************************
+*!*     CARGAR IMAGEN:
+********************************************************************************************************************************************************/
 let imagenOriginal;
 function cargarImg(id_imagen) {
     $.ajax({
@@ -95,9 +74,9 @@ function cargarImg(id_imagen) {
     });
 }
 
-/****************************************************************************
-                            CAMBIAR ESTADO USUARIO
-****************************************************************************/
+/********************************************************************************************************************************************************
+*!*     CAMBIAR ESTADO USUARIO:
+********************************************************************************************************************************************************/
 function cambiarEstadoUsuario(usuario) {
     $.ajax({
         url: `${url}usuario/cambiarEstado`,
@@ -143,9 +122,9 @@ function cambiarEstadoUsuario(usuario) {
 //     });
 // }
 
-/****************************************************************************
-                            CAMBIAR ESTADO PRODUCTO
-****************************************************************************/
+/********************************************************************************************************************************************************
+*!*     CAMBIAR ESTADO PRODUCTO:
+********************************************************************************************************************************************************/
 function cambiarEstadoProducto(producto) {
     $.ajax({
         url: `${url}productos/cambiarEstado/${producto}`,
@@ -166,8 +145,8 @@ function cambiarEstadoProducto(producto) {
 $(document).ready(function () {
 
     /********************************************************************************************************************************************************
-     *!*     VENTANA MODAL:
-     ********************************************************************************************************************************************************/
+    *!*     VENTANA MODAL:
+    ********************************************************************************************************************************************************/
     let modal = $("#modal");
     let title_form = $('#title-form');
     $(".modal-productos").on('click', function () {
@@ -213,97 +192,9 @@ $(document).ready(function () {
         }
     });
 
-    let pagina = window.location.href;
-    let imgValid = false;
-    if (pagina === (`${url}productos`) || pagina === (`${url}galeria`)) {
-
-        $('#fileUpload').on('change keyup blur', function () {
-            const img        = this;
-            const tagImg     = $('.print-image');
-            const nombre     = document.getElementById('nombre_imagen');
-            const imageFrame = document.getElementById('image-frame');
-            const form       = $(`#form-${pagina.split('/').pop().toLowerCase()}`); 
-            const validator  = $(form).validate();
-
-            if (img.files.length > 0 && $('#form-galeria').valid()) {
-                const file = img.files[0];
-                const _URL = window.URL || window.webkitURL;
-                const imgFile = new Image();
-                imgFile.src = _URL.createObjectURL(file);
-                imgFile.onload = function () {
-
-                    const { width: ancho, height: alto } = imgFile;
-                    $(imageFrame).attr('title', `Dimensiones actuales ${ancho} x ${alto}`);
-                    $(imageFrame).tooltip({
-                        position: {
-                            my: "center top+10",  // Posición del tooltip con respecto al div
-                            at: "center bottom"   // Mostrar el tooltip en la parte inferior del div
-                        },
-                        show: { effect: "fade", duration: 500 },  // Efecto de aparición con duración
-                        hide: { effect: "fade", duration: 500 }   // Efecto de desaparición
-                    });
-
-                    // $("#image-frame").tooltip({
-                    //     content: function() {
-                    //         return "Dimensiones máximas: 2000x2000 píxeles";  // Contenido dinámico
-                    //     }
-                    // });
-
-                    // $("#image-frame").tooltip({
-                    //     hide: false  // El tooltip no desaparece automáticamente
-                    // }).on("mouseleave", function() {
-                    //     $(this).tooltip("close");  // Cierra el tooltip cuando el mouse se aleja del div
-                    // });
-
-                    if (ancho <= 2000 && alto <= 2000) {
-                        imgValid = true;
-                    } else {
-                        imgValid = false;
-                        validator.showErrors({
-                            [img.name]: 'Dimensiones máximas 2000 x 2000, elija una imagen adecuada'
-                        });
-                    }
-
-                    // Cargar la imagen seleccionada
-                    nombre.value = file.name;
-                    loadImage(file, imageFrame);
-                };
-
-                imgFile.onerror = function () {
-                    resetFileInput(img, nombre);
-                    modalErrorMessage(`<p style="color: #fff; font-size: 1.18em; font-weight: 100;">Hubo un error al cargar la imagen</p>`);
-                };
-
-            } else {
-                validator.resetForm();
-                tagImg.attr('src', `${imagenOriginal}`)
-                $(imageFrame).attr('title', '');
-                resetFileInput(img, nombre);
-            }
-
-        });
-
-        // Función para cargar la imagen y mostrarla en el contenedor
-        function loadImage(file, frame) {
-            const fileReader = new FileReader();
-            fileReader.onload = function (event) {
-                const srcData = event.target.result;
-                frame.innerHTML = `<img src="${srcData}" class="print-image"/>`;
-            };
-
-            fileReader.readAsDataURL(file);
-        }
-        
-        // Función para resetear el input file
-        function resetFileInput(imgInput, nombreInput) {
-            imgInput.value = ''; // Limpiar input file
-            nombreInput.value = ''; // Limpiar nombre
-        }
-
-    }
 
     /********************************************************************************************************************************************************
-    *!*     TABLAS:
+    *!*     DATATABLES (AJAX):
     ********************************************************************************************************************************************************/
     $('#usuarios').DataTable({
         "processing": true,
@@ -389,6 +280,98 @@ $(document).ready(function () {
             $('#tbl-menores').css('visibility', 'visible');
         }
     });
+
+    /********************************************************************************************************************************************************
+    *!*     URL ACTUAL (PARA GALERIA & PRODUCTOS):
+    ********************************************************************************************************************************************************/
+    let pagina = window.location.href;
+    let imgValid = false;
+    if (pagina === (`${url}productos`) || pagina === (`${url}galeria`)) {
+
+        $('#fileUpload').on('change keyup blur', function () {
+            const img        = this;
+            const tagImg     = $('.print-image');
+            const nombre     = document.getElementById('nombre_imagen');
+            const imageFrame = document.getElementById('image-frame');
+            const form       = $(`#form-${pagina.split('/').pop().toLowerCase()}`); 
+            const validator  = $(form).validate();
+
+            if (img.files.length > 0 && $(form).valid()) {
+                const file     = img.files[0];
+                const _URL     = window.URL || window.webkitURL;
+                const imgFile  = new Image();
+                imgFile.src    = _URL.createObjectURL(file);
+                imgFile.onload = function () {
+
+                    const { width: ancho, height: alto } = imgFile;
+                    $(imageFrame).attr('title', `Dimensiones actuales ${ancho} x ${alto}`);
+                    $(imageFrame).tooltip({
+                        position: {
+                            my: "center top+10",  // Posición del tooltip con respecto al div
+                            at: "center bottom"   // Mostrar el tooltip en la parte inferior del div
+                        },
+                        show: { effect: "fade", duration: 500 },  // Efecto de aparición con duración
+                        hide: { effect: "fade", duration: 500 }   // Efecto de desaparición
+                    });
+
+                    // $("#image-frame").tooltip({
+                    //     content: function() {
+                    //         return "Dimensiones máximas: 2000x2000 píxeles";  // Contenido dinámico
+                    //     }
+                    // });
+
+                    // $("#image-frame").tooltip({
+                    //     hide: false  // El tooltip no desaparece automáticamente
+                    // }).on("mouseleave", function() {
+                    //     $(this).tooltip("close");  // Cierra el tooltip cuando el mouse se aleja del div
+                    // });
+
+                    if (ancho <= 2000 && alto <= 2000) {
+                        imgValid = true;
+                    } else {
+                        imgValid = false;
+                        validator.showErrors({
+                            [img.name]: 'Dimensiones máximas 2000 x 2000, elija una imagen adecuada'
+                        });
+                    }
+
+                    // Cargar la imagen seleccionada
+                    nombre.value = file.name;
+                    loadImage(file, imageFrame);
+                };
+
+                imgFile.onerror = function () {
+                    resetFileInput(img, nombre);
+                    modalErrorMessage(`<p style="color: #fff; font-size: 1.18em; font-weight: 100;">Hubo un error al cargar la imagen</p>`);
+                };
+
+            } else {
+                validator.resetForm();
+                tagImg.attr('src', `${imagenOriginal}`)
+                $(imageFrame).attr('title', '');
+                resetFileInput(img, nombre);
+            }
+
+        });
+
+        // Función para cargar la imagen y mostrarla en el contenedor
+        function loadImage(file, frame) {
+            const fileReader = new FileReader();
+            fileReader.onload = function (event) {
+                const srcData = event.target.result;
+                frame.innerHTML = `<img src="${srcData}" class="print-image"/>`;
+            };
+
+            fileReader.readAsDataURL(file);
+        }
+        
+        // Función para resetear el input file
+        function resetFileInput(imgInput, nombreInput) {
+            imgInput.value = ''; // Limpiar input file
+            nombreInput.value = ''; // Limpiar nombre
+        }
+
+    }
 
     /********************************************************************************************************************************************************
     *!*     INSERTAR USUARIO:
@@ -604,19 +587,123 @@ $(document).ready(function () {
     /****************************************************************************
                                 INSERTAR PRODUCTO
     ****************************************************************************/
+    $('#form-producto').validate({
+        rules: {
+            nombre_producto: { required: true },
+            descripcion: { required: true },
+            precio: { required: true, decimal: true },
+            fileUpload: {
+                required: true,
+                extension: "jpg|jpeg|png|svg|tiff",
+                fileSize: 5242880
+            }
+        },
+        messages: {
+            nombre_producto: { required: 'Nombre requerido' },
+            descripcion: { required: 'Descripcion requerida' },
+            precio: { required: 'Precio requerido' },
+            fileUpload: {
+                required: 'Imagen requerida',
+                extension: 'Solo se permiten archivos JPG, JPEG, PNG, SVG o TIFF'
+            }
+        },
+        highlight: function () {
+            $('#image-frame').addClass('error');
+        },
+        unhighlight: function () {
+            $('#image-frame').removeClass('error');
+        },
+        invalidHandler: function (event, validator) {
+            modalErrorMessage(`<p style="color: #fff; font-size: 1.18em; font-weight: 100;">Formulario inv\u00e1lido!</p>`);
+            // event.preventDefault(); // Evitar recarga de página
+        },
+        submitHandler: function(form, ev) {
+
+            ev.preventDefault();
+            var validator = $(form).validate();
+            if (validator && imgValid) {
+
+                // Crear un objeto FormData
+                var formData = new FormData(form);
+                // Agregar otros datos adicionales si es necesario
+                // formData.append('extraData', 'some_extra_value');
+
+                // $.ajax({
+                //     url: `${url}productos/guardar`,
+                //     type: 'POST',
+                //     data: formData,
+                //     contentType: false,
+                //     processData: false,
+                //     success: function(jsonResponse) {
+                //         // Maneja la respuesta del servidor
+                //         // console.log(jsonResponse);
+                //         modal.hide(300);
+                //         $(form)[0].reset();
+                //         $('body').removeClass('no-scroll');
+                //         $('#galeria').DataTable().ajax.reload(null, false);
+                //         toastSuccesMessageShort(`<p style="color: white; font-size: 1.18em; font-weight: 100;">${jsonResponse.message}</p>`);
+                //     },
+                //     error: function (jqXHR, textStatus, errorThrown) {
+
+                //         let errorMessage = errorMsgEstandar;
+                //         let jsonResponse = jqXHR.responseJSON;
+                //         if (jsonResponse) {
+                //             if (typeof jsonResponse.message === 'object') {
+
+                //                 errorMessage = '';
+                //                 $.each(jsonResponse.message, function (campo, mensaje) {
+                //                     let input = $(form).find(`[name="${campo}"]`);
+                //                     if (input.length && campo === 'fileUpload') {
+                //                         validator.showErrors({
+                //                             [campo]: mensaje
+                //                         });
+                //                     }
+                //                     errorMessage += mensaje + '\n';
+                //                 });
+
+                //             } else {
+                //                 errorMessage = jsonResponse.message;
+                //             }
+                //         }
+
+                //         if (typeof jsonResponse.message === 'object') {
+                //             toastErrorMessage(`<p style="color: #fff; font-size: 1.18em; font-weight: 100;">Error al procesar la solicitud.</p>`);
+                //         } else {
+                //             toastErrorMessage(`<p style="color: #fff; font-size: 1.18em; font-weight: 100;">${errorMessage}</p>`);
+                //         }
+                //     }
+                // });
+
+            } else {
+                validator.showErrors({
+                    fileUpload: 'Dimensiones máximas 2000 x 2000, elija una imagen adecuada'
+                });
+            }
+
+            return false; // Evitar que el formulario se envíe dos veces
+        }
+    });
+
     $(function () {
         $("#form-productos").validate({
             rules: {
                 nombre_producto: { required: true },
                 descripcion: { required: true },
                 precio: { required: true, decimal: true },
-                nombre_imagen: { required: true }
+                fileUpload: {
+                    required: true,
+                    extension: "jpg|jpeg|png|svg|tiff",
+                    fileSize: 5242880
+                }
             },
             messages: {
-                nombre_producto: 'Nombre requerido',
-                descripcion: 'Descripcion requerida',
+                nombre_producto: { required: 'Nombre requerido' },
+                descripcion: { required: 'Descripcion requerida' },
                 precio: { required: 'Precio requerido' },
-                nombre_imagen: 'Imagen requerida'
+                fileUpload: {
+                    required: 'Imagen requerida',
+                    extension: 'Solo se permiten archivos JPG, JPEG, PNG, SVG o TIFF'
+                }
             },
             invalidHandler: function (error, element) {
                 modalErrorMessage(`<p style="color: #fff; font-size: 1.18em; font-weight: 100;">Formulario inv\u00e1lido!</p>`);
@@ -628,13 +715,13 @@ $(document).ready(function () {
             }
         });
 
-        $('#form-productos').submit(function (event) {
-            if ($("#nombre_imagen").val() != '') {
-                $("#image-frame").css('border', '2px solid #e1e1e1');
-            } else {
-                $("#image-frame").css('border', '2px solid #ff0800');
-            }
-        });
+        // $('#form-productos').submit(function (event) {
+        //     if ($("#nombre_imagen").val() != '') {
+        //         $("#image-frame").css('border', '2px solid #e1e1e1');
+        //     } else {
+        //         $("#image-frame").css('border', '2px solid #ff0800');
+        //     }
+        // });
     });
 
 });

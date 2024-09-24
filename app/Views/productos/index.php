@@ -36,8 +36,10 @@
                         <i class="fa fa-times" id="close"></i>
                     </div>
 
-                    <form class="form-modal" id="form-productos" autocomplete="off" method="POST"
-                        action="<?= site_url('productos/guardar'); ?>" enctype="multipart/form-data" novalidate>
+                    <!-- <form class="form-modal" id="form-productos" autocomplete="off" method="POST"
+                        action="<?= site_url('productos/guardar'); ?>" enctype="multipart/form-data" novalidate> -->
+
+                    <form enctype="multipart/form-data" autocomplete="off" id="form-productos" class="form-modal" novalidate>
 
                         <div class="input-field">
                             <label for="nombre_producto">Nombre: </label>
@@ -52,14 +54,14 @@
                                 <div class="image-frame" id="image-frame">
                                     <p>La imágen aparecerá aquí</p>
                                 </div>
-                                <input type="text" name="nombre_imagen" id="nombre_imagen" style="position: absolute; transform: translateY(-100%);">
-                                <label for="upload" class="btn"><i class="fas fa-upload"></i> Cargar</label>
-                                <input type="file" name="upload" id="upload" accept=".jpg,.jpeg,.png,.svg,.tiff" style="display: none;" required>
+                                <input type="text" name="nombre_imagen" id="nombre_imagen">
+                                <input type="file" name="fileUpload" id="fileUpload" class="file-img" required>
+                                <label for="fileUpload" class="btn"><i class="fas fa-fileUpload"></i> Cargar</label>
 
-                                <!-- <label for="upload" class="error"> Imagen requerida</label> -->
+                                <!-- <label for="fileUpload" class="error"> Imagen requerida</label> -->
                             </div>
                         </div>
-                        
+
                         <button class="btn" type="submit" id="insert-producto"><i class="fas fa-cart-plus"></i> Registrar</button>
 
                     </form>

@@ -970,7 +970,7 @@ body::-webkit-scrollbar-thumb:hover,
 } */
 
 #nombre_imagen,
-.file-galeria {
+.file-img {
     position: absolute !important;
     transform: translateY(-100%) !important;
     width: 150px !important;

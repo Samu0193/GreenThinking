@@ -119,6 +119,27 @@ jQuery.validator.addMethod('equalPassword', function (value, element, param) {
     return $(param).val() !== '' ? value === $(param).val() : true;
 }, 'Las contrase\u00f1as no coinciden');
 
+// var password   = $('#password');
+// var rePassword = $('#re_password');
+
+// password.change(function () {
+//     if ($(this).val() !== rePassword.val() && rePassword.val() !== '') {
+//         rePassword.addClass('error');
+//         rePassword.after(`<label id="${rePassword.attr('name')}-error" class="error" for="${rePassword.attr('name')}">Las contrase\u00f1as no coinciden!</label>`);
+//         rePassword.val('');
+//         // modalErrorMessage(`<p style="color: #fff; font-size: 1.18em; font-weight: 100;">Las contrase\u00f1as no coinciden!</p>`);
+//     }
+// });
+
+// rePassword.change(function () {
+//     if (password.val() !== $(this).val()) {
+//         $(this).addClass('error');
+//         $(this).after(`<label id="${$(this).attr('name')}-error" class="error" for="${$(this).attr('name')}">Las contrase\u00f1as no coinciden!</label>`);
+//         $(this).val('');
+//         // modalErrorMessage(`<p style="color: #fff; font-size: 1.18em; font-weight: 100;">Las contrase\u00f1as no coinciden!</p>`);
+//     }
+// });
+
 /********************************************************************************************************************************************************
 *!*     VALIDAR CORREO EXISTENTE EN BASE DE DATOS:
 ********************************************************************************************************************************************************/

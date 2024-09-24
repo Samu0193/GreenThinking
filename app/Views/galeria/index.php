@@ -37,7 +37,7 @@
                                 <input type="hidden" name="id_galeria" id="id_galeria">
                                 <input type="hidden" name="nom_last_img" id="nom_last_img">
                                 <input type="text" name="nombre_imagen" id="nombre_imagen">
-                                <input type="file" name="fileUpload" id="fileUpload" class="file-galeria" required>
+                                <input type="file" name="fileUpload" id="fileUpload" class="file-img" required>
                                 <label for="fileUpload" class="btn">
                                     <i class="fas fa-upload"></i> Cargar
                                 </label>

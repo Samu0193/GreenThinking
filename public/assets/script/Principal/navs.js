@@ -78,22 +78,21 @@ function toastInfoMessage(mensaje) {
     });
 }
 
-/****************************************************************************
-                                NAVEGACION
-****************************************************************************/
-
+/********************************************************************************************************************************************************
+*!*     NAVEGACION:
+********************************************************************************************************************************************************/
 if (navigator.appVersion.indexOf("Chrome/") != -1) {
     $(".navbar ul li a").css("font-weight", "600");
 }
 
-let navbar = $("#navbar");
-let logo = $("#logo");
-let linksNavbar = $(".navbar ul li a");
-let menu = $("#menu-mobile");
-let hamburguesa = $(".hamburger");
-let sidebar = $("#sidebar");
+let logo         = $("#logo");
+let navbar       = $("#navbar");
+let sidebar      = $("#sidebar");
+let hamburguesa  = $(".hamburger");
+let bgSidebar    = $("#bg-sidebar");
+let menu         = $("#menu-mobile");
+let linksNavbar  = $(".navbar ul li a");
 let linksSidebar = $(".sidebar ul li a");
-let bgSidebar = $("#bg-sidebar");
 
 $(window).resize(function () {
     if ($(window).width() < 1200 && sidebar.hasClass("sidebar-active")) {
@@ -160,9 +159,11 @@ $(".user-info").click(function () {
     $(".user-info p").toggleClass("dos");
 });
 
-/****************************************************************************
-                        VALIDAR CAMPOS PARA INSERTAR
-****************************************************************************/
+
+/********************************************************************************************************************************************************
+*!*     VALIDAR CAMPOS PARA INSERTAR:
+********************************************************************************************************************************************************/
+
 // MASCARAS DE CAMPOS
 $("[name='DUI']").mask("99999999-9");
 $("[name='DUI_ref']").mask("99999999-9");
@@ -357,18 +358,21 @@ function f_MaxFin(formato) {
     return calculaAnios(+1, formato);
 }
 
-// $("#f_nacimiento_mayor").prop("min", f_MinEdadMayor(1));
-// $("#f_nacimiento_mayor").prop("max", f_MaxEdadMayor(1));
+$("#f_nacimiento_mayor").prop("min", f_MinEdadMayor(1));
+$("#f_nacimiento_mayor").prop("max", f_MaxEdadMayor(1));
 
-// $("#f_nacimiento_ref").prop("min", f_MinEdadResponsable(1));
-// $("#f_nacimiento_ref").prop("max", f_MaxEdadResponsable(1));
+$("#f_nacimiento_ref").prop("min", f_MinEdadResponsable(1));
+$("#f_nacimiento_ref").prop("max", f_MaxEdadResponsable(1));
 
-// $("[name='f_nacimiento_menor']").prop("min", f_MinEdadMenor(1));
-// $("[name='f_nacimiento_menor']").prop("max", f_MaxEdadMenor(1));
+$("[name='f_nacimiento_menor']").prop("min", f_MinEdadMenor(1));
+$("[name='f_nacimiento_menor']").prop("max", f_MaxEdadMenor(1));
 
-// $("[name='fecha_finalizacion']").prop("min", f_MinFin(1));
-// $("[name='fecha_finalizacion']").prop("max", f_MaxFin(1));
+$("[name='fecha_finalizacion']").prop("min", f_MinFin(1));
+$("[name='fecha_finalizacion']").prop("max", f_MaxFin(1));
 
+/********************************************************************************************************************************************************
+*!*     VALIDAR FECHAS PARA MAYORES Y MENORES (CÁLCULO DE EDAD):
+********************************************************************************************************************************************************/
 jQuery.validator.addMethod("minEdadMay", function (value, element) {
     return this.optional(element) || value >= f_MinEdadMayor(1);
 }, `Edad m\u00e1xima 40 a\u00f1os.`);
@@ -405,12 +409,16 @@ jQuery.validator.addMethod("decimal", function (value, element) {
     return this.optional(element) || /^\d{1,2}(\.\d{1,2})?$/i.test(value);
 }, `Precio inv\u00e1lido.`);
 
-// LETRAS Y ESPACIOS
+/********************************************************************************************************************************************************
+*!*     VALIDAR LETRAS Y ESPACIOS:
+********************************************************************************************************************************************************/
 jQuery.validator.addMethod("alfaOespacio", function (value, element) {
     return this.optional(element) || /^[ a-záéíóúüñ]*$/i.test(value);
 }, `S\u00f3lo letras o espacios.`);
 
-// CORREO
+/********************************************************************************************************************************************************
+*!*     VALIDAR FORMATO CORREO:
+********************************************************************************************************************************************************/
 jQuery.validator.addMethod("correo", function (value, element) {
     return (
         this.optional(element) ||
@@ -418,7 +426,9 @@ jQuery.validator.addMethod("correo", function (value, element) {
     );
 }, `Ingrese un email v\u00e1lido.`);
 
-// DUI
+/********************************************************************************************************************************************************
+*!*     VALIDAR FORMATO DUI:
+********************************************************************************************************************************************************/
 jQuery.validator.addMethod("isDUI", function (value) {
     var regex = /(^\d{8})-(\d$)/,
         parts = value.match(regex);
@@ -470,7 +480,9 @@ jQuery.validator.addMethod('equalPassword', function (value, element, param) {
     return $(param).val() !== '' ? value === $(param).val() : true;
 }, 'Las contrase\u00f1as no coinciden');
 
-// TIPOS DE ARCHIVOS
+/********************************************************************************************************************************************************
+*!*     VALIDAR TIPOS DE ARCHIVOS:
+********************************************************************************************************************************************************/
 $.validator.addMethod("fileType", function (value, element, param) {
     // Si no hay archivos seleccionados, devolver true (sin error)
     if (element.files.length === 0) return true;
@@ -479,7 +491,9 @@ $.validator.addMethod("fileType", function (value, element, param) {
     return $.inArray(extension, param) !== -1;
 }, "Solo se permiten archivos JPG, JPEG o PNG");
 
-// TAMAÑO MAXIMO DE ARCHIVOS
+/********************************************************************************************************************************************************
+*!*     VALIDAR TAMAÑO MAXIMO DE ARCHIVOS:
+********************************************************************************************************************************************************/
 $.validator.addMethod("fileSize", function (value, element, param) {
     if (element.files.length === 0) return true;
 
