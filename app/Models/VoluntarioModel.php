@@ -339,18 +339,36 @@ class VoluntarioModel extends Model
     }
 
     // ****************************************************************************************************************************
-    // *!*   OBTIENE LAS SOLICITUDES DE LOS VOLUNTARIOS MAYORES DE EDAD:
+    // *!*   OBTIENE VOLUNTARIO MAYOR DE EDAD (PARA DESCARGAR PDF):
     // ****************************************************************************************************************************
-    public function mostrarSolicitudMayor()
+    public function getVoluntarioMayor($dui, $telefono)
     {
-        return $this->select('v.id_voluntario, p.nombres, p.apellidos, d.nombre_departamento, s.fecha_ingreso, s.fecha_finalizacion')
+        return $this->select('v.id_voluntario, p.nombres, p.apellidos, s.fecha_ingreso, s.fecha_finalizacion')
                     ->from('voluntario v')
                     ->join('persona p', 'v.id_persona = p.id_persona')
                     ->join('solicitud s', 's.id_voluntario = v.id_voluntario')
-                    ->join('departamento d', 'd.id_departamento = v.departamento_residencia')
-                    ->where('p.edad >=', 18)
+                    ->where('p.DUI', $dui)
+                    ->where('p.telefono', $telefono)
                     ->get()
-                    ->getResultArray();
+                    ->getRowArray();
+    }
+
+    // ****************************************************************************************************************************
+    // *!*   OBTIENE VOLUNTARIO MENOR DE EDAD (PARA DESCARGAR PDF):
+    // ****************************************************************************************************************************
+    public function getVoluntarioMenor($dui, $telefono)
+    {
+        return $this->select('v.id_voluntario, pv.nombres, pv.apellidos, pr.nombres AS nombre_parantesco,
+	                        pr.apellidos AS apellido_parantesco, pr.DUI AS dui_refe, s.fecha_ingreso, s.fecha_finalizacion')
+                    ->from('solicitud s')
+                    ->join('voluntario v', 's.id_voluntario = v.id_voluntario')
+                    ->join('referencia_personal rp', 'rp.id_referencia = s.id_referencia')
+                    ->join('persona pv', 'pv.id_persona = v.id_persona')
+                    ->join('persona pr', 'pr.id_persona = rp.id_persona')
+                    ->where('pr.DUI', $dui)
+                    ->where('pr.telefono', $telefono)
+                    ->get()
+                    ->getRowArray();
     }
 
     // ****************************************************************************************************************************
@@ -398,25 +416,6 @@ class VoluntarioModel extends Model
 
         // Aplicar paginación
         return $builder->limit($length, $start)->get()->getResultArray();
-    }
-
-    // ****************************************************************************************************************************
-    // *!*   OBTIENE LAS SOLICITUDES DE LOS VOLUNTARIOS MENORES DE EDAD:
-    // ****************************************************************************************************************************
-    public function mostrarSolicitudMenor()
-    {
-        return $this->select('v.id_voluntario, p.nombres, p.apellidos, pe.nombres as nombre_parantesco, 
-                              pe.apellidos as apellido_parantesco, pe.DUI as dui_refe, d.nombre_departamento, 
-                              s.fecha_ingreso, s.fecha_finalizacion')
-                    ->from('voluntario v')
-                    ->join('persona p', 'v.id_persona = p.id_persona')
-                    ->join('solicitud s', 's.id_voluntario = v.id_voluntario')
-                    ->join('referencia_personal rp', 'rp.id_referencia = s.id_referencia')
-                    ->join('persona pe', 'pe.id_persona = rp.id_persona')
-                    ->join('departamento d', 'd.id_departamento = v.departamento_residencia')
-                    ->where('p.edad <', 18)
-                    ->get()
-                    ->getResultArray();
     }
 
     // ****************************************************************************************************************************
@@ -470,48 +469,36 @@ class VoluntarioModel extends Model
         return $builder->limit($length, $start)->get()->getResultArray();
     }
 
-
-
-
-
-
-
-
-
-
-
+    // ****************************************************************************************************************************
+    // *!*   OBTIENE LA SOLICITUD DE UN VOLUNTARIO MAYOR (VER PDF):
+    // ****************************************************************************************************************************
+    public function obtVolMen($idvoluntario)
+	{
+		$this->db->select('s.id_solicitud,p.nombres,p.apellidos,d.nombre_departamento,pr.nombres as nombre_parantesco,pr.apellidos apellido_parantesco,,pr.DUI as dui_refe,s.fecha_ingreso,s.fecha_finalizacion');
+		$this->db->from('solicitud s');
+		$this->db->join('voluntario v', 'v.id_voluntario = s.id_voluntario');
+		$this->db->join('persona p', 'p.id_persona = v.id_persona');
+		$this->db->join('departamento d', 'd.id_departamento = v.departamento_residencia');
+		$this->db->join('referencia_personal rp', 'rp.id_referencia = s.id_referencia');
+		$this->db->join('persona pr', 'pr.id_persona = rp.id_persona');
+		$this->db->where('v.id_voluntario=',$idvoluntario);
+		$datos = $this->db->get();
+		return $datos->row();
+	}
 
     // ****************************************************************************************************************************
-    // *!*   OBTIENE VOLUNTARIO MAYOR DE EDAD (PARA VER PDF):
+    // *!*   OBTIENE LA SOLICITUD DE UN VOLUNTARIO MENOR (VER PDF):
     // ****************************************************************************************************************************
-    public function getVoluntarioMayor($dui, $telefono)
-    {
-        return $this->select('v.id_voluntario, p.nombres, p.apellidos, s.fecha_ingreso, s.fecha_finalizacion')
-                    ->from('voluntario v')
-                    ->join('persona p', 'v.id_persona = p.id_persona')
-                    ->join('solicitud s', 's.id_voluntario = v.id_voluntario')
-                    ->where('p.DUI', $dui)
-                    ->where('p.telefono', $telefono)
-                    ->get()
-                    ->getRowArray();
-    }
-
-    // ****************************************************************************************************************************
-    // *!*   OBTIENE VOLUNTARIO MENOR DE EDAD (PARA VER PDF):
-    // ****************************************************************************************************************************
-    public function getVoluntarioMenor($dui, $telefono)
-    {
-        return $this->select('v.id_voluntario, pv.nombres, pv.apellidos, pr.nombres AS nombre_parantesco,
-	                        pr.apellidos AS apellido_parantesco, pr.DUI AS dui_refe, s.fecha_ingreso, s.fecha_finalizacion')
-                    ->from('solicitud s')
-                    ->join('voluntario v', 's.id_voluntario = v.id_voluntario')
-                    ->join('referencia_personal rp', 'rp.id_referencia = s.id_referencia')
-                    ->join('persona pv', 'pv.id_persona = v.id_persona')
-                    ->join('persona pr', 'pr.id_persona = rp.id_persona')
-                    ->where('pr.DUI', $dui)
-                    ->where('pr.telefono', $telefono)
-                    ->get()
-                    ->getRowArray();
-    }
+    public function obtVolMayores($idvoluntario)
+	{
+		$this->db->select('s.id_solicitud,p.nombres,p.apellidos,d.nombre_departamento,s.fecha_ingreso,s.fecha_finalizacion');
+		$this->db->from('solicitud s');
+		$this->db->join('voluntario v', 'v.id_voluntario = s.id_voluntario');
+		$this->db->join('persona p', 'p.id_persona = v.id_persona');
+		$this->db->join('departamento d', 'd.id_departamento = v.departamento_residencia');
+		$this->db->where('v.id_voluntario=',$idvoluntario);
+		$datos = $this->db->get();
+		return $datos->row();
+	}
 
 }

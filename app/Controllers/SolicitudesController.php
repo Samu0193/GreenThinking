@@ -139,4 +139,6 @@ class SolicitudesController extends BaseController
         return redirect()->back();
 	}
 
+    
+
 }
