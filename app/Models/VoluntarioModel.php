@@ -6,11 +6,8 @@ use CodeIgniter\Model;
 
 class VoluntarioModel extends Model
 {
-    protected $table = 'voluntario';
-    protected $primaryKey = 'id_voluntario';
-
-    // *************************************************************************************************************************
-    //    Definir las propiedades para las operaciones de la base de datos:
+    protected $table         = 'voluntario';
+    protected $primaryKey    = 'id_voluntario';
     protected $allowedFields = [
         'id_persona',
         'email',
@@ -20,9 +17,9 @@ class VoluntarioModel extends Model
         'fecha_creacion'
     ];
 
-    /*************************************************************************************************************************
-    *!*     VALIDATOR:
-     *************************************************************************************************************************/
+    // ****************************************************************************************************************************
+    // *!*   VALIDATOR DE VOLUNTARIO MAYOR:
+    // ****************************************************************************************************************************
     public $validatorMayor = [
         'nombres' => [
             'rules'  => 'required|alfaOespacio',
@@ -100,6 +97,9 @@ class VoluntarioModel extends Model
         ]
     ];
 
+    // ****************************************************************************************************************************
+    // *!*   VALIDATOR DE VOLUNTARIO MENOR:
+    // ****************************************************************************************************************************
     public $validatorMenor = [
         'parentesco' => [
             'rules'  => 'required|alfaOespacio',
@@ -216,8 +216,9 @@ class VoluntarioModel extends Model
         ]
     ];
 
-    // *************************************************************************************************************************
-    //    OBTIENE Y GENERA EL ID MAXIMO DE LA TABLA "PERSONA":
+    // ****************************************************************************************************************************
+    // *!*   OBTIENE Y GENERA EL ID MAXIMO DE LA TABLA "PERSONA":
+    // ****************************************************************************************************************************
     public function maxPersona()
     {
         $maxID = $this->db->table('persona')
@@ -227,8 +228,9 @@ class VoluntarioModel extends Model
         return $maxID['id_persona'] ? $maxID['id_persona'] + 1 : 1;
     }
 
-    // *************************************************************************************************************************
-    //    OBTIENE Y GENERA EL ID MAXIMO DE LA TABLA "VOLUNTARIO":
+    // ****************************************************************************************************************************
+    // *!*   OBTIENE Y GENERA EL ID MAXIMO DE LA TABLA "VOLUNTARIO":
+    // ****************************************************************************************************************************
     public function maxVoluntario()
     {
         $maxID = $this->db->table('voluntario')
@@ -238,8 +240,9 @@ class VoluntarioModel extends Model
         return $maxID['id_voluntario'] ? $maxID['id_voluntario'] + 1 : 1;
     }
 
-    // *************************************************************************************************************************
-    //    OBTIENE Y GENERA EL ID MAXIMO DE LA TABLA "REFERENCIA PERSONAL":
+    // ****************************************************************************************************************************
+    // *!*   OBTIENE Y GENERA EL ID MAXIMO DE LA TABLA "REFERENCIA PERSONAL":
+    // ****************************************************************************************************************************
     public function maxReferenciaPersonal()
     {
         $maxID = $this->db->table('referencia_personal')
@@ -249,8 +252,9 @@ class VoluntarioModel extends Model
         return $maxID['id_referencia'] ? $maxID['id_referencia'] + 1 : 1;
     }
 
-    // *************************************************************************************************************************
-    //    OBTIENE TODOS LOS DEPARTAMENTOS:
+    // ****************************************************************************************************************************
+    // *!*   OBTIENE TODOS LOS DEPARTAMENTOS:
+    // ****************************************************************************************************************************
     public function getDepartamentos()
     {
         return $this->db->table('departamento')
@@ -258,8 +262,9 @@ class VoluntarioModel extends Model
                         ->getResultArray();
     }
 
-    // *************************************************************************************************************************
-    //    OBTIENE TODOS LOS MUNICIPIOS DE CADA DEPARTAMENTO (DINAMICO):
+    // ****************************************************************************************************************************
+    // *!*   OBTIENE TODOS LOS MUNICIPIOS DE CADA DEPARTAMENTO (DINAMICO):
+    // ****************************************************************************************************************************
     public function getMunicipios($id_departamento)
     {
         return $this->db->table('municipio')
@@ -268,8 +273,9 @@ class VoluntarioModel extends Model
                         ->getResultArray();
     }
 
-    // *************************************************************************************************************************
-    //    BUCAR REGISTRO DE UN DUI PARA VALIDAR EN LA TABLA "PERSONA":
+    // ****************************************************************************************************************************
+    // *!*   BUCAR REGISTRO DE UN DUI PARA VALIDAR EN LA TABLA "PERSONA":
+    // ****************************************************************************************************************************
     public function findDUI($valor)
     {
         return $this->db->table('persona')
@@ -278,8 +284,9 @@ class VoluntarioModel extends Model
                         ->getResult();
     }
 
-    // *************************************************************************************************************************
-    //    BUCAR REGISTRO DE UN TELEFONO PARA VALIDAR EN LA TABLA "PERSONA":
+    // ****************************************************************************************************************************
+    // *!*   BUCAR REGISTRO DE UN TELEFONO PARA VALIDAR EN LA TABLA "PERSONA":
+    // ****************************************************************************************************************************
     public function findTel($valor)
     {
         return $this->db->table('persona')
@@ -288,8 +295,9 @@ class VoluntarioModel extends Model
                         ->getResult();
     }
 
-    // *************************************************************************************************************************
-    //    BUCAR REGISTRO DE UN CORREO PARA VALIDAR EN LA TABLA "VOLUNTARIO":
+    // ****************************************************************************************************************************
+    // *!*   BUCAR REGISTRO DE UN CORREO PARA VALIDAR EN LA TABLA "VOLUNTARIO":
+    // ****************************************************************************************************************************
     public function findEmail($valor)
     {
         return $this->db->table('voluntario')
@@ -298,36 +306,41 @@ class VoluntarioModel extends Model
                         ->getResult();
     }
 
-    // *************************************************************************************************************************
-    //    CREAR UN REGISTRO EN LA TABLA "PERSONA":
+    // ****************************************************************************************************************************
+    // *!*   CREAR UN REGISTRO EN LA TABLA "PERSONA":
+    // ****************************************************************************************************************************
     public function insertPersona($data)
     {
         return $this->db->table('persona')->insert($data);
     }
 
-    // *************************************************************************************************************************
-    //    CREAR UN REGISTRO EN LA TABLA "VOLUNTARIO":
+    // ****************************************************************************************************************************
+    // *!*   CREAR UN REGISTRO EN LA TABLA "VOLUNTARIO":
+    // ****************************************************************************************************************************
     public function insertVoluntario($data)
     {
         return $this->db->table('voluntario')->insert($data);
     }
 
-    // *************************************************************************************************************************
-    //    CREAR UN REGISTRO EN LA TABLA "SOLICITUD":
+    // ****************************************************************************************************************************
+    // *!*   CREAR UN REGISTRO EN LA TABLA "SOLICITUD":
+    // ****************************************************************************************************************************
     public function insertSolicitud($data)
     {
         return $this->db->table('solicitud')->insert($data);
     }
 
-    // *************************************************************************************************************************
-    //    CREAR UN REGISTRO EN LA TABLA "REFERENCIA PERSONAL":
+    // ****************************************************************************************************************************
+    // *!*   CREAR UN REGISTRO EN LA TABLA "REFERENCIA PERSONAL":
+    // ****************************************************************************************************************************
     public function insertReferencia($data)
     {
         return $this->db->table('referencia_personal')->insert($data);
     }
 
-    // *************************************************************************************************************************
-    //    OBTIENE VOLUNTARIO MAYOR DE EDAD:
+    // ****************************************************************************************************************************
+    // *!*   OBTIENE VOLUNTARIO MAYOR DE EDAD:
+    // ****************************************************************************************************************************
     public function getVoluntarioMayor($dui, $telefono)
     {
         return $this->select('v.id_voluntario, p.nombres, p.apellidos, s.fecha_ingreso, s.fecha_finalizacion')
@@ -340,8 +353,9 @@ class VoluntarioModel extends Model
                     ->getRowArray();
     }
 
-    // *************************************************************************************************************************
-    //    OBTIENE VOLUNTARIO MENOR DE EDAD:
+    // ****************************************************************************************************************************
+    // *!*   OBTIENE VOLUNTARIO MENOR DE EDAD:
+    // ****************************************************************************************************************************
     public function getVoluntarioMenor($dui, $telefono)
     {
         return $this->select('v.id_voluntario, pv.nombres, pv.apellidos, pr.nombres AS nombre_parantesco,
@@ -357,8 +371,9 @@ class VoluntarioModel extends Model
                     ->getRowArray();
     }
 
-    // *************************************************************************************************************************
-    //    OBTIENE LAS SOLICITUDES DE LOS VOLUNTARIOS MAYORES DE EDAD:
+    // ****************************************************************************************************************************
+    // *!*   OBTIENE LAS SOLICITUDES DE LOS VOLUNTARIOS MAYORES DE EDAD:
+    // ****************************************************************************************************************************
     public function mostrarSolicitudMayor()
     {
         return $this->select('v.id_voluntario, p.nombres, p.apellidos, d.nombre_departamento, s.fecha_ingreso, s.fecha_finalizacion')
@@ -371,8 +386,9 @@ class VoluntarioModel extends Model
                     ->getResultArray();
     }
 
-    // *************************************************************************************************************************
-    //    OBTIENE LAS SOLICITUDES DE LOS VOLUNTARIOS MENORES DE EDAD:
+    // ****************************************************************************************************************************
+    // *!*   OBTIENE LAS SOLICITUDES DE LOS VOLUNTARIOS MENORES DE EDAD:
+    // ****************************************************************************************************************************
     public function mostrarSolicitudMenor()
     {
         return $this->select('v.id_voluntario, p.nombres, p.apellidos, pe.nombres as nombre_parantesco, 

@@ -6,15 +6,18 @@ use CodeIgniter\Model;
 
 class GaleriaModel extends Model
 {
-    protected $table         = 'galeria';    // Define la tabla por defecto para este modelo
-    protected $primaryKey    = 'id_galeria'; // Define la clave primaria
-    protected $returnType    = 'array';      // Tipo de dato devuelto, puede ser 'array' o 'object'
+    protected $table         = 'galeria';
+    protected $primaryKey    = 'id_galeria';
+    protected $returnType    = 'array';
     protected $allowedFields = [
         'ruta_archivo',
         'usuario_crea',
         'fecha_creacion'
     ]; // Campos permitidos para inserción/actualización
 
+    // ****************************************************************************************************************************
+    // *!*   VALIDATOR DE GALERIA:
+    // ****************************************************************************************************************************
     public $validator = [
         'id_galeria' => [
             'rules'  => 'required|integer',
@@ -41,27 +44,63 @@ class GaleriaModel extends Model
         ]
     ];
 
-    // IMPRIMIR GALERIA
-    public function printImgGaleryModel()
+    // ****************************************************************************************************************************
+    // *!*   OBTIENE TODOS LAS IMAGENES DE LA GALERIA (AJAX DATATABLE):
+    // ****************************************************************************************************************************
+    public function getTotalGaleria($searchValue)
     {
-        return $this->findAll(); // Obtiene todos los registros de la tabla 'galeria'
+        // Consulta base desde la vista
+        $builder = $this->db->table('vw_galeria');
+
+        // Total sin filtro
+        $totalRecords = $builder->countAllResults(false); // Evita reiniciar el builder
+
+        // Total filtrado (si existe búsqueda)
+        if ($searchValue) {
+            $builder->groupStart()
+                    ->like('ruta_archivo', $searchValue)
+                    ->orLike('usuario', $searchValue)
+                    ->orLike('fecha_creacion', $searchValue)
+                    ->groupEnd();
+        }
+
+        $totalFiltered = $builder->countAllResults();
+        return ['totalRecords' => $totalRecords, 'totalFiltered' => $totalFiltered];
     }
 
-    public function tblGaleriaModel()
+    // ****************************************************************************************************************************
+    // *!*   OBTIENE LAS IMAGENES PAGINADAS DE LA GALERIA (AJAX DATATABLE):
+    // ****************************************************************************************************************************
+    public function getGaleriaPaginada($start, $length, $searchValue)
     {
-        return $this->select('galeria.id_galeria, galeria.ruta_archivo, galeria.usuario_crea, galeria.fecha_creacion, usuario.usuario')
-                    ->join('usuario', 'usuario.id_usuario = galeria.usuario_crea')
-                    ->orderBy('galeria.id_galeria')
-                    ->findAll(); // Ejecuta la consulta y devuelve los resultados
+        // Consulta base desde la vista
+        $builder = $this->db->table('vw_galeria');
+
+        // Filtro de búsqueda
+        if ($searchValue) {
+            $builder->groupStart()
+                    ->like('ruta_archivo', $searchValue)
+                    ->orLike('usuario', $searchValue)
+                    ->orLike('fecha_creacion', $searchValue)
+                    ->groupEnd();
+        }
+
+        // Aplicar paginación
+        return $builder->limit($length, $start)->get()->getResultArray();
     }
 
-    // OBTENER
+    // ****************************************************************************************************************************
+    // *!*   OBTIENE UNA IMAGEN DE LA GALERIA:
+    // ****************************************************************************************************************************
     public function cargarImgModel($valor)
     {
         // Devuelve el primer registro que coincide con la condición
         return $this->where('id_galeria', $valor)->first();
     }
 
+    // ****************************************************************************************************************************
+    // *!*   CAMBIAR UNA IMAGEN DE LA GALERIA (ACTUALIZAR/SUSTITUIR):
+    // ****************************************************************************************************************************
     public function cambiarImgModel($data, $id_galeria)
     {
         // Nota: CodeIgniter 4 no usa `update()` de la misma manera si estás usando métodos del Query Builder.

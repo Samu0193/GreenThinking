@@ -55,11 +55,11 @@ $routes->post('usuario/cambiarEstado', 'UsuarioController::cambiarEstado');
 // GALERIA CONTROLLER
 $routes->post('galeria/cargarImg',  'GaleriaController::cargarImg');
 $routes->post('galeria/cambiarImg', 'GaleriaController::cambiarImg');
-$routes->get('galeria/tblGaleria',  'GaleriaController::tblGaleria');
+$routes->post('galeria/tblGaleria', 'GaleriaController::tblGaleria');
 
 // PRODUCTOS CONTROLLER
 $routes->get('productos/verProductos',   'ProductosController::verProductos');
-$routes->get('productos/tblProductos',   'ProductosController::tblProductos');
+$routes->post('productos/tblProductos',  'ProductosController::tblProductos');
 $routes->post('productos/guardar',       'ProductosController::guardar');
 $routes->post('productos/cambiarEstado', 'ProductosController::cambiarEstado');
 

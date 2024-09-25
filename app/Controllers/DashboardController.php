@@ -21,7 +21,7 @@ class DashboardController extends BaseController
             $sessionData = $session->get();
 
             $data = [
-                'title' => ' - Inicio',
+                'title'        => ' - Inicio',
                 'session_data' => $sessionData // Pasa toda la información de la sesión
             ];
 

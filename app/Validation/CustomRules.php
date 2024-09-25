@@ -4,6 +4,10 @@ namespace App\Validation;
 
 class CustomRules
 {
+    // ****************************************************************************************************************************
+    // *!*   METODOS de FECHAS (EQUIVALENTES A LAS FUNCIONES DE JQUERY):
+    // ****************************************************************************************************************************
+    
     // CALCULO DE AÑOS
     private function calculaAnios($anios, $formato): string
     {
@@ -20,7 +24,6 @@ class CustomRules
         return $formato == 1 ? $date->format('Y-m-d') : $date->format('d-m-Y');
     }
 
-    // Métodos de fecha (equivalentes a las funciones de jQuery)
     private function fun_minEdadMayor($formato): string
     {
         return $this->calculaAnios(-40, $formato);
@@ -103,15 +106,19 @@ class CustomRules
         return strtotime($value) <= strtotime($this->fun_MaxFin(1));
     }
 
-    // SOLO LETRAS Y ESPACIOS
+    // ****************************************************************************************************************************
+    // *!*   SOLO LETRAS Y ESPACIOS:
+    // ****************************************************************************************************************************
     public function alfaOespacio(string $value, string &$error = null): bool
     {
         // Verificar si la cadena solo contiene letras y espacios (con acentos)
         return (bool) preg_match('/^[ a-záéíóúüñ]*$/i', $value);
     }
 
-    // Validación personalizada para formato de número de teléfono
-    // Acepta formato (999) 9999-9999, 999-9999-9999, o 9999-9999
+    // ****************************************************************************************************************************
+    // *!*   Validación personalizada para formato de número de teléfono
+    // *!*   Acepta formato (999) 9999-9999, 999-9999-9999, o 9999-9999
+    // ****************************************************************************************************************************
     public function telefono(string $value, string &$error = null): bool
     {
         // Verificar formato
@@ -137,6 +144,9 @@ class CustomRules
         return (bool) preg_match('/^\d{4}-\d{4}$/', $value);
     }
 
+    // ****************************************************************************************************************************
+    // *!*   VALIDAR TELEFONO EXISTENTE:
+    // ****************************************************************************************************************************
     public function uniqueTelefono(string $value, string $fields): bool
     {
         log_message('debug', $fields);
@@ -145,13 +155,18 @@ class CustomRules
         return $exists === 0;
     }
 
+    // ****************************************************************************************************************************
+    // *!*   VALIDAR TELEFONOS DIFERENTES PARA VOLUTARIO MENOR:
+    // ****************************************************************************************************************************
     public function noRepeatTelefono(string $value, string $fields, array $data): bool
     {
         log_message('debug', $fields);
         return isset($data[$fields]) && $value !== $data[$fields];
     }
 
-    // Validación de DUI
+    // ****************************************************************************************************************************
+    // *!*   VALIDAR DUI:
+    // ****************************************************************************************************************************
     public function isDUI(string $value, string &$error = null): bool
     {
         // Verificar formato
@@ -177,10 +192,21 @@ class CustomRules
         }
     }
 
-    // Validación de decimal
+    // ****************************************************************************************************************************
+    // *!*   VALIDAR PRECIO DECIMAL:
+    // ****************************************************************************************************************************
     public function decimal(string $value): bool
     {
         return (bool) preg_match('/^\d{1,2}(\.\d{1,2})?$/', $value);
+    }
+
+    // ****************************************************************************************************************************
+    // *!*   METODO PARA COMPARAR LAS CONTRASEÑAS:
+    // ****************************************************************************************************************************
+    public function passwordMatch(string $value, string $fields, array $data): bool
+    {
+        // Compara $value (valor de re_password) con el valor real de password en $data.
+        return isset($data[$fields]) && $value === $data[$fields];
     }
 
     //Método para comparar la contraseña con la repetición
@@ -189,13 +215,10 @@ class CustomRules
     //     // Compara la contraseña con la repetición
     //     return isset($data['password']) && isset($data['re_password']) && $data['password'] === $data['re_password'];
     // }
-
-    public function passwordMatch(string $value, string $fields, array $data): bool
-    {
-        // Compara $value (valor de re_password) con el valor real de password en $data.
-        return isset($data[$fields]) && $value === $data[$fields];
-    }
-
+    
+    // ****************************************************************************************************************************
+    // *!*   VALIDAR TIPOS DE IMAGENES:
+    // ****************************************************************************************************************************
     function check_image_type(?string $str, string $field, array $data): bool
     {
         // Obtener el archivo desde la solicitud

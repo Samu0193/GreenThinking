@@ -1,9 +1,259 @@
+let modal;
+let pagina;
+let title_form;
+let imagenOriginal;
+let formImgValid       = true;
+let imgDimensionsValid = false;
+$(document).ready(function () {
+
+    pagina = window.location.href;
+
+    /********************************************************************************************************************************************************
+    *!*     VENTANA MODAL:
+    ********************************************************************************************************************************************************/
+    modal = $("#modal");
+    title_form = $('#title-form');
+    $(".modal-productos").on('click', function () {
+        $('body').addClass('no-scroll'); // Deshabilitar el scroll
+        modal.fadeIn();
+        title_form.html('Nuevo producto');
+        $('#form-productos')[0].reset();
+        $('#form-productos').validate().resetForm();
+        // $('input').removeClass('error');
+        // $('textarea').removeClass('error');
+        // $('label[class="error"]').css('display', 'none');
+        // $(".image-frame").css('border', '2px solid #e1e1e1');
+        // $(".image-frame img").remove();
+        $(".image-frame").html('<p>La imágen aparecerá aquí</p>');
+
+    });
+
+    $(".modal-usuario").on('click', function () {
+        $('body').addClass('no-scroll'); // Deshabilitar el scroll
+        loadRoles();
+        modal.fadeIn();
+        title_form.html('Nuevo Usuario');
+        $('#form-usuarios')[0].reset();
+        $('input').removeClass('error');
+        $('label[class="error"]').css('display', 'none');
+    });
+
+    $("#close").on('click', function () {
+        cerrarModal();
+    });
+
+    $(window).on('click', function (e) {
+        if (e.target === $("#modal-flex")[0]) cerrarModal();
+    });
+
+    $(window).on('keyup', function (e) {
+        if (e.key === 'Escape') cerrarModal();
+    });
+
+
+    /********************************************************************************************************************************************************
+    *!*     DATATABLES (AJAX):
+    ********************************************************************************************************************************************************/
+    $('#usuarios').DataTable({
+        "processing": true,
+        "serverSide": true,
+        "ajax": {
+            "url": `${url}usuario/tblUsuarios`,
+            "type": "POST",
+            "beforeSend": function () {
+                // console.log('dataTables_processing: Iniciado')
+                $('.dataTables_wrapper .dataTables_processing').css({ 'display': 'flex' });
+            },
+            "complete": function () {
+                // console.log('dataTables_processing: Terminado')
+            }
+        },
+        "order": [],
+        "language": idioma_espanol
+    });
+
+    $('#galeria').DataTable({
+        "processing": true,
+        "serverSide": true,
+        "ajax": {
+            "url": `${url}galeria/tblGaleria`,
+            "type": "POST",
+            "beforeSend": function () {
+                $('.dataTables_wrapper .dataTables_processing').css({ 'display': 'flex' });
+            }
+        },
+        "order": [],
+        "language": idioma_espanol
+    });
+
+    $('#productos').DataTable({
+        "processing": true,
+        "serverSide": true,
+        "ajax": {
+            "url": `${url}productos/tblProductos`,
+            "type": "POST",
+            "beforeSend": function () {
+                $('.dataTables_wrapper .dataTables_processing').css({ 'display': 'flex' });
+            }
+        },
+        "order": [],
+        "language": idioma_espanol
+    });
+
+    $('#solimayores').DataTable({
+        "processing": true,
+        "serverSide": true,
+        "ajax": {
+            "url": `${url}solicitudes/verSolicitudMayores`,
+            "type": "GET",
+            "beforeSend": function () {
+                $('.dataTables_wrapper .dataTables_processing').css({ 'display': 'flex' });
+            }
+        },
+        "order": [],
+        "language": idioma_espanol,
+    });
+
+    $('#solim').DataTable({
+        "processing": true,
+        "serverSide": true,
+        "ajax": {
+            "url": `${url}solicitudes/verSolicitudMenores`,
+            "type": "GET",
+            "beforeSend": function () {
+                $('.dataTables_wrapper .dataTables_processing').css({ 'display': 'flex' });
+            },
+        },
+        "order": [],
+        "language": idioma_espanol,
+    });
+
+    $('#tbl-menores').css('visibility', 'collapse');
+    $('#tbl-solicitud').change(function () {
+        if ($(this).val() === 'mayor') {
+            $('#tbl-mayores').css('display', 'block');
+            $('#tbl-menores').css('visibility', 'collapse');
+        } else {
+            $('#tbl-mayores').css('display', 'none');
+            $('#tbl-menores').css('visibility', 'visible');
+        }
+    });
+
+    /********************************************************************************************************************************************************
+    *!*     CARGA DE IMAGENES (PARA GALERIA & PRODUCTOS):
+    ********************************************************************************************************************************************************/
+    if (pagina === `${url}galeria` || pagina === `${url}productos`) {
+
+        $('#fileUpload').on('change keyup blur', function () {
+            const img        = this;
+            const imageFrame = document.getElementById('image-frame');
+            const form       = $(`#form-${pagina.split('/').pop().toLowerCase()}`); 
+            const validator  = $(form).validate();
+
+            // if (img.files.length > 0 && (pagina === `${url}galeria` ? $(form).valid() : img.files.length > 0)) {
+            if (img.files.length > 0) {
+                const file     = img.files[0];
+                // console.log(`Nombre del archivo: ${file.name}`);
+                // console.log(`Tipo de archivo: ${file.type}`);  // Mostramos el tipo MIME del archivo
+                // console.log(`Tamaño del archivo: ${file.size} bytes`);
+                
+                // Verificar el tipo de archivo (ejemplo: imágenes)
+                if (!file.type.startsWith('image/')) {
+                    $(imageFrame).addClass('error');
+                    return;
+                }
+                const _URL     = window.URL || window.webkitURL;
+                const imgFile  = new Image();
+                imgFile.src    = _URL.createObjectURL(file);
+                imgFile.onload = function () {
+
+                    const { width: ancho, height: alto } = imgFile;
+                    $(imageFrame).attr('title', `Dimensiones actuales ${ancho} x ${alto}`);
+                    $(imageFrame).tooltip({
+                        position: {
+                            my: "center top+10",  // Posición del tooltip con respecto al div
+                            at: "center bottom"   // Mostrar el tooltip en la parte inferior del div
+                        },
+                        show: { effect: "fade", duration: 500 },  // Efecto de aparición con duración
+                        hide: { effect: "fade", duration: 500 }   // Efecto de desaparición
+                    });
+
+                    // $(imageFrame).tooltip({
+                    //     content: function() {
+                    //         return "Dimensiones máximas: 2000x2000 píxeles";  // Contenido dinámico
+                    //     }
+                    // });
+
+                    // $(imageFrame).tooltip({
+                    //     hide: false  // El tooltip no desaparece automáticamente
+                    // }).on("mouseleave", function() {
+                    //     $(this).tooltip("close");  // Cierra el tooltip cuando el mouse se aleja del div
+                    // });
+
+                    if (ancho <= 2000 && alto <= 2000) {
+                        imgDimensionsValid = true;
+                        validator.element(img);
+                        const invalidFields = validator.invalid;
+                        if (!invalidFields.fileUpload) $(imageFrame).removeClass('error');
+
+                        // if (!validator.form()) {  // Verifica si el formulario es válido
+                        //     const invalidFields = validator.invalid;  // Obtenemos los campos inválidos
+                        //     console.log(invalidFields);  // Muestra los campos que son inválidos en la consola
+                        // }
+
+                    } else {
+                        imgDimensionsValid = false;
+                        $(imageFrame).addClass('error');
+                        validator.showErrors({
+                            [img.name]: 'Dimensiones máximas 2000 x 2000, elija una imagen adecuada'
+                        });
+                    }
+
+                    // Cargar la imagen seleccionada
+                    loadImage(file, imageFrame);
+                };
+
+                imgFile.onerror = function () {
+                    modalErrorMessage(`<p style="color: #fff; font-size: 1.18em; font-weight: 100;">Hubo un error al cargar la imagen</p>`);
+                };
+
+            } else {
+                if ($(imageFrame).find('p').length > 0) return;
+                $(imageFrame).attr('title', '');
+                $(imageFrame).html(pagina === `${url}galeria` ? `<img src="${imagenOriginal}" class="print-image"/>` : '<p>La imágen aparecerá aquí</p>');
+            }
+
+        });
+
+        // Función para cargar la imagen y mostrarla en el contenedor
+        function loadImage(file, frame) {
+            const fileReader = new FileReader();
+            fileReader.onload = function (event) {
+                const srcData = event.target.result;
+                frame.innerHTML = `<img src="${srcData}" class="print-image"/>`;
+            };
+
+            fileReader.readAsDataURL(file);
+        }
+
+    }
+
+});
+
 /********************************************************************************************************************************************************
 *!*     COMPARAR CONTRASEÑAS:
 ********************************************************************************************************************************************************/
 jQuery.validator.addMethod('equalPassword', function (value, element, param) {
     return $(param).val() !== '' ? value === $(param).val() : true;
 }, 'Las contrase\u00f1as no coinciden');
+
+/********************************************************************************************************************************************************
+*!*     CERRAR MODAL:
+********************************************************************************************************************************************************/
+function cerrarModal() {
+    $('body').removeClass('no-scroll'); // Deshabilitar el scroll
+    modal.hide(300);
+}
 
 /********************************************************************************************************************************************************
 *!*     LLENAR SELECT DE ROLES:
@@ -35,7 +285,6 @@ function loadRoles() {
 /********************************************************************************************************************************************************
 *!*     CARGAR IMAGEN:
 ********************************************************************************************************************************************************/
-let imagenOriginal;
 function cargarImg(id_imagen) {
     $.ajax({
         url: `${url}galeria/cargarImg`,
@@ -128,251 +377,28 @@ function cambiarEstadoUsuario(usuario) {
 ********************************************************************************************************************************************************/
 function cambiarEstadoProducto(producto) {
     $.ajax({
-        url: `${url}productos/cambiarEstado/${producto}`,
+        url: `${url}productos/cambiarEstado`,
         data: { 'id_producto': producto },
         type: 'POST',
-        async: false,
         dataType: 'json',
-        success: function () {
-            toastSuccesMessageShort(`<p style="color: white; font-size: 1.18em; font-weight: 100;">Estado cambiado!</p>`);
+        success: function (jsonResponse) {
+            toastSuccesMessageShort(`<p style="color: white; font-size: 1.18em; font-weight: 100;">${jsonResponse.message}</p>`);
             $('#productos').DataTable().ajax.reload(null, false);
         },
-        error: function () {
-            toastErrorMessage(`<p style="color: #fff; font-size: 1.18em; font-weight: 100;">Error al cambiar estado!</p>`);
+        error: function (jqXHR, textStatus, errorThrown) {
+
+            // Mensaje amigable para el usuario basado en el mensaje del servidor
+            let errorMessage = errorMsgEstandar;
+            let jsonResponse = jqXHR.responseJSON;
+            console.error(`Error en la solicitud AJAX:\nStatus: ${textStatus}\nError Thrown: ${errorThrown}\nMessage: ${jsonResponse.message}`);
+
+            if (jsonResponse) {
+                errorMessage = jsonResponse.message;
+            }
+            toastErrorMessage(`<p style="color: #fff; font-size: 1.27em; font-weight: 100;">${errorMessage}</p>`);
         }
     });
 }
-
-let modal;
-let pagina;
-let title_form;
-let formImgValid = true;
-let imgValid     = false;
-$(document).ready(function () {
-
-    pagina = window.location.href;
-
-    /********************************************************************************************************************************************************
-    *!*     VENTANA MODAL:
-    ********************************************************************************************************************************************************/
-    modal = $("#modal");
-    title_form = $('#title-form');
-    $(".modal-productos").on('click', function () {
-        $('body').addClass('no-scroll'); // Deshabilitar el scroll
-        modal.fadeIn();
-        title_form.html('Nuevo producto');
-        $('#form-productos')[0].reset();
-        $('#form-productos').validate().resetForm();
-        // $('input').removeClass('error');
-        // $('textarea').removeClass('error');
-        // $('label[class="error"]').css('display', 'none');
-        // $(".image-frame").css('border', '2px solid #e1e1e1');
-        // $(".image-frame img").remove();
-        $(".image-frame").html('<p>La imágen aparecerá aquí</p>');
-
-    });
-
-    $(".modal-usuario").on('click', function () {
-        $('body').addClass('no-scroll'); // Deshabilitar el scroll
-        loadRoles();
-        modal.fadeIn();
-        title_form.html('Nuevo Usuario');
-        $('#form-usuarios')[0].reset();
-        $('input').removeClass('error');
-        $('label[class="error"]').css('display', 'none');
-    });
-
-    $("#close").on('click', function () {
-        $('body').removeClass('no-scroll'); // Deshabilitar el scroll
-        modal.hide(300);
-    });
-
-    $(window).on('click', function (e) {
-        if (e.target === $("#modal-flex")[0]) {
-            $('body').removeClass('no-scroll'); // Deshabilitar el scroll
-            modal.hide(300);
-        }
-    });
-
-    $(window).on('keyup', function (e) {
-        if (e.key === 'Escape') {
-            $('body').removeClass('no-scroll'); // Deshabilitar el scroll
-            modal.hide(300);
-        }
-    });
-
-
-    /********************************************************************************************************************************************************
-    *!*     DATATABLES (AJAX):
-    ********************************************************************************************************************************************************/
-    $('#usuarios').DataTable({
-        "processing": true,
-        "serverSide": true,
-        "ajax": {
-            "url": `${url}usuario/tblUsuarios`,
-            "type": "POST",
-            "beforeSend": function () {
-                // console.log('dataTables_processing: Iniciado')
-                $('.dataTables_wrapper .dataTables_processing').css({ 'display': 'flex' });
-            },
-            "complete": function () {
-                // console.log('dataTables_processing: Terminado')
-            }
-        },
-        "order": [],
-        "language": idioma_espanol,
-    });
-
-    $('#galeria').DataTable({
-        "processing": true,
-        "serverSide": true,
-        "ajax": {
-            "url": `${url}galeria/tblGaleria`,
-            "type": "GET",
-            "beforeSend": function () {
-                $('.dataTables_wrapper .dataTables_processing').css({ 'display': 'flex' });
-            }
-        },
-        "order": [],
-        "language": idioma_espanol,
-    });
-
-    $('#productos').DataTable({
-        "processing": true,
-        "serverSide": true,
-        "ajax": {
-            "url": `${url}productos/tblProductos`,
-            "type": "GET",
-            "beforeSend": function () {
-                $('.dataTables_wrapper .dataTables_processing').css({ 'display': 'flex' });
-            }
-        },
-        "order": [],
-        "language": idioma_espanol,
-    });
-
-    $('#solimayores').DataTable({
-        "processing": true,
-        "serverSide": true,
-        "ajax": {
-            "url": `${url}solicitudes/verSolicitudMayores`,
-            "type": "GET",
-            "beforeSend": function () {
-                $('.dataTables_wrapper .dataTables_processing').css({ 'display': 'flex' });
-            }
-        },
-        "order": [],
-        "language": idioma_espanol,
-    });
-
-    $('#solim').DataTable({
-        "processing": true,
-        "serverSide": true,
-        "ajax": {
-            "url": `${url}solicitudes/verSolicitudMenores`,
-            "type": "GET",
-            "beforeSend": function () {
-                $('.dataTables_wrapper .dataTables_processing').css({ 'display': 'flex' });
-            },
-        },
-        "order": [],
-        "language": idioma_espanol,
-    });
-
-    $('#tbl-menores').css('visibility', 'collapse');
-    $('#tbl-solicitud').change(function () {
-        if ($(this).val() === 'mayor') {
-            $('#tbl-mayores').css('display', 'block');
-            $('#tbl-menores').css('visibility', 'collapse');
-        } else {
-            $('#tbl-mayores').css('display', 'none');
-            $('#tbl-menores').css('visibility', 'visible');
-        }
-    });
-
-    /********************************************************************************************************************************************************
-    *!*     CARGA DE IMAGENES (PARA GALERIA & PRODUCTOS):
-    ********************************************************************************************************************************************************/
-    if (pagina === (`${url}galeria`) || pagina === (`${url}productos`)) {
-
-        $('#fileUpload').on('change keyup blur', function () {
-            const img        = this;
-            const imageFrame = document.getElementById('image-frame');
-            const form       = $(`#form-${pagina.split('/').pop().toLowerCase()}`); 
-            const validator  = $(form).validate();
-
-            if (img.files.length > 0 && (pagina === `${url}galeria` ? $(form).valid() : img.files.length > 0)) {
-                const file     = img.files[0];
-                const _URL     = window.URL || window.webkitURL;
-                const imgFile  = new Image();
-                imgFile.src    = _URL.createObjectURL(file);
-                imgFile.onload = function () {
-
-                    const { width: ancho, height: alto } = imgFile;
-                    $(imageFrame).attr('title', `Dimensiones actuales ${ancho} x ${alto}`);
-                    $(imageFrame).tooltip({
-                        position: {
-                            my: "center top+10",  // Posición del tooltip con respecto al div
-                            at: "center bottom"   // Mostrar el tooltip en la parte inferior del div
-                        },
-                        show: { effect: "fade", duration: 500 },  // Efecto de aparición con duración
-                        hide: { effect: "fade", duration: 500 }   // Efecto de desaparición
-                    });
-
-                    // $(imageFrame).tooltip({
-                    //     content: function() {
-                    //         return "Dimensiones máximas: 2000x2000 píxeles";  // Contenido dinámico
-                    //     }
-                    // });
-
-                    // $(imageFrame).tooltip({
-                    //     hide: false  // El tooltip no desaparece automáticamente
-                    // }).on("mouseleave", function() {
-                    //     $(this).tooltip("close");  // Cierra el tooltip cuando el mouse se aleja del div
-                    // });
-
-                    if (ancho <= 2000 && alto <= 2000) {
-                        imgValid = true;
-                        validator.element(img);
-                        $(imageFrame).removeClass('error');
-                    } else {
-                        imgValid = false;
-                        $(imageFrame).addClass('error');
-                        validator.showErrors({
-                            [img.name]: 'Dimensiones máximas 2000 x 2000, elija una imagen adecuada'
-                        });
-                    }
-
-                    // Cargar la imagen seleccionada
-                    loadImage(file, imageFrame);
-                };
-
-                imgFile.onerror = function () {
-                    modalErrorMessage(`<p style="color: #fff; font-size: 1.18em; font-weight: 100;">Hubo un error al cargar la imagen</p>`);
-                };
-
-            } else {
-                if ($(imageFrame).find('p').length > 0) return;
-                $(imageFrame).attr('title', '');
-                $(imageFrame).html(pagina === `${url}galeria` ? `<img src="${imagenOriginal}" class="print-image"/>` : '<p>La imágen aparecerá aquí</p>');
-            }
-
-        });
-
-        // Función para cargar la imagen y mostrarla en el contenedor
-        function loadImage(file, frame) {
-            const fileReader = new FileReader();
-            fileReader.onload = function (event) {
-                const srcData = event.target.result;
-                frame.innerHTML = `<img src="${srcData}" class="print-image"/>`;
-            };
-
-            fileReader.readAsDataURL(file);
-        }
-
-    }
-
-});
 
 /********************************************************************************************************************************************************
 *!*     INSERTAR USUARIO:
@@ -421,7 +447,7 @@ if (pagina === `${url}usuario`) {
                     // console.log(jsonResponse);
                     toastSuccesMessageShort(`<p style="color: white; font-size: 1.06em; font-weight: 100;">${jsonResponse.message}</p>`);
                     // form.submit();
-                    $("#modal").hide(300);
+                    cerrarModal();
                     $(form)[0].reset();
                     $('#usuarios').DataTable().ajax.reload(null, false);
                 },
@@ -508,7 +534,7 @@ $('#form-galeria').validate({
 
         ev.preventDefault();
         var validator = $(form).validate();
-        if (validator && imgValid) {
+        if (validator && imgDimensionsValid) {
 
             // Crear un objeto FormData
             var formData = new FormData(form);
@@ -524,7 +550,7 @@ $('#form-galeria').validate({
                 success: function(jsonResponse) {
                     // Maneja la respuesta del servidor
                     // console.log(jsonResponse);
-                    modal.hide(300);
+                    cerrarModal();
                     $(form)[0].reset();
                     $('#galeria').DataTable().ajax.reload(null, false);
                     toastSuccesMessageShort(`<p style="color: white; font-size: 1.18em; font-weight: 100;">${jsonResponse.message}</p>`);
@@ -577,7 +603,7 @@ $('#form-galeria').validate({
 //             if (!form.checkValidity()) {
 //                 event.preventDefault();
 //                 event.stopPropagation();
-//                 // modal.hide(300);
+//                 // cerrarModal();
 //                 $('#form-galeria')[0].reset();
 //                 toastInfoMessage(`<p style="color:white; font-size: 1.3em; font-weight: 100;">Elije una nueva imagen!</p>`);
 //             }
@@ -610,20 +636,18 @@ $('#form-productos').validate({
     },
     invalidHandler: function (event, validator) {
         event.preventDefault();
-        modalErrorMessage(`<p style="color: #fff; font-size: 1.18em; font-weight: 100;">Formulario inv\u00e1lido!</p>`);
         if (validator.invalid['fileUpload']) {
-            // formImgValid = false;
             $('.image-frame').addClass('error')
         } else {
-            // formImgValid = true;
             $('.image-frame').removeClass('error')
         }
+        modalErrorMessage(`<p style="color: #fff; font-size: 1.18em; font-weight: 100;">Formulario inv\u00e1lido!</p>`);
     },
     submitHandler: function(form, ev) {
 
         ev.preventDefault();
         var validator = $(form).validate();
-        if (validator && imgValid) {
+        if (validator && imgDimensionsValid) {
 
             $.ajax({
                 url: `${url}productos/guardar`,
@@ -632,7 +656,7 @@ $('#form-productos').validate({
                 contentType: false,
                 processData: false,
                 success: function(jsonResponse) {
-                    modal.hide(300);
+                    cerrarModal();
                     $(form)[0].reset();
                     $('#productos').DataTable().ajax.reload(null, false);
                     toastSuccesMessageShort(`<p style="color: white; font-size: 1.18em; font-weight: 100;">${jsonResponse.message}</p>`);

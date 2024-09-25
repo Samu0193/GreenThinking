@@ -15,6 +15,7 @@
                         <th>Usuario</th>
                         <th>Teléfono</th>
                         <th>Email</th>
+                        <!-- <th>Usuario crea</th> -->
                         <th>Fecha creación</th>
                         <th>Estado</th>
                         <th>Acción</th>

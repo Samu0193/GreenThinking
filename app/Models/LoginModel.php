@@ -6,8 +6,9 @@ use CodeIgniter\Model;
 
 class LoginModel extends Model
 {
-    protected $table = 'usuario';
-    protected $primaryKey = 'id_usuario';
+    protected $table         = 'usuario';    // Define la tabla por defecto para este modelo
+    protected $primaryKey    = 'id_usuario'; // Define la clave primaria
+    // protected $returnType    = 'array';      // Tipo de dato devuelto, puede ser 'array' o 'object'
     protected $allowedFields = [
         'id_persona',
         'id_rol',
@@ -20,6 +21,9 @@ class LoginModel extends Model
         'fecha_creacion'
     ];
 
+    // ****************************************************************************************************************************
+    // *!*   VALIDATOR DE LOGIN:
+    // ****************************************************************************************************************************
     public $validatorLogin = [
         'nombre' => [
             'rules'  => 'required',
@@ -35,6 +39,9 @@ class LoginModel extends Model
         ]
     ];
 
+    // ****************************************************************************************************************************
+    // *!*   VALIDATOR DE CAMBIO DE CONTRASEÑA:
+    // ****************************************************************************************************************************
     public $validatorPassword = [
         'password' => [
             'rules'  => 'required',
@@ -51,37 +58,42 @@ class LoginModel extends Model
         ]
     ];
 
-    // *************************************************************************************************************************
-    //    VALIDAR USUARIO Y CONTRASEÑA:
+    // ****************************************************************************************************************************
+    // *!*   VALIDAR USUARIO Y CONTRASEÑA:
+    // ****************************************************************************************************************************
     public function loginView($nombre, $password)
     {
         return $this->where(['usuario' => $nombre, 'password' => $password])->first();
     }
 
-    // *************************************************************************************************************************
-    //    VALIDAR CORREO PARA RECUPERACION DE CONTRASEÑA:
+    // ****************************************************************************************************************************
+    // *!*   VALIDAR CORREO PARA RECUPERACION DE CONTRASEÑA:
+    // ****************************************************************************************************************************
     public function validateEmail($email)
     {
         // return $this->where('email', $email)->first();
         return $this->db->table('vw_usuarios')->where('email', $email)->get()->getRowArray();
     }
 
-    // *************************************************************************************************************************
-    //    ACTUALIZAR CONTRASEÑA Y HASH PARA RECUPERACION DE CONTRASEÑA:
+    // ****************************************************************************************************************************
+    // *!*   ACTUALIZAR CONTRASEÑA Y HASH PARA RECUPERACION DE CONTRASEÑA:
+    // ****************************************************************************************************************************
     public function updatePasswordHash($data, $email)
     {
         return $this->where('email', $email)->set($data)->update();
     }
 
-    // *************************************************************************************************************************
-    //    OBTIENE EL HASH PARA VALIDAR LA RECUPERACION DE CONTRASEÑA:
+    // ****************************************************************************************************************************
+    // *!*   OBTIENE EL HASH PARA VALIDAR LA RECUPERACION DE CONTRASEÑA:
+    // ****************************************************************************************************************************
     public function getHashDetails($hash)
     {
         return $this->where('hash_key', $hash)->first();
     }
 
-    // *************************************************************************************************************************
-    //    ACTUALIZA EL HASH Y LA CONTRASEÑA:
+    // ****************************************************************************************************************************
+    // *!*  ACTUALIZA EL HASH Y LA CONTRASEÑA:
+    // ****************************************************************************************************************************
     public function updateNewPassword($data, $hash)
     {
         // try {

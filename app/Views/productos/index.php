@@ -14,6 +14,7 @@
                         <th>Nombre</th>
                         <th>Descripción</th>
                         <th>Precio</th>
+                        <th>Usuario crea</th>
                         <th>Fecha creación</th>
                         <th>Estado</th>
                         <th>Acción</th>

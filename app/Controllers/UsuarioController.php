@@ -14,7 +14,6 @@ class UsuarioController extends BaseController
         $this->modelUsuario = new UsuarioModel();
     }
 
-
     // ****************************************************************************************************************************
     // *!*   CARGAR LA VISTA DE USUARIOS:
     // ****************************************************************************************************************************
@@ -25,7 +24,7 @@ class UsuarioController extends BaseController
 
             $sessionData = $session->get();
             $data = [
-                'title' => ' - Usuarios',
+                'title'        => ' - Usuarios',
                 'session_data' => $sessionData
             ];
 
@@ -243,55 +242,60 @@ class UsuarioController extends BaseController
     // ****************************************************************************************************************************
     public function tblUsuarios()
     {
-        // Simular un retraso de 5 segundos
-        // sleep(5);
-        // Retrasar 3 segundos (3000000 microsegundos)
-        // usleep(3000000);
+        if ($this->request->isAJAX()) {
 
-        $request     = $this->request->getPost();
-        $draw        = intval($request['draw']);
-        $start       = intval($request['start']);
-        $length      = intval($request['length']);
-        $searchValue = $request['search']['value'] ?? '';
+            // Simular un retraso de 5 segundos
+            // sleep(5);
+            // Retrasar 3 segundos (3000000 microsegundos)
+            // usleep(3000000);
 
-        // Obtener totales (con y sin filtro) en una sola llamada
-        $totals        = $this->modelUsuario->getTotalUsuarios($searchValue);
-        $totalRecords  = $totals['totalRecords'];  // Número total de usuarios sin filtro
-        $totalFiltered = $totals['totalFiltered']; // Número de usuarios filtrados
+            $request     = $this->request->getPost();
+            $draw        = intval($request['draw']);
+            $start       = intval($request['start']);
+            $length      = intval($request['length']);
+            $searchValue = $request['search']['value'] ?? '';
 
-        // Obtener usuarios paginados con búsqueda (si hay)
-        $resultList = $this->modelUsuario->getUsuariosPaginados($start, $length, $searchValue);
+            // Obtener totales (con y sin filtro) en una sola llamada
+            $totals        = $this->modelUsuario->getTotalUsuarios($searchValue);
+            $totalRecords  = $totals['totalRecords'];  // Número total de usuarios sin filtro
+            $totalFiltered = $totals['totalFiltered']; // Número de usuarios filtrados
 
-        $data = [];
-        $i = $start + 1;
+            // Obtener usuarios paginados con búsqueda (si hay)
+            $resultList = $this->modelUsuario->getUsuariosPaginados($start, $length, $searchValue);
 
-        foreach ($resultList as $value) {
+            $data = [];
+            $i = $start + 1;
 
-            // log_message('debug', 'Estado Usuario: ' . $value['estado']);
-            $btnEstado = $value['estado'] == 'Activo' ?
-                '<a class="btn-table btn-active" title="Estado" style="font-size: x-large;" onclick="cambiarEstadoUsuario(' . $value['id_usuario'] . ');"><i class="fas fa-user-check"></i></a>' :
-                '<a class="btn-table btn-inactive" title="Estado" style="font-size: x-large;" onclick="cambiarEstadoUsuario(' . $value['id_usuario'] . ');"><i class="fas fa-user-times"></i></a>';
+            foreach ($resultList as $value) {
 
-            $data[] = [
-                $i++, // El índice
-                $value['nombre_apellido'], // Nombres y Apellidos
-                $value['nombre_rol'], // Rol
-                $value['usuario'], // Usuario
-                $value['telefono'], // Teléfono
-                '<textarea class="txt-tbl" readonly>' . $value['email'] . '</textarea>', // Email
-                $value['fecha_creacion'], // Fecha de creación
-                $value['estado'], // Estado (Activo/Inactivo)
-                $btnEstado, // Botón de estado
-            ];
+                // log_message('debug', 'Estado Usuario: ' . $value['estado']);
+                $btnEstado = $value['estado'] == 'Activo' ?
+                    '<a class="btn-table btn-active" title="Estado" style="font-size: x-large;" onclick="cambiarEstadoUsuario(' . $value['id_usuario'] . ');"><i class="fas fa-user-check"></i></a>' :
+                    '<a class="btn-table btn-inactive" title="Estado" style="font-size: x-large;" onclick="cambiarEstadoUsuario(' . $value['id_usuario'] . ');"><i class="fas fa-user-times"></i></a>';
+
+                $data[] = [
+                    $i++, // El índice
+                    $value['nombre_apellido'], // Nombres y Apellidos
+                    $value['nombre_rol'], // Rol
+                    $value['usuario'], // Usuario
+                    $value['telefono'], // Teléfono
+                    '<textarea class="txt-tbl" readonly>' . $value['email'] . '</textarea>', // Email
+                    $value['fecha_creacion'], // Fecha de creación
+                    $value['estado'], // Estado (Activo/Inactivo)
+                    $btnEstado, // Botón de estado
+                ];
+            }
+
+            // Devolver los datos con la estructura necesaria para DataTables
+            return $this->response->setJSON([
+                'draw'            => $draw,
+                'recordsTotal'    => $totalRecords,
+                'recordsFiltered' => $totalFiltered,
+                'data'            => $data
+            ]);
         }
 
-        // Devolver los datos con la estructura necesaria para DataTables
-        return $this->response->setJSON([
-            'draw'            => $draw,
-            'recordsTotal'    => $totalRecords,
-            'recordsFiltered' => $totalFiltered,
-            'data'            => $data
-        ]);
+        return redirect()->back();
     }
 
     // ****************************************************************************************************************************
@@ -299,44 +303,48 @@ class UsuarioController extends BaseController
     // ****************************************************************************************************************************
     public function cambiarEstado()
     {
-        try {
-            $id_usuario = $this->request->getPost('id_usuario');
-            if (!$id_usuario) {
-                $jsonResponse = $this->responseUtil->setResponse(400, 'error', 'ID de usuario no proporcionado', $id_usuario);
-                return $this->response->setStatusCode(400)->setJSON($jsonResponse);
+        if ($this->request->isAJAX()) {
+
+            try {
+                $id_usuario = $this->request->getPost('id_usuario');
+                if (!$id_usuario) {
+                    $jsonResponse = $this->responseUtil->setResponse(400, 'error', 'ID de usuario no proporcionado', $id_usuario);
+                    return $this->response->setStatusCode(400)->setJSON($jsonResponse);
+                }
+
+                $estado = $this->modelUsuario->getEstadoModel($id_usuario);
+                if (!$estado) {
+                    $jsonResponse = $this->responseUtil->setResponse(404, 'not_found', 'Usuario no encontrado', $id_usuario);
+                    return $this->response->setStatusCode(404)->setJSON($jsonResponse);
+                }
+
+                // Cambiar el estado
+                $nuevo_estado = !$estado['estado'];
+                $editar       = $this->modelUsuario->cambiarEstadoModel($id_usuario, $nuevo_estado);
+
+                // Devuelve la respuesta JSON
+                if ($editar) {
+                    $message      = $estado['estado'] == true ? 'Deshabilitado exitosamente!' : 'Habilitado exitosamente!';
+                    $jsonResponse = $this->responseUtil->setResponse(201, 'success', $message, true);
+                    return $this->response->setStatusCode(201)->setJSON($jsonResponse);
+                }
+
+                $jsonResponse = $this->responseUtil->setResponse(500, 'server_error', 'Error al cambiar el estado', false);
+                return $this->response->setStatusCode(500)->setJSON($jsonResponse);
+
+            } catch (\CodeIgniter\Database\Exceptions\DatabaseException $dbException) {
+                $jsonResponse = $this->responseUtil->setResponse(500, 'server_error', 'Error en la base de datos', []);
+                $this->responseUtil->logWithContext($this->responseUtil->setResponse(500, 'server_error', 'Database error: ' . $dbException->getMessage(), []));
+                return $this->response->setStatusCode(500)->setJSON($jsonResponse);
+
+            } catch (\Exception $e) {
+                $jsonResponse = $this->responseUtil->setResponse(500, 'server_error', 'Error inesperado', []);
+                $this->responseUtil->logWithContext($this->responseUtil->setResponse(500, 'server_error', 'Exception: ' . $e->getMessage(), []));
+                return $this->response->setStatusCode(500)->setJSON($jsonResponse);
             }
-
-            $estado = $this->modelUsuario->getEstadoModel($id_usuario);
-            if (!$estado) {
-                $jsonResponse = $this->responseUtil->setResponse(404, 'not_found', 'Usuario no encontrado', $id_usuario);
-                return $this->response->setStatusCode(404)->setJSON($jsonResponse);
-            }
-
-            // Cambiar el estado
-            $nuevo_estado = !$estado['estado'];
-            $editar       = $this->modelUsuario->cambiarEstadoModel($id_usuario, $nuevo_estado);
-
-            // Devuelve la respuesta JSON
-            if ($editar) {
-                $message      = $estado['estado'] == true ? 'Deshabilitado exitosamente!' : 'Habilitado exitosamente!';
-                $jsonResponse = $this->responseUtil->setResponse(201, 'success', $message, true);
-                return $this->response->setStatusCode(201)->setJSON($jsonResponse);
-            }
-
-            $jsonResponse = $this->responseUtil->setResponse(500, 'server_error', 'Error al cambiar el estado', false);
-            return $this->response->setStatusCode(500)->setJSON($jsonResponse);
-
-        } catch (\CodeIgniter\Database\Exceptions\DatabaseException $dbException) {
-            $jsonResponse = $this->responseUtil->setResponse(500, 'server_error', 'Error en la base de datos', []);
-            $this->responseUtil->logWithContext($this->responseUtil->setResponse(500, 'server_error', 'Database error: ' . $dbException->getMessage(), []));
-            return $this->response->setStatusCode(500)->setJSON($jsonResponse);
-
-        } catch (\Exception $e) {
-            $jsonResponse = $this->responseUtil->setResponse(500, 'server_error', 'Error inesperado', []);
-            $this->responseUtil->logWithContext($this->responseUtil->setResponse(500, 'server_error', 'Exception: ' . $e->getMessage(), []));
-            return $this->response->setStatusCode(500)->setJSON($jsonResponse);
         }
-        
+
+        return redirect()->back();
     }
 
 }

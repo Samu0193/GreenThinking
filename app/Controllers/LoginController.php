@@ -14,7 +14,6 @@ class LoginController extends BaseController
         $this->loginModel = new LoginModel();
     }
 
-
     // ****************************************************************************************************************************
     // *!*   CARGAR LA VISTA DE LOGIN:
     // ****************************************************************************************************************************
@@ -27,26 +26,26 @@ class LoginController extends BaseController
         }
 
         // Código para mostrar el formulario de inicio de sesión
-        return view('login/index');
         // return redirect()->to(site_url('login'));
+        return view('login/index');
     }
 
-
-    // *************************************************************************************************************************
-    //    ENVIO DE CORREO PARA RECUPERACION DE CONTRASEÑA:
+    // ****************************************************************************************************************************
+    // *!*   ENVIO DE CORREO PARA RECUPERACION DE CONTRASEÑA:
+    // ****************************************************************************************************************************
     public function sendEmail($email, $subject, $body)
     {
         $emailService = \Config\Services::email();
         $config = [
-            'protocol' => 'smtp',
-            'SMTPHost' => 'smtp.gmail.com',
-            'SMTPUser' => 'davidsanse37@gmail.com',
-            'SMTPPass' => 'lgrz xtqg jopt mqiw',
-            'SMTPPort' => 587,
+            'protocol'   => 'smtp',
+            'SMTPHost'   => 'smtp.gmail.com',
+            'SMTPUser'   => 'davidsanse37@gmail.com',
+            'SMTPPass'   => 'lgrz xtqg jopt mqiw',
+            'SMTPPort'   => 587,
             'SMTPCrypto' => 'tls',
-            'mailType' => 'html',
-            'charset' => 'utf-8',
-            'wordWrap' => true
+            'mailType'   => 'html',
+            'charset'    => 'utf-8',
+            'wordWrap'   => true
         ];
 
         $emailService->initialize($config);
@@ -69,7 +68,6 @@ class LoginController extends BaseController
         return $emailService->send();
     }
 
-
     // ****************************************************************************************************************************
     // *!*   CERRAR SESION:
     // ****************************************************************************************************************************
@@ -80,7 +78,6 @@ class LoginController extends BaseController
         // Redirige a una página pública, como el inicio de sesión
         return redirect()->to(site_url('login'));
     }
-
 
     // ****************************************************************************************************************************
     // *!*   CARGAR VISTA PARA RESTABLECER CONTRASEÑA:
@@ -96,7 +93,6 @@ class LoginController extends BaseController
         return view('login/password_reset');
     }
 
-
     // ****************************************************************************************************************************
     // *!*   CARGAR VISTA PARA CAMBIAR CONTRASEÑA:
     // ****************************************************************************************************************************
@@ -108,6 +104,7 @@ class LoginController extends BaseController
         }
 
         try {
+
             $getHashDetails = $this->loginModel->getHashDetails($hash);
             if (!$getHashDetails) {
                 $this->session->setFlashdata('message', 'El link no es válido');
@@ -211,9 +208,7 @@ class LoginController extends BaseController
         }
 
         return redirect()->back();
-
     }
-
 
     // ****************************************************************************************************************************
     // *!*   VALIDAR CORREO (AJAX):
@@ -254,7 +249,6 @@ class LoginController extends BaseController
 
         return redirect()->back();
     }
-
 
     // ****************************************************************************************************************************
     // *!*   RECUPERACION DE CONTRASEÑA (AJAX):
@@ -325,7 +319,6 @@ class LoginController extends BaseController
 
         return redirect()->back();
     }
-
 
     // ****************************************************************************************************************************
     // *!*   CAMBIAR CONTRASEÑA (AJAX):
@@ -405,7 +398,6 @@ class LoginController extends BaseController
         }
 
         return redirect()->back();
-
     }
     
 }
