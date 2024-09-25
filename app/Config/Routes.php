@@ -64,5 +64,5 @@ $routes->post('productos/guardar',       'ProductosController::guardar');
 $routes->post('productos/cambiarEstado', 'ProductosController::cambiarEstado');
 
 // SOLICITUDES CONTROLLER
-$routes->get('solicitudes/verSolicitudMayores', 'SolicitudesController::verSolicitudMayores');
-$routes->get('solicitudes/verSolicitudMenores', 'SolicitudesController::verSolicitudMenores');
+$routes->post('solicitudes/verSolicitudMayores', 'SolicitudesController::verSolicitudMayores');
+$routes->post('solicitudes/verSolicitudMenores', 'SolicitudesController::verSolicitudMenores');

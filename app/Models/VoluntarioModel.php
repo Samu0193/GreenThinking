@@ -339,39 +339,6 @@ class VoluntarioModel extends Model
     }
 
     // ****************************************************************************************************************************
-    // *!*   OBTIENE VOLUNTARIO MAYOR DE EDAD:
-    // ****************************************************************************************************************************
-    public function getVoluntarioMayor($dui, $telefono)
-    {
-        return $this->select('v.id_voluntario, p.nombres, p.apellidos, s.fecha_ingreso, s.fecha_finalizacion')
-                    ->from('voluntario v')
-                    ->join('persona p', 'v.id_persona = p.id_persona')
-                    ->join('solicitud s', 's.id_voluntario = v.id_voluntario')
-                    ->where('p.DUI', $dui)
-                    ->where('p.telefono', $telefono)
-                    ->get()
-                    ->getRowArray();
-    }
-
-    // ****************************************************************************************************************************
-    // *!*   OBTIENE VOLUNTARIO MENOR DE EDAD:
-    // ****************************************************************************************************************************
-    public function getVoluntarioMenor($dui, $telefono)
-    {
-        return $this->select('v.id_voluntario, pv.nombres, pv.apellidos, pr.nombres AS nombre_parantesco,
-	                        pr.apellidos AS apellido_parantesco, pr.DUI AS dui_refe, s.fecha_ingreso, s.fecha_finalizacion')
-                    ->from('solicitud s')
-                    ->join('voluntario v', 's.id_voluntario = v.id_voluntario')
-                    ->join('referencia_personal rp', 'rp.id_referencia = s.id_referencia')
-                    ->join('persona pv', 'pv.id_persona = v.id_persona')
-                    ->join('persona pr', 'pr.id_persona = rp.id_persona')
-                    ->where('pr.DUI', $dui)
-                    ->where('pr.telefono', $telefono)
-                    ->get()
-                    ->getRowArray();
-    }
-
-    // ****************************************************************************************************************************
     // *!*   OBTIENE LAS SOLICITUDES DE LOS VOLUNTARIOS MAYORES DE EDAD:
     // ****************************************************************************************************************************
     public function mostrarSolicitudMayor()
@@ -384,6 +351,53 @@ class VoluntarioModel extends Model
                     ->where('p.edad >=', 18)
                     ->get()
                     ->getResultArray();
+    }
+
+    // ****************************************************************************************************************************
+    // *!*   OBTIENE TODAS LAS SOLICITUDES DE LOS VOLUNTARIOS MAYORES (AJAX DATATABLE):
+    // ****************************************************************************************************************************
+    public function getTotalVoluntarioMayor($searchValue)
+    {
+        // Consulta base desde la vista
+        $builder = $this->db->table('vw_solicitud_mayor');
+
+        // Total sin filtro
+        $totalRecords = $builder->countAllResults(false); // Evita reiniciar el builder
+
+        // Total filtrado (si existe búsqueda)
+        if ($searchValue) {
+            $builder->groupStart()
+                    ->like('nombre_completo', $searchValue)
+                    ->orLike('nombre_departamento', $searchValue)
+                    ->orLike('fecha_ingreso', $searchValue)
+                    ->orLike('fecha_finalizacion', $searchValue)
+                    ->groupEnd();
+        }
+
+        $totalFiltered = $builder->countAllResults();
+        return ['totalRecords' => $totalRecords, 'totalFiltered' => $totalFiltered];
+    }
+
+    // ****************************************************************************************************************************
+    // *!*   OBTIENE LAS LAS SOLICITUDES DE LOS VOLUNTARIOS MAYORES PAGINADAS (AJAX DATATABLE):
+    // ****************************************************************************************************************************
+    public function getVoluntarioMayorPaginado($start, $length, $searchValue)
+    {
+        // Consulta base desde la vista
+        $builder = $this->db->table('vw_solicitud_mayor');
+
+        // Filtro de búsqueda
+        if ($searchValue) {
+            $builder->groupStart()
+                    ->like('nombre_completo', $searchValue)
+                    ->orLike('nombre_departamento', $searchValue)
+                    ->orLike('fecha_ingreso', $searchValue)
+                    ->orLike('fecha_finalizacion', $searchValue)
+                    ->groupEnd();
+        }
+
+        // Aplicar paginación
+        return $builder->limit($length, $start)->get()->getResultArray();
     }
 
     // ****************************************************************************************************************************
@@ -403,6 +417,101 @@ class VoluntarioModel extends Model
                     ->where('p.edad <', 18)
                     ->get()
                     ->getResultArray();
+    }
+
+    // ****************************************************************************************************************************
+    // *!*   OBTIENE TODAS LAS SOLICITUDES DE LOS VOLUNTARIOS MENORES (AJAX DATATABLE):
+    // ****************************************************************************************************************************
+    public function getTotalVoluntarioMenor($searchValue)
+    {
+        // Consulta base desde la vista
+        $builder = $this->db->table('vw_solicitud_menor');
+
+        // Total sin filtro
+        $totalRecords = $builder->countAllResults(false); // Evita reiniciar el builder
+
+        // Total filtrado (si existe búsqueda)
+        if ($searchValue) {
+            $builder->groupStart()
+                    ->like('nombre_completo', $searchValue)
+                    ->like('nombre_completo_refe', $searchValue)
+                    ->like('dui_refe', $searchValue)
+                    ->orLike('nombre_departamento', $searchValue)
+                    ->orLike('fecha_ingreso', $searchValue)
+                    ->orLike('fecha_finalizacion', $searchValue)
+                    ->groupEnd();
+        }
+
+        $totalFiltered = $builder->countAllResults();
+        return ['totalRecords' => $totalRecords, 'totalFiltered' => $totalFiltered];
+    }
+
+    // ****************************************************************************************************************************
+    // *!*   OBTIENE LAS SOLICITUDES DE LOS VOLUNTARIOS MENORES PAGINADaS (AJAX DATATABLE):
+    // ****************************************************************************************************************************
+    public function getVoluntarioMenorPaginado($start, $length, $searchValue)
+    {
+        // Consulta base desde la vista
+        $builder = $this->db->table('vw_solicitud_menor');
+
+        // Filtro de búsqueda
+        if ($searchValue) {
+            $builder->groupStart()
+                    ->like('nombre_completo', $searchValue)
+                    ->like('nombre_completo_refe', $searchValue)
+                    ->like('dui_refe', $searchValue)
+                    ->orLike('nombre_departamento', $searchValue)
+                    ->orLike('fecha_ingreso', $searchValue)
+                    ->orLike('fecha_finalizacion', $searchValue)
+                    ->groupEnd();
+        }
+
+        // Aplicar paginación
+        return $builder->limit($length, $start)->get()->getResultArray();
+    }
+
+
+
+
+
+
+
+
+
+
+
+
+    // ****************************************************************************************************************************
+    // *!*   OBTIENE VOLUNTARIO MAYOR DE EDAD (PARA VER PDF):
+    // ****************************************************************************************************************************
+    public function getVoluntarioMayor($dui, $telefono)
+    {
+        return $this->select('v.id_voluntario, p.nombres, p.apellidos, s.fecha_ingreso, s.fecha_finalizacion')
+                    ->from('voluntario v')
+                    ->join('persona p', 'v.id_persona = p.id_persona')
+                    ->join('solicitud s', 's.id_voluntario = v.id_voluntario')
+                    ->where('p.DUI', $dui)
+                    ->where('p.telefono', $telefono)
+                    ->get()
+                    ->getRowArray();
+    }
+
+    // ****************************************************************************************************************************
+    // *!*   OBTIENE VOLUNTARIO MENOR DE EDAD (PARA VER PDF):
+    // ****************************************************************************************************************************
+    public function getVoluntarioMenor($dui, $telefono)
+    {
+        return $this->select('v.id_voluntario, pv.nombres, pv.apellidos, pr.nombres AS nombre_parantesco,
+	                        pr.apellidos AS apellido_parantesco, pr.DUI AS dui_refe, s.fecha_ingreso, s.fecha_finalizacion')
+                    ->from('solicitud s')
+                    ->join('voluntario v', 's.id_voluntario = v.id_voluntario')
+                    ->join('referencia_personal rp', 'rp.id_referencia = s.id_referencia')
+                    ->join('persona pv', 'pv.id_persona = v.id_persona')
+                    ->join('persona pr', 'pr.id_persona = rp.id_persona')
+                    ->where('pr.DUI', $dui)
+                    ->where('pr.telefono', $telefono)
+                    ->get()
+                    ->getRowArray();
     }
 
 }

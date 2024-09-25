@@ -100,26 +100,26 @@ $(document).ready(function () {
         "language": idioma_espanol
     });
 
-    $('#solimayores').DataTable({
+    $('#soli-mayores').DataTable({
         "processing": true,
         "serverSide": true,
         "ajax": {
             "url": `${url}solicitudes/verSolicitudMayores`,
-            "type": "GET",
+            "type": "POST",
             "beforeSend": function () {
                 $('.dataTables_wrapper .dataTables_processing').css({ 'display': 'flex' });
             }
         },
         "order": [],
-        "language": idioma_espanol,
+        "language": idioma_espanol
     });
 
-    $('#solim').DataTable({
+    $('#soli-menores').DataTable({
         "processing": true,
         "serverSide": true,
         "ajax": {
             "url": `${url}solicitudes/verSolicitudMenores`,
-            "type": "GET",
+            "type": "POST",
             "beforeSend": function () {
                 $('.dataTables_wrapper .dataTables_processing').css({ 'display': 'flex' });
             },

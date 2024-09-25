@@ -10,10 +10,10 @@
 
 			<div id="tbl-mayores">
 				<h2>Solicitudes de Mayores de edad </h2><br><br>
-				<table id="solimayores" class="display responsive nowrap" style="width: 100%;">
+				<table id="soli-mayores" class="display responsive nowrap" style="width: 100%;">
 					<thead>
 						<tr>
-							<th>Id</th>
+							<th>N°</th>
 							<th>Nombre completo</th>
 							<th>Departamento</th>
 							<th>Fecha de Ingreso</th>
@@ -26,10 +26,10 @@
 
 			<div id="tbl-menores">
 				<h2>Solicitudes de Menores de edad </h2><br><br>
-				<table id="solim" class="display responsive nowrap" style="width: 100%;">
+				<table id="soli-menores" class="display responsive nowrap" style="width: 100%;">
 					<thead>
 						<tr>
-							<th>Id</th>
+							<th>N°</th>
 							<th>Nombre completo</th>
 							<th>Parentesco</th>
 							<th>DUI referencia</th>
