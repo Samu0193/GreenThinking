@@ -54,8 +54,8 @@
                                 onchange="valEmailUser(this);" required>
                         </div>
                         <div class="input-field">
-                            <label for="DUI">DUI: </label>
-                            <input type="text" name="DUI" id="DUI" placeholder="99999999-9" onchange="valDui(this);"
+                            <label for="dui">DUI: </label>
+                            <input type="text" name="dui" id="dui" placeholder="99999999-9" onchange="valDui(this);"
                                 required>
                             </select>
                             <label for="nombre_usuario">Nombre Usuario: </label>

@@ -160,8 +160,8 @@ $('.user-info').click(function () {
 /********************************************************************************************************************************************************
 *!*     MASCARAS DE CAMPOS:
 ********************************************************************************************************************************************************/
-$('[name="DUI"]').mask('99999999-9');
-$('[name="DUI_ref"]').mask('99999999-9');
+$('[name="dui"]').mask('99999999-9');
+$('[name="dui_ref"]').mask('99999999-9');
 $('[name="telefono"]').mask('9999-9999');
 $('[name="telefono_ref"]').mask('9999-9999');
 $('[name="telefono_menor"]').mask('9999-9999');
@@ -173,7 +173,7 @@ function valDui(input) {
     $.ajax({
         type: 'POST',
         url: `${url}inicio/validarDUI`,
-        data: { 'DUI': input.value },
+        data: { 'dui': input.value },
         success: function (jsonResponse) {
             if (jsonResponse.data === false) {
                 // toastInfoMessage(`<p style="color: #fff; font-size: 1.18em; font-weight: 100;">${jsonResponse.message}</p>`);

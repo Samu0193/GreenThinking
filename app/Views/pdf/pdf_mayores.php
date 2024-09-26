@@ -12,21 +12,19 @@
 
     <p style="position: absolute;margin-top: 75px; left: 310px;"><b>Solicitud de Voluntariado</b></p>
     <?php
-        $fechaIngreso = strtotime($volMayor['fecha_ingreso']);
-        $fechaFin =  strtotime($volMayor['fecha_finalizacion']);
-
-        $diaI = date('d', $fechaIngreso);
-        $mesI = date('m', $fechaIngreso);
-        $anioI = date('y', $fechaIngreso);
-
-        $diaF = date('d', $fechaFin);
-        $mesF = date('m', $fechaFin);
-        $anioF = date('y', $fechaFin);
+        $fechaIngreso  = strtotime($volMayor['fecha_ingreso']);
+        $fechaFin      = strtotime($volMayor['fecha_finalizacion']);
+        $dia_inicio    = date('d', $fechaIngreso);
+        $mes_inicio    = date('m', $fechaIngreso);
+        $anio_inicio   = date('y', $fechaIngreso);
+        $dia_finaliza  = date('d', $fechaFin);
+        $mes_finaliza  = date('m', $fechaFin);
+        $anio_finaliza = date('y', $fechaFin);
     ?>
     <p></p><br><br><br><br>
     <p>Yo <b><?= $volMayor['nombres'] ?> <?= $volMayor['apellidos'] ?> </b>Estoy dispuest@ a formar parte del voluntariado de Green Thinking
-        desde la fecha de <b><?= $diaI ?></b> de <b> <?= $mesI; ?> </b> del <b><?= $anioI; ?> </b> hasta la fecha de
-        <b><?= $diaF ?></b> de <b> <?= $mesF; ?> </b> del <b><?= $anioF; ?> </b>, el cual me ayudara para el desarrollo de
+        desde la fecha de <b><?= $dia_inicio ?></b> de <b> <?= $mes_inicio; ?> </b> del <b><?= $anio_inicio; ?> </b> hasta la fecha de
+        <b><?= $dia_finaliza ?></b> de <b> <?= $mes_finaliza; ?> </b> del <b><?= $anio_finaliza; ?> </b>, el cual me ayudara para el desarrollo de
         habilidades para mi persona como conciencia ambiental, empatia con los demas y el medio ambiente y muchos otros
         valores a traves de las diversas actividades que se desarrollan dentro de Green Thinking por lo cual firmo la
         presente Carta para hacer constar que estoy de acuerdo en formar parte del voluntariado y dar autorizacion para

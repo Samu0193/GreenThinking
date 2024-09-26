@@ -409,7 +409,7 @@ if (pagina === `${url}usuario`) {
             nombres: { required: true, alfaOespacio: true },
             apellidos: { required: true, alfaOespacio: true },
             f_nacimiento_mayor: { required: true, minEdadMay: true, maxEdadMay: true },
-            DUI: { required: true, isDUI: true },
+            dui: { required: true, isDUI: true },
             email: { required: true, correo: true },
             telefono: { required: true },
             nombre_usuario: { required: true },
@@ -424,7 +424,7 @@ if (pagina === `${url}usuario`) {
                 min: 'Edad m\u00e1xima 40 a\u00f1os',
                 max: 'Edad m\u00ednima 18 a\u00f1os'
             },
-            DUI: { required: 'DUI requerido' },
+            dui: { required: 'DUI requerido' },
             email: { required: 'Email requerido' },
             telefono: 'Tel\u00f3fono requerido',
             nombre_usuario: 'Usuario requerido',

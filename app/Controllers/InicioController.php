@@ -59,7 +59,7 @@ class InicioController extends BaseController
             $mpdf->WriteHTML($stylesheet, 1);
 
             // Obtener datos
-            $datos['volMayor'] = $this->modelVol->getVoluntarioMayor($this->request->getPost('DUI'), $this->request->getPost('telefono'));
+            $datos['volMayor'] = $this->modelVol->getVoluntarioMayor($this->request->getPost('dui'), $this->request->getPost('telefono'));
 
             // Preparar datos para la vista
             $solicitud = [
@@ -111,7 +111,7 @@ class InicioController extends BaseController
             ];
 
             // Obtener datos del modelo
-            $datos['volMenor'] = $this->modelVol->getVoluntarioMenor($this->request->getPost('DUI_ref'), $this->request->getPost('telefono_ref'));
+            $datos['volMenor'] = $this->modelVol->getVoluntarioMenor($this->request->getPost('dui_ref'), $this->request->getPost('telefono_ref'));
 
             // Generar el HTML
             $html = view('pdf/pdf_menores', $datos);
@@ -285,7 +285,7 @@ class InicioController extends BaseController
 
             try {
 
-                $dui = $this->request->getPost('DUI');
+                $dui = $this->request->getPost('dui');
                 if (!$dui) {
                     $jsonResponse = $this->responseUtil->setResponse(400, 'error', 'DUI no proporcionado', []);
                     return $this->response->setStatusCode(400)->setJSON($jsonResponse);
@@ -432,7 +432,7 @@ class InicioController extends BaseController
                     'nombres'        => $this->request->getPost('nombres'),
                     'apellidos'      => $this->request->getPost('apellidos'),
                     'edad'           => $edad,
-                    'DUI'            => $this->request->getPost('DUI'),
+                    'dui'            => $this->request->getPost('dui'),
                     'telefono'       => $this->request->getPost('telefono'),
                     'fecha_creacion' => date('Y-m-d H:i:s')
                 ];
@@ -517,7 +517,7 @@ class InicioController extends BaseController
                     'nombres'        => $this->request->getPost('nombres_ref'),
                     'apellidos'      => $this->request->getPost('apellidos_ref'),
                     'edad'           => $edad_referencia,
-                    'DUI'            => $this->request->getPost('DUI_ref'),
+                    'dui'            => $this->request->getPost('dui_ref'),
                     'telefono'       => $this->request->getPost('telefono_ref'),
                     'fecha_creacion' => date('Y-m-d H:i:s')
                 ];
@@ -538,7 +538,7 @@ class InicioController extends BaseController
                     'nombres'        => $this->request->getPost('nombres_menor'),
                     'apellidos'      => $this->request->getPost('apellidos_menor'),
                     'edad'           => $edad_menor,
-                    'DUI'            => null,
+                    'dui'            => null,
                     'telefono'       => $this->request->getPost('telefono_menor'),
                     'fecha_creacion' => date('Y-m-d H:i:s')
                 ];

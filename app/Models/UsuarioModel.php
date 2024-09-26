@@ -48,8 +48,8 @@ class UsuarioModel extends Model
                 'maxEdadMayor' => 'Edad mínima 18 años',
             ]
         ],
-        'DUI' => [
-            'rules'  => 'required|isDUI|is_unique[persona.DUI]',
+        'dui' => [
+            'rules'  => 'required|isDUI|is_unique[persona.dui]',
             'errors' => [
                 'required'  => 'DUI requerido',
                 'isDUI'     => 'DUI inválido',

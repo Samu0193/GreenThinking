@@ -194,7 +194,7 @@ class UsuarioController extends BaseController
                     'id_persona'     => $this->modelUsuario->maxPersona(),
                     'nombres'        => $this->request->getPost('nombres'),
                     'apellidos'      => $this->request->getPost('apellidos'),
-                    'DUI'            => $this->request->getPost('DUI'),
+                    'dui'            => $this->request->getPost('dui'),
                     'edad'           => $edad->y,
                     'telefono'       => $this->request->getPost('telefono'),
                     'fecha_creacion' => date('Y-m-d H:i:s')
