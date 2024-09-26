@@ -295,7 +295,7 @@ class LoginController extends BaseController
 
                 if ($sentStatus) {
                     $this->loginModel->updatePasswordHash($data, $email);
-                    $jsonResponse = $this->responseUtil->setResponse(200, 'error', 'Correo de recuperación enviado', true);
+                    $jsonResponse = $this->responseUtil->setResponse(200, 'success', 'Correo de recuperación enviado', true);
                     return $this->response->setStatusCode(200)->setJSON($jsonResponse);
                     // return $this->response->setJSON(1);
                 }

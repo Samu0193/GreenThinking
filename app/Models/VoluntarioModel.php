@@ -377,7 +377,7 @@ class VoluntarioModel extends Model
     public function getTotalVoluntarioMayor($searchValue)
     {
         // Consulta base desde la vista
-        $builder = $this->db->table('vw_voluntario_mayor');
+        $builder = $this->db->table('vw_solicitud_mayor');
 
         // Total sin filtro
         $totalRecords = $builder->countAllResults(false); // Evita reiniciar el builder
@@ -386,7 +386,7 @@ class VoluntarioModel extends Model
         if ($searchValue) {
             $builder->groupStart()
                     ->like('nombre_completo', $searchValue)
-                    ->orLike('nombre_departamento', $searchValue)
+                    ->orLike('departamento', $searchValue)
                     ->orLike('fecha_ingreso', $searchValue)
                     ->orLike('fecha_finalizacion', $searchValue)
                     ->groupEnd();
@@ -402,13 +402,13 @@ class VoluntarioModel extends Model
     public function getVoluntarioMayorPaginado($start, $length, $searchValue)
     {
         // Consulta base desde la vista
-        $builder = $this->db->table('vw_voluntario_mayor');
+        $builder = $this->db->table('vw_solicitud_mayor');
 
         // Filtro de búsqueda
         if ($searchValue) {
             $builder->groupStart()
                     ->like('nombre_completo', $searchValue)
-                    ->orLike('nombre_departamento', $searchValue)
+                    ->orLike('departamento', $searchValue)
                     ->orLike('fecha_ingreso', $searchValue)
                     ->orLike('fecha_finalizacion', $searchValue)
                     ->groupEnd();
@@ -424,7 +424,7 @@ class VoluntarioModel extends Model
     public function getTotalVoluntarioMenor($searchValue)
     {
         // Consulta base desde la vista
-        $builder = $this->db->table('vw_voluntario_menor');
+        $builder = $this->db->table('vw_solicitud_menor');
 
         // Total sin filtro
         $totalRecords = $builder->countAllResults(false); // Evita reiniciar el builder
@@ -433,9 +433,10 @@ class VoluntarioModel extends Model
         if ($searchValue) {
             $builder->groupStart()
                     ->like('nombre_completo', $searchValue)
-                    ->like('nombre_completo_refe', $searchValue)
-                    ->like('dui_refe', $searchValue)
-                    ->orLike('nombre_departamento', $searchValue)
+                    ->orLike('departamento', $searchValue)
+                    ->orLike('nombre_completo_refe', $searchValue)
+                    ->orLike('parentesco', $searchValue)
+                    ->orLike('dui_refe', $searchValue)
                     ->orLike('fecha_ingreso', $searchValue)
                     ->orLike('fecha_finalizacion', $searchValue)
                     ->groupEnd();
@@ -451,15 +452,16 @@ class VoluntarioModel extends Model
     public function getVoluntarioMenorPaginado($start, $length, $searchValue)
     {
         // Consulta base desde la vista
-        $builder = $this->db->table('vw_voluntario_menor');
+        $builder = $this->db->table('vw_solicitud_menor');
 
         // Filtro de búsqueda
         if ($searchValue) {
             $builder->groupStart()
                     ->like('nombre_completo', $searchValue)
-                    ->like('nombre_completo_refe', $searchValue)
-                    ->like('dui_refe', $searchValue)
-                    ->orLike('nombre_departamento', $searchValue)
+                    ->orLike('departamento', $searchValue)
+                    ->orLike('nombre_completo_refe', $searchValue)
+                    ->orLike('parentesco', $searchValue)
+                    ->orLike('dui_refe', $searchValue)
                     ->orLike('fecha_ingreso', $searchValue)
                     ->orLike('fecha_finalizacion', $searchValue)
                     ->groupEnd();
@@ -472,33 +474,25 @@ class VoluntarioModel extends Model
     // ****************************************************************************************************************************
     // *!*   OBTIENE LA SOLICITUD DE UN VOLUNTARIO MAYOR (VER PDF):
     // ****************************************************************************************************************************
-    public function obtVolMayores($idvoluntario)
+    public function getSolicitudMayor($id_solicitud, $id_voluntario)
 	{
-		$this->db->select('s.id_solicitud,p.nombres,p.apellidos,d.nombre_departamento,s.fecha_ingreso,s.fecha_finalizacion');
-		$this->db->from('solicitud s');
-		$this->db->join('voluntario v', 'v.id_voluntario = s.id_voluntario');
-		$this->db->join('persona p', 'p.id_persona = v.id_persona');
-		$this->db->join('departamento d', 'd.id_departamento = v.departamento_residencia');
-		$this->db->where('v.id_voluntario=',$idvoluntario);
-		$datos = $this->db->get();
-		return $datos->row();
+		return $this->db->table('vw_solicitud_mayor')
+                    ->where('id_solicitud', $id_solicitud)
+                    ->where('id_voluntario', $id_voluntario)
+                    ->get()
+                    ->getRowArray();
 	}
 
     // ****************************************************************************************************************************
     // *!*   OBTIENE LA SOLICITUD DE UN VOLUNTARIO MENOR (VER PDF):
     // ****************************************************************************************************************************
-    public function obtVolMen($idvoluntario)
+    public function getSolicitudMenor($id_solicitud, $id_voluntario)
 	{
-		$this->db->select('s.id_solicitud,p.nombres,p.apellidos,d.nombre_departamento,pr.nombres as nombre_parantesco,pr.apellidos apellido_parantesco,,pr.dui as dui_refe,s.fecha_ingreso,s.fecha_finalizacion');
-		$this->db->from('solicitud s');
-		$this->db->join('voluntario v', 'v.id_voluntario = s.id_voluntario');
-		$this->db->join('persona p', 'p.id_persona = v.id_persona');
-		$this->db->join('departamento d', 'd.id_departamento = v.departamento_residencia');
-		$this->db->join('referencia_personal rp', 'rp.id_referencia = s.id_referencia');
-		$this->db->join('persona pr', 'pr.id_persona = rp.id_persona');
-		$this->db->where('v.id_voluntario=',$idvoluntario);
-		$datos = $this->db->get();
-		return $datos->row();
+		return $this->db->table('vw_solicitud_menor')
+                    ->where('id_solicitud', $id_solicitud)
+                    ->where('id_voluntario', $id_voluntario)
+                    ->get()
+                    ->getRowArray();
 	}
 
 }

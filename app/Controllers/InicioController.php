@@ -2,7 +2,6 @@
 
 namespace App\Controllers;
 
-use Mpdf\Mpdf;
 use App\Models\VoluntarioModel;
 use App\Controllers\BaseController;
 
@@ -52,11 +51,11 @@ class InicioController extends BaseController
     {
         try {
             // Instanciar mPDF
-            $mpdf = new Mpdf();
+            // $mpdf = new Mpdf();
 
             // Cargar el CSS
             $stylesheet = file_get_contents('assets/css/pdf.css');
-            $mpdf->WriteHTML($stylesheet, 1);
+            $this->mpdf->WriteHTML($stylesheet, 1);
 
             // Obtener datos
             $datos['volMayor'] = $this->modelVol->getVoluntarioMayor($this->request->getPost('dui'), $this->request->getPost('telefono'));
@@ -71,10 +70,10 @@ class InicioController extends BaseController
             $html = view('pdf/pdf_mayores', $datos);
 
             // Escribir el contenido HTML al PDF
-            $mpdf->WriteHTML($html, 2);
+            $this->mpdf->WriteHTML($html, 2);
 
             // Salida del archivo PDF directamente al navegador
-            $mpdf->Output('Solicitud ' . $solicitud['nombres'] . '_' . $solicitud['apellidos'] . '.pdf', 'D');
+            $this->mpdf->Output('Solicitud ' . $solicitud['nombres'] . '_' . $solicitud['apellidos'] . '.pdf', 'D');
 
             // Terminar la ejecución
             exit;
@@ -98,11 +97,11 @@ class InicioController extends BaseController
     {
         try {
             // Instanciar mPDF
-            $mpdf = new Mpdf();
+            // $mpdf = new Mpdf();
 
             // Cargar el CSS
             $stylesheet = file_get_contents('assets/css/pdf.css');
-            $mpdf->WriteHTML($stylesheet, 1);
+            $this->mpdf->WriteHTML($stylesheet, 1);
 
             // Obtener datos del formulario
             $dato = [
@@ -117,10 +116,10 @@ class InicioController extends BaseController
             $html = view('pdf/pdf_menores', $datos);
 
             // Escribir el contenido HTML al PDF
-            $mpdf->WriteHTML($html, 2);
+            $this->mpdf->WriteHTML($html, 2);
 
             // Salida del archivo PDF directamente al navegador
-            $mpdf->Output('Solicitud ' . $dato['nombres'] . '_' . $dato['apellidos'] . '.pdf', 'D');
+            $this->mpdf->Output('Solicitud ' . $dato['nombres'] . '_' . $dato['apellidos'] . '.pdf', 'D');
 
             // Terminar la ejecución
             exit;
@@ -414,7 +413,7 @@ class InicioController extends BaseController
 
                     // Obtiene todos los errores
                     $errors = $this->validator->getErrors();
-                    
+
                     // Obtener el primer mensaje de error
                     $firstError   = reset($errors); // reset() devuelve el primer valor del array
                     $jsonResponse = $this->responseUtil->setResponse(400, 'error', $errors, []);

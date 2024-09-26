@@ -2,7 +2,7 @@
 <html>
 
 <head>
-
+    <link href="<?= base_url('assets/css/pdf.css'); ?>" rel="stylesheet" type="text/css">
 </head>
 
 <body>
@@ -22,7 +22,7 @@
         $anio_finaliza = date('y', $fechaFin);
     ?>
     <p></p><br><br><br><br>
-    <p>Yo <b><?= $volMayor['nombres'] ?> <?= $volMayor['apellidos'] ?> </b>Estoy dispuest@ a formar parte del voluntariado de Green Thinking
+    <p>Yo <b><?= $volMayor['nombre_completo'] ?> </b>Estoy dispuest@ a formar parte del voluntariado de Green Thinking
         desde la fecha de <b><?= $dia_inicio ?></b> de <b> <?= $mes_inicio; ?> </b> del <b><?= $anio_inicio; ?> </b> hasta la fecha de
         <b><?= $dia_finaliza ?></b> de <b> <?= $mes_finaliza; ?> </b> del <b><?= $anio_finaliza; ?> </b>, el cual me ayudara para el desarrollo de
         habilidades para mi persona como conciencia ambiental, empatia con los demas y el medio ambiente y muchos otros

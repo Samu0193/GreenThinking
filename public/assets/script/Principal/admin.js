@@ -104,7 +104,7 @@ $(document).ready(function () {
         "processing": true,
         "serverSide": true,
         "ajax": {
-            "url": `${url}solicitudes/verSolicitudMayores`,
+            "url": `${url}solicitudes/tblSoliMayores`,
             "type": "POST",
             "beforeSend": function () {
                 $('.dataTables_wrapper .dataTables_processing').css({ 'display': 'flex' });
@@ -118,7 +118,7 @@ $(document).ready(function () {
         "processing": true,
         "serverSide": true,
         "ajax": {
-            "url": `${url}solicitudes/verSolicitudMenores`,
+            "url": `${url}solicitudes/tblSoliMenores`,
             "type": "POST",
             "beforeSend": function () {
                 $('.dataTables_wrapper .dataTables_processing').css({ 'display': 'flex' });
@@ -391,6 +391,63 @@ function cambiarEstadoProducto(producto) {
             let errorMessage = errorMsgEstandar;
             let jsonResponse = jqXHR.responseJSON;
             console.error(`Error en la solicitud AJAX:\nStatus: ${textStatus}\nError Thrown: ${errorThrown}\nMessage: ${jsonResponse.message}`);
+
+            if (jsonResponse) {
+                errorMessage = jsonResponse.message;
+            }
+            toastErrorMessage(`<p style="color: #fff; font-size: 1.27em; font-weight: 100;">${errorMessage}</p>`);
+        }
+    });
+}
+
+/********************************************************************************************************************************************************
+*!*     MOSTRAR SOLICITUD MAYOR:
+********************************************************************************************************************************************************/
+function showSoliMayores(id_solicitud, id_voluntario) {
+    // const url_ajax = `${url}showSoliMayores/${id_solicitud}/${id_voluntario}/${encodeURIComponent(dui)}/${encodeURIComponent(telefono)}`;
+    const url_ajax = `${url}showSoliMayores/${id_solicitud}/${id_voluntario}`;
+    $.ajax({
+        url: url_ajax,
+        type: 'GET',
+        success: function (htmlResponse) {
+            // const new_window = window.open();
+            // new_window.document.write(htmlResponse);
+            window.open(url_ajax, '_blank');
+        },
+        error: function (jqXHR, textStatus, errorThrown) {
+
+            // Mensaje amigable para el usuario basado en el mensaje del servidor
+            let errorMessage = errorMsgEstandar;
+            let jsonResponse = jqXHR.responseJSON;
+            console.error(`Error en la solicitud AJAX:\nStatus: ${textStatus}\nError Thrown: ${errorThrown}`);
+
+            if (jsonResponse) {
+                errorMessage = jsonResponse.message;
+            }
+            toastErrorMessage(`<p style="color: #fff; font-size: 1.27em; font-weight: 100;">${errorMessage}</p>`);
+        }
+    });
+}
+
+/********************************************************************************************************************************************************
+*!*     MOSTRAR SOLICITUD MENOR:
+********************************************************************************************************************************************************/
+function showSoliMenores(id_solicitud, id_voluntario) {
+    const url_ajax = `${url}showSoliMenores/${id_solicitud}/${id_voluntario}`;
+    $.ajax({
+        url: url_ajax,
+        type: 'GET',
+        success: function (htmlResponse) {
+            // const new_window = window.open();
+            // new_window.document.write(htmlResponse);
+            window.open(url_ajax, '_blank');
+        },
+        error: function (jqXHR, textStatus, errorThrown) {
+
+            // Mensaje amigable para el usuario basado en el mensaje del servidor
+            let errorMessage = errorMsgEstandar;
+            let jsonResponse = jqXHR.responseJSON;
+            console.error(`Error en la solicitud AJAX:\nStatus: ${textStatus}\nError Thrown: ${errorThrown}`);
 
             if (jsonResponse) {
                 errorMessage = jsonResponse.message;

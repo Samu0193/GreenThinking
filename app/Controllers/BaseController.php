@@ -2,6 +2,7 @@
 
 namespace App\Controllers;
 
+use Mpdf\Mpdf;
 use App\Utils\ResponseUtil;
 use CodeIgniter\Controller;
 use App\Utils\PHPMailerService;
@@ -46,6 +47,13 @@ abstract class BaseController extends Controller
     protected $phpMailer;
 
     /**
+     * Instance of the main ResponseUtil object.
+     *
+     * @var Mpdf
+     */
+    protected $mpdf;
+
+    /**
      * An array of helpers to be loaded automatically upon
      * class instantiation. These helpers will be available
      * to all other controllers that extend BaseController.
@@ -76,5 +84,6 @@ abstract class BaseController extends Controller
         $this->session      = \Config\Services::session();
         $this->responseUtil = new ResponseUtil();
         $this->phpMailer    = new PHPMailerService();
+        $this->mpdf         = new Mpdf();
     }
 }

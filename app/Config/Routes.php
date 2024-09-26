@@ -64,5 +64,8 @@ $routes->post('productos/guardar',       'ProductosController::guardar');
 $routes->post('productos/cambiarEstado', 'ProductosController::cambiarEstado');
 
 // SOLICITUDES CONTROLLER
-$routes->post('solicitudes/verSolicitudMayores', 'SolicitudesController::verSolicitudMayores');
-$routes->post('solicitudes/verSolicitudMenores', 'SolicitudesController::verSolicitudMenores');
+$routes->post('solicitudes/tblSoliMayores', 'SolicitudesController::tblSoliMayores');
+$routes->post('solicitudes/tblSoliMenores', 'SolicitudesController::tblSoliMenores');
+$routes->get('showSoliMayores/(:num)/(:num)', 'SolicitudesController::showSoliMayores/$1/$2');
+$routes->get('showSoliMenores/(:num)/(:num)', 'SolicitudesController::showSoliMenores/$1/$2');
+// $routes->get('showSoliMenores/(:num)/(:num)/(:any)/(:any)', 'SolicitudesController::showSoliMenores/$1/$2/$3/$4');

@@ -153,8 +153,8 @@
                 </div>
 
                 <!-- FORMULARIO MAYORES -->
-                <form class="form-modal" id="form-mayores" autocomplete="off"
-                    action="<?= site_url('inicio/pdfMayor'); ?>" method="POST" novalidate>
+                <form action="<?= site_url('inicio/pdfMayor'); ?>" method="POST" autocomplete="off"
+                    class="form-modal" id="form-mayores"novalidate>
 
                     <div class="input-field">
                         <label for="nombres">Nombres: </label>
@@ -199,8 +199,8 @@
                 </form>
 
                 <!-- FORMULARIO MENORES -->
-                <form class="form-modal" id="form-menores" autocomplete="off"
-                    action="<?= site_url('inicio/pdfMenor'); ?>" method="POST" novalidate>
+                <form action="<?= site_url('inicio/pdfMenor'); ?>" method="POST" autocomplete="off"
+                    class="form-modal" id="form-menores" novalidate>
 
                     <h3 class="form-section" id="form-section">Referencia Personal</h3>
                     <div class="form-section-content">

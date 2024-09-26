@@ -2,7 +2,7 @@
 <html>
 
 <head>
-
+    <link href="<?= base_url('assets/css/pdf.css'); ?>" rel="stylesheet" type="text/css">
 </head>
 
 <body>
@@ -13,7 +13,7 @@
     <p style="position: absolute;margin-top: 75px; left: 260px;"><b>Carta permiso voluntarios menores de edad</b></p>
 
     <p></p><br><br><br><br>
-    <p>Yo <b><?= $volMenor['nombre_parantesco'] ?></b> <b><?= $volMenor['apellido_parantesco'] ?></b></p>
+    <p>Yo <b><?= $volMenor['nombre_completo_refe'] ?></b></p>
     <p>con numero de Dui <b><?= $volMenor['dui_refe'] ?></b> </p>
     <p>Autorizo que mi hij@ <b><?= $volMenor['nombres'] ?></b> <b><?= $volMenor['apellidos'] ?></b></p>
     <p>Participe como voluntario de Green Thinking en sus actividades en pro del medio ambiente y la juventud del mismo

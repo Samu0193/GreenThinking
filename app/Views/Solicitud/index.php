@@ -31,9 +31,10 @@
 						<tr>
 							<th>N°</th>
 							<th>Nombre completo</th>
+							<th>Departamento</th>
+							<th>Nombre responsable</th>
 							<th>Parentesco</th>
 							<th>DUI referencia</th>
-							<th>Departamento</th>
 							<th>Fecha de Ingreso</th>
 							<th>Accion</th>
 						</tr>
