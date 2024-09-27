@@ -148,7 +148,7 @@ class SolicitudesController extends BaseController
 	}
 
     // ****************************************************************************************************************************
-    // *!*   DESCARGAR PDF VOLUNTARIO MAYOR DE EDAD:
+    // *!*   MOSTRAR PDF VOLUNTARIO MAYOR DE EDAD:
     // ****************************************************************************************************************************
     public function showSoliMayores($id_solicitud, $id_voluntario)
     {
@@ -199,6 +199,9 @@ class SolicitudesController extends BaseController
         }
     }
 
+    // ****************************************************************************************************************************
+    // *!*   MOSTRAR PDF VOLUNTARIO MENOR DE EDAD:
+    // ****************************************************************************************************************************
     public function showSoliMenores($id_solicitud, $id_voluntario)
     {
         try {

@@ -214,13 +214,13 @@ class GaleriaController extends BaseController
                 }
 
                 $resultado = $this->modelGaleria->cargarImgModel($id_galeria);
-                if ($resultado) {
-                    $jsonResponse = $this->responseUtil->setResponse(200, 'success', 'Imagen encontrada', $resultado);
-                    return $this->response->setStatusCode(200)->setJSON($jsonResponse);
+                if (!$resultado) {
+                    $jsonResponse = $this->responseUtil->setResponse(500, 'server_error', 'No se encontró la imagen', []);
+                    return $this->response->setStatusCode(500)->setJSON($jsonResponse);
                 }
-
-                $jsonResponse = $this->responseUtil->setResponse(500, 'success', 'No se encontró la imagen', []);
-                return $this->response->setStatusCode(500)->setJSON($jsonResponse);
+                
+                $jsonResponse = $this->responseUtil->setResponse(200, 'success', 'Imagen encontrada', $resultado);
+                return $this->response->setStatusCode(200)->setJSON($jsonResponse);
 
             } catch (\CodeIgniter\Database\Exceptions\DatabaseException $dbException) {
                 $mensaje      = 'Database error: ' . $dbException->getMessage();
@@ -248,7 +248,7 @@ class GaleriaController extends BaseController
         if ($this->request->isAJAX()) {
 
             try {
-    
+
                 $data = $this->request->getPost();
                 if (!$this->validate($this->modelGaleria->validator)) {
                     $errors       = $this->validator->getErrors();
@@ -256,7 +256,7 @@ class GaleriaController extends BaseController
                     $jsonResponse = $this->responseUtil->setResponse(400, 'error', $errors, []);
                     return $this->response->setStatusCode(400)->setJSON($jsonResponse);
                 }
-    
+
                 $id_galeria   = $this->request->getPost('id_galeria');
                 $nom_last_img = $this->request->getPost('nom_last_img');
                 $ruta_new_img = $this->guardarImagen($this->request->getFile('fileUpload'), $id_galeria);
@@ -264,25 +264,24 @@ class GaleriaController extends BaseController
                     $jsonResponse = $this->responseUtil->setResponse(500, 'success', 'Error al subir la imagen', []);
                     return $this->response->setStatusCode(500)->setJSON($jsonResponse);
                 }
-    
+
                 $datos = [
                     'ruta_archivo'  => $ruta_new_img,
                     'usuario_crea'  => $this->session->get('id_usuario'),
                     'fecha_creacion' => date('Y-m-d H:i:s')
                 ];
-    
                 $resultado = $this->modelGaleria->cambiarImgModel($datos, $id_galeria);
-                if ($resultado) {
-                    // Elimina la imagen original
-                    if (file_exists("assets/img/galery/$nom_last_img")) unlink("assets/img/galery/$nom_last_img");
-                    $jsonResponse = $this->responseUtil->setResponse(200, 'success', 'Imagen cambiada exitosamente', []);
-                    return $this->response->setStatusCode(200)->setJSON($jsonResponse);
+                if (!$resultado) {
+                    // Elimina la imagen nueva (en caso de fallo de actualizacion)
+                    if (file_exists($ruta_new_img)) unlink($ruta_new_img);
+                    $jsonResponse = $this->responseUtil->setResponse(500, 'server_error', 'Error al cambiar la imagen', []);
+                    return $this->response->setStatusCode(500)->setJSON($jsonResponse);
                 }
-    
-                // Elimina la imagen nueva (en caso de fallo de actualizacion)
-                if (file_exists($ruta_new_img)) unlink($ruta_new_img);
-                $jsonResponse = $this->responseUtil->setResponse(500, 'success', 'Error al cambiar la imagen', []);
-                return $this->response->setStatusCode(500)->setJSON($jsonResponse);
+
+                // Elimina la imagen original
+                if (file_exists("assets/img/galery/$nom_last_img")) unlink("assets/img/galery/$nom_last_img");
+                $jsonResponse = $this->responseUtil->setResponse(200, 'success', 'Imagen cambiada exitosamente', []);
+                return $this->response->setStatusCode(200)->setJSON($jsonResponse);
     
             } catch (\CodeIgniter\Database\Exceptions\DatabaseException $dbException) {
                 $mensaje      = 'Database error: ' . $dbException->getMessage();

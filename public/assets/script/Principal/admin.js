@@ -460,103 +460,104 @@ function showSoliMenores(id_solicitud, id_voluntario) {
 /********************************************************************************************************************************************************
 *!*     INSERTAR USUARIO:
 ********************************************************************************************************************************************************/
-if (pagina === `${url}usuario`) {
-    $("#form-usuarios").validate({
-        rules: {
-            nombres: { required: true, alfaOespacio: true },
-            apellidos: { required: true, alfaOespacio: true },
-            f_nacimiento_mayor: { required: true, minEdadMay: true, maxEdadMay: true },
-            dui: { required: true, isDUI: true },
-            email: { required: true, correo: true },
-            telefono: { required: true },
-            nombre_usuario: { required: true },
-            password: { required: true },
-            re_password: { required: true, equalPassword: password }
-        },
-        messages: {
-            nombres: { required: 'Nombres requeridos' },
-            apellidos: { required: 'Apellidos requeridos' },
-            f_nacimiento_mayor: {
-                required: 'Fecha de nacimiento requerida',
-                min: 'Edad m\u00e1xima 40 a\u00f1os',
-                max: 'Edad m\u00ednima 18 a\u00f1os'
+$(function () {
+    if (pagina === `${url}usuario`) {
+        $("#form-usuarios").validate({
+            rules: {
+                nombres: { required: true, alfaOespacio: true },
+                apellidos: { required: true, alfaOespacio: true },
+                f_nacimiento_mayor: { required: true, minEdadMay: true, maxEdadMay: true },
+                dui: { required: true, isDUI: true },
+                email: { required: true, correo: true },
+                telefono: { required: true },
+                nombre_usuario: { required: true },
+                password: { required: true },
+                re_password: { required: true, equalPassword: password }
             },
-            dui: { required: 'DUI requerido' },
-            email: { required: 'Email requerido' },
-            telefono: 'Tel\u00f3fono requerido',
-            nombre_usuario: 'Usuario requerido',
-            password: 'Contrase\u00f1a requerida',
-            re_password: 'Repetir contrase\u00f1a requerido'
-        },
-        invalidHandler: function (error, element) {
-            // console.log(error, element);
-            modalErrorMessage(`<p style="color: #fff; font-size: 1.18em; font-weight: 100;">Formulario inválido!</p>`);
-        },
-        submitHandler: function (form, e) {
-            e.preventDefault();
-            $.ajax({
-                url: `${url}usuario/create`,
-                data: $(form).serialize(),
-                type: 'POST',
-                async: false,
-                dataType: 'json',
-                success: function (jsonResponse) {
-                    // console.log(jsonResponse);
-                    toastSuccesMessageShort(`<p style="color: white; font-size: 1.06em; font-weight: 100;">${jsonResponse.message}</p>`);
-                    // form.submit();
-                    cerrarModal();
-                    $(form)[0].reset();
-                    $('#usuarios').DataTable().ajax.reload(null, false);
+            messages: {
+                nombres: { required: 'Nombres requeridos' },
+                apellidos: { required: 'Apellidos requeridos' },
+                f_nacimiento_mayor: {
+                    required: 'Fecha de nacimiento requerida',
+                    min: 'Edad m\u00e1xima 40 a\u00f1os',
+                    max: 'Edad m\u00ednima 18 a\u00f1os'
                 },
-                error: function (jqXHR, textStatus, errorThrown) {
-
-                    // Limpia las clases de error previas
-                    $(form).find('.invalid-feedback').remove();
-                    $(form).find('.error').removeClass('error');
-
-                    // Mensaje amigable para el usuario basado en el mensaje del servidor
-                    let errorMessage = errorMsgEstandar;
-                    let jsonResponse = jqXHR.responseJSON;
-                    if (jsonResponse) {
-                        errorMessage = ''
-
-                        if (Array.isArray(jsonResponse.message)) { // ErrorMessage es un array
-                            jsonResponse.message.forEach(function (item) {
-                                errorMessage += item + '\n';
-                            });
-
-                        } else if (typeof jsonResponse.message === 'object') { // ErrorMessage es un objeto.
-                            $.each(jsonResponse.message, function (campo, mensaje) {
-                                // Encuentra el campo correspondiente y agrega una clase de error
-                                let input = $(form).find(`[name="${campo}"]`);
-                                if (input.length) {
-                                    input.addClass('error');
-                                    input.after(`<label id="${campo}-error" class="error" for="${campo}">${mensaje}</label>`);
-                                }
-
-                                errorMessage += mensaje + '\n';
-                            });
-
-                        } else if (typeof jsonResponse.message === 'string') { // ErrorMessage es un string
-                            errorMessage = jsonResponse.message;
-
-                        } else { // ErrorMessage es otro tipo de dato
-                            console.log('Otro tipo de dato:', typeof jsonResponse.message);
+                dui: { required: 'DUI requerido' },
+                email: { required: 'Email requerido' },
+                telefono: 'Tel\u00f3fono requerido',
+                nombre_usuario: 'Usuario requerido',
+                password: 'Contrase\u00f1a requerida',
+                re_password: 'Repetir contrase\u00f1a requerido'
+            },
+            invalidHandler: function (error, element) {
+                modalErrorMessage(`<p style="color: #fff; font-size: 1.18em; font-weight: 100;">Formulario inválido!</p>`);
+            },
+            submitHandler: function (form, e) {
+                e.preventDefault();
+                $.ajax({
+                    url: `${url}usuario/create`,
+                    data: $(form).serialize(),
+                    type: 'POST',
+                    async: false,
+                    dataType: 'json',
+                    success: function (jsonResponse) {
+                        // console.log(jsonResponse);
+                        toastSuccesMessageShort(`<p style="color: white; font-size: 1.06em; font-weight: 100;">${jsonResponse.message}</p>`);
+                        // form.submit();
+                        cerrarModal();
+                        $(form)[0].reset();
+                        $('#usuarios').DataTable().ajax.reload(null, false);
+                    },
+                    error: function (jqXHR, textStatus, errorThrown) {
+    
+                        // Limpia las clases de error previas
+                        $(form).find('.invalid-feedback').remove();
+                        $(form).find('.error').removeClass('error');
+    
+                        // Mensaje amigable para el usuario basado en el mensaje del servidor
+                        let errorMessage = errorMsgEstandar;
+                        let jsonResponse = jqXHR.responseJSON;
+                        if (jsonResponse) {
+                            errorMessage = ''
+    
+                            if (Array.isArray(jsonResponse.message)) { // ErrorMessage es un array
+                                jsonResponse.message.forEach(function (item) {
+                                    errorMessage += item + '\n';
+                                });
+    
+                            } else if (typeof jsonResponse.message === 'object') { // ErrorMessage es un objeto.
+                                $.each(jsonResponse.message, function (campo, mensaje) {
+                                    // Encuentra el campo correspondiente y agrega una clase de error
+                                    let input = $(form).find(`[name="${campo}"]`);
+                                    if (input.length) {
+                                        input.addClass('error');
+                                        input.after(`<label id="${campo}-error" class="error" for="${campo}">${mensaje}</label>`);
+                                    }
+    
+                                    errorMessage += mensaje + '\n';
+                                });
+    
+                            } else if (typeof jsonResponse.message === 'string') { // ErrorMessage es un string
+                                errorMessage = jsonResponse.message;
+    
+                            } else { // ErrorMessage es otro tipo de dato
+                                console.log('Otro tipo de dato:', typeof jsonResponse.message);
+                            }
+    
                         }
-
+    
+                        if (jsonResponse.code !== 500) {
+                            modalErrorMessage(`<p style="color: #fff; font-size: 1.18em; font-weight: 100;">Formulario inválido!</p>`);
+                        } else {
+                            toastErrorMessage(`<p style="color: #fff; font-size: 1.18em; font-weight: 100;">${jsonResponse.message}</p>`);
+                        }
                     }
-
-                    if (jsonResponse.code !== 500) {
-                        modalErrorMessage(`<p style="color: #fff; font-size: 1.18em; font-weight: 100;">Formulario inválido!</p>`);
-                    } else {
-                        toastErrorMessage(`<p style="color: #fff; font-size: 1.18em; font-weight: 100;">${jsonResponse.message}</p>`);
-                    }
-                }
-            });
-            return false;
-        }
-    });
-}
+                });
+                return false;
+            }
+        });
+    }
+});
 
 /********************************************************************************************************************************************************
 *!*     CAMBIAR IMAGEN GALERIA:

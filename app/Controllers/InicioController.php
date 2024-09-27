@@ -113,7 +113,7 @@ class InicioController extends BaseController
     // }
 
     // ****************************************************************************************************************************
-    // *!*   DESCARGAR PDF VOLUNTARIO MAYOR DE EDAD (AJAX):
+    // *!*   DESCARGAR PDF VOLUNTARIO MAYOR DE EDAD:
     // ****************************************************************************************************************************
     public function downloadSoliMayores($id_voluntario, $dui, $telefono)
     {
@@ -177,7 +177,7 @@ class InicioController extends BaseController
     }
 
     // ****************************************************************************************************************************
-    // *!*   DESCARGAR PDF VOLUNTARIO MENOR DE EDAD (AJAX):
+    // *!*   DESCARGAR PDF VOLUNTARIO MENOR DE EDAD:
     // ****************************************************************************************************************************
     public function downloadSoliMenores($id_voluntario, $dui, $telefono)
     {
@@ -400,14 +400,14 @@ class InicioController extends BaseController
                 }
 
                 $resultado = $this->modelVol->findDUI($dui);
-                if (!$resultado) {
-                    $jsonResponse = $this->responseUtil->setResponse(200, 'success', 'DUI disponible', true);
-                    return $this->response->setStatusCode(200)->setJSON($jsonResponse);
+                if ($resultado) {
+                    $jsonResponse = $this->responseUtil->setResponse(400, 'error', 'Este DUI ya está registrado', false);
+                    return $this->response->setStatusCode(400)->setJSON($jsonResponse);
+                    // return $this->response->setJSON(['result' => $resultado ? 1 : 0]);
                 }
-
-                $jsonResponse = $this->responseUtil->setResponse(200, 'success', 'Este DUI ya está registrado', false);
+                
+                $jsonResponse = $this->responseUtil->setResponse(200, 'success', 'DUI disponible', true);
                 return $this->response->setStatusCode(200)->setJSON($jsonResponse);
-                // return $this->response->setJSON(['result' => $resultado ? 1 : 0]);
 
             } catch (\CodeIgniter\Database\Exceptions\DatabaseException $dbException) {
                 $mensaje      = 'Database error: ' . $dbException->getMessage();
@@ -443,12 +443,12 @@ class InicioController extends BaseController
                 }
 
                 $resultado = $this->modelVol->findTel($telefono);
-                if (!$resultado) {
-                    $jsonResponse = $this->responseUtil->setResponse(200, 'success', 'Teléfono disponible', true);
-                    return $this->response->setStatusCode(200)->setJSON($jsonResponse);
+                if ($resultado) {
+                    $jsonResponse = $this->responseUtil->setResponse(400, 'error', 'Este teléfono ya está registrado', false);
+                    return $this->response->setStatusCode(400)->setJSON($jsonResponse);
                 }
                 
-                $jsonResponse = $this->responseUtil->setResponse(200, 'success', 'Este teléfono ya está registrado', false);
+                $jsonResponse = $this->responseUtil->setResponse(200, 'success', 'Teléfono disponible', true);
                 return $this->response->setStatusCode(200)->setJSON($jsonResponse);
 
             } catch (\CodeIgniter\Database\Exceptions\DatabaseException $dbException) {
@@ -485,12 +485,12 @@ class InicioController extends BaseController
                 }
 
                 $resultado = $this->modelVol->findEmail($email);
-                if (!$resultado) {
-                    $jsonResponse = $this->responseUtil->setResponse(200, 'success', 'Email disponible', true);
-                    return $this->response->setStatusCode(200)->setJSON($jsonResponse);
+                if ($resultado) {
+                    $jsonResponse = $this->responseUtil->setResponse(400, 'error', 'Este email ya está registrado', false);
+                    return $this->response->setStatusCode(400)->setJSON($jsonResponse);
                 }
-
-                $jsonResponse = $this->responseUtil->setResponse(200, 'success', 'Este email ya está registrado', false);
+                
+                $jsonResponse = $this->responseUtil->setResponse(200, 'success', 'Email disponible', true);
                 return $this->response->setStatusCode(200)->setJSON($jsonResponse);
 
             } catch (\CodeIgniter\Database\Exceptions\DatabaseException $dbException) {
@@ -574,19 +574,19 @@ class InicioController extends BaseController
                 $solicitud = $this->modelVol->insertSolicitud($datos_solicitud);
 
                 // Devuelve la respuesta JSON
-                if ($persona && $voluntario && $solicitud) {
-                    $dataResponse = [
-                        'id_voluntario' => $datos_per_voluntario['id_voluntario'],
-                        'dui'           => $persona_voluntario['dui'],
-                        'telefono'      => $persona_voluntario['telefono']
-                    ];
-                    $jsonResponse = $this->responseUtil->setResponse(201, 'success', 'Información guardada exitosamente!', $dataResponse);
-                    return $this->response->setStatusCode(201)->setJSON($jsonResponse);
+                if (!$persona && !$voluntario && !$solicitud) {
+                    $jsonResponse = $this->responseUtil->setResponse(500, 'server_error', 'Error al guardar la información', []);
+                    return $this->response->setStatusCode(500)->setJSON($jsonResponse);
+                    // return $this->response->setBody($persona && $voluntario && $solicitud ? 'true' : 'false');
                 }
 
-                $jsonResponse = $this->responseUtil->setResponse(500, 'server_error', 'Error al guardar la información', []);
-                return $this->response->setStatusCode(500)->setJSON($jsonResponse);
-                // return $this->response->setBody($persona && $voluntario && $solicitud ? 'true' : 'false');
+                $dataResponse = [
+                    'id_voluntario' => $datos_per_voluntario['id_voluntario'],
+                    'dui'           => $persona_voluntario['dui'],
+                    'telefono'      => $persona_voluntario['telefono']
+                ];
+                $jsonResponse = $this->responseUtil->setResponse(201, 'success', 'Información guardada exitosamente!', $dataResponse);
+                return $this->response->setStatusCode(201)->setJSON($jsonResponse);
 
             } catch (\CodeIgniter\Database\Exceptions\DatabaseException $dbException) {
                 $mensaje      = 'Database error: ' . $dbException->getMessage();
@@ -687,18 +687,18 @@ class InicioController extends BaseController
                 ];
                 $insert_soli = $this->modelVol->insertSolicitud($datos_solicitud);
 
-                if ($insert_per_ref && $insert_referencia && $insert_per_vol && $insert_vol && $insert_soli) {
-                    $dataResponse = [
-                        'id_voluntario' => $datos_per_voluntario['id_voluntario'],
-                        'dui'           => $persona_referencia['dui'],
-                        'telefono'      => $persona_referencia['telefono']
-                    ];
-                    $jsonResponse = $this->responseUtil->setResponse(201, 'success', 'Información guardada exitosamente!', $dataResponse);
-                    return $this->response->setStatusCode(201)->setJSON($jsonResponse);
+                if (!$insert_per_ref && !$insert_referencia && !$insert_per_vol && !$insert_vol && !$insert_soli) {
+                    $jsonResponse = $this->responseUtil->setResponse(500, 'server_error', 'Error al guardar la información', false);
+                    return $this->response->setStatusCode(500)->setJSON($jsonResponse);
                 }
 
-                $jsonResponse = $this->responseUtil->setResponse(500, 'server_error', 'Error al guardar la información', false);
-                return $this->response->setStatusCode(500)->setJSON($jsonResponse);
+                $dataResponse = [
+                    'id_voluntario' => $datos_per_voluntario['id_voluntario'],
+                    'dui'           => $persona_referencia['dui'],
+                    'telefono'      => $persona_referencia['telefono']
+                ];
+                $jsonResponse = $this->responseUtil->setResponse(201, 'success', 'Información guardada exitosamente!', $dataResponse);
+                return $this->response->setStatusCode(201)->setJSON($jsonResponse);
 
                 // return $this->response->setBody($insert_per_vol && $insert_vol && $insert_soli ? 'true' : 'false');
                 // return $this->response->setBody($insert_per_vol && $insert_per_ref && $insert_vol && $insert_referencia && $insert_soli ? 'true' : 'false');

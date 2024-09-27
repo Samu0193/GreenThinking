@@ -303,6 +303,10 @@ $('[name="nombre_usuario"]').change(function () {
             let jsonResponse = jqXHR.responseJSON;
             if (jsonResponse) {
                 errorMessage = jsonResponse.message;
+                if (jsonResponse.code === 400) {
+                    toastInfoMessage(`<p style="color: #fff; font-size: 1.18em; font-weight: 100;">${jsonResponse.message}</p>`);
+                    // $(this).val('');
+                }
             }
             console.log(errorMessage);
         }

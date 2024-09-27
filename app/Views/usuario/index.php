@@ -65,8 +65,9 @@
                             <label for="re_password">Repetir Contraseña: </label>
                             <input type="password" name="re_password" id="re_password" placeholder="••••••••••••" required>
                         </div>
-                        <button class="btn" type="submit"><i class="fas fa-user-plus"></i>
-                            Registrar</button>
+                        <button class="btn" type="submit">
+                            <i class="fas fa-user-plus"></i>Registrar
+                        </button>
                     </form>
                 </div>
             </div>

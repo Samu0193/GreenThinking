@@ -199,15 +199,15 @@ class ProductosController extends BaseController
                 ];
 
                 $resultado = $this->modelProd->insertProducto($producto);
-                if ($resultado) {
-                    $jsonResponse = $this->responseUtil->setResponse(200, 'success', 'Producto guardado exitosamente', []);
-                    return $this->response->setStatusCode(200)->setJSON($jsonResponse);
+                if (!$resultado) {
+                    // Elimina la imagen (en caso de fallo de registro)
+                    if (file_exists($ruta_new_img)) unlink($ruta_new_img);
+                    $jsonResponse = $this->responseUtil->setResponse(500, 'success', 'Error al guardar producto', $resultado);
+                    return $this->response->setStatusCode(500)->setJSON($jsonResponse);
                 }
-
-                // Elimina la imagen (en caso de fallo de registro)
-                if (file_exists($ruta_new_img)) unlink($ruta_new_img);
-                $jsonResponse = $this->responseUtil->setResponse(500, 'success', 'Error al guardar producto', $resultado);
-                return $this->response->setStatusCode(500)->setJSON($jsonResponse);
+                
+                $jsonResponse = $this->responseUtil->setResponse(200, 'success', 'Producto guardado exitosamente', []);
+                return $this->response->setStatusCode(200)->setJSON($jsonResponse);
 
             } catch (\CodeIgniter\Database\Exceptions\DatabaseException $dbException) {
                 $mensaje      = 'Database error: ' . $dbException->getMessage();
@@ -248,19 +248,16 @@ class ProductosController extends BaseController
                     return $this->response->setStatusCode(404)->setJSON($jsonResponse);
                 }
 
-                // Cambiar el estado
                 $nuevo_estado = !$estado['estado'];
                 $editar       = $this->modelProd->cambiarEstadoModel($id_producto, $nuevo_estado);
-
-                // Devuelve la respuesta JSON
-                if ($editar) {
-                    $message      = $estado['estado'] == true ? 'Deshabilitado exitosamente!' : 'Habilitado exitosamente!';
-                    $jsonResponse = $this->responseUtil->setResponse(201, 'success', $message, true);
-                    return $this->response->setStatusCode(201)->setJSON($jsonResponse);
+                if (!$editar) {
+                    $jsonResponse = $this->responseUtil->setResponse(500, 'server_error', 'Error al cambiar el estado', false);
+                    return $this->response->setStatusCode(500)->setJSON($jsonResponse);
                 }
-
-                $jsonResponse = $this->responseUtil->setResponse(500, 'server_error', 'Error al cambiar el estado', false);
-                return $this->response->setStatusCode(500)->setJSON($jsonResponse);
+                
+                $message      = $estado['estado'] == true ? 'Deshabilitado exitosamente!' : 'Habilitado exitosamente!';
+                $jsonResponse = $this->responseUtil->setResponse(201, 'success', $message, true);
+                return $this->response->setStatusCode(201)->setJSON($jsonResponse);
 
             } catch (\CodeIgniter\Database\Exceptions\DatabaseException $dbException) {
                 $mensaje      = 'Database error: ' . $dbException->getMessage();

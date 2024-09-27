@@ -106,12 +106,12 @@ class UsuarioController extends BaseController
                 }
 
                 $resultado = $this->modelUsuario->findEmail($email);
-                if (!$resultado) {
-                    $jsonResponse = $this->responseUtil->setResponse(200, 'success', 'Email disponible', true);
-                    return $this->response->setStatusCode(200)->setJSON($jsonResponse);
+                if ($resultado) {
+                    $jsonResponse = $this->responseUtil->setResponse(400, 'error', 'Este email ya está registrado', false);
+                    return $this->response->setStatusCode(400)->setJSON($jsonResponse);
                 }
-
-                $jsonResponse = $this->responseUtil->setResponse(200, 'success', 'Este email ya está registrado', false);
+                
+                $jsonResponse = $this->responseUtil->setResponse(200, 'success', 'Email disponible', true);
                 return $this->response->setStatusCode(200)->setJSON($jsonResponse);
 
             } catch (\CodeIgniter\Database\Exceptions\DatabaseException $dbException) {
@@ -148,14 +148,14 @@ class UsuarioController extends BaseController
                 }
 
                 $resultado = $this->modelUsuario->findUser($usuario);
-                if (!$resultado) {
-                    $jsonResponse = $this->responseUtil->setResponse(200, 'success', 'Usuario disponible', true);
-                    return $this->response->setStatusCode(200)->setJSON($jsonResponse);
+                if ($resultado) {
+                    $jsonResponse = $this->responseUtil->setResponse(400, 'error', 'Este usuario ya está registrado', false);
+                    return $this->response->setStatusCode(400)->setJSON($jsonResponse);
                 }
 
-                $jsonResponse = $this->responseUtil->setResponse(200, 'success', 'Este usuario ya está registrado', false);
+                $jsonResponse = $this->responseUtil->setResponse(200, 'success', 'Usuario disponible', true);
                 return $this->response->setStatusCode(200)->setJSON($jsonResponse);
-
+                
             } catch (\CodeIgniter\Database\Exceptions\DatabaseException $dbException) {
                 $mensaje      = 'Database error: ' . $dbException->getMessage();
                 $jsonResponse = $this->responseUtil->setResponse(500, 'server_error', 'Error en la base de datos', []);
@@ -218,14 +218,14 @@ class UsuarioController extends BaseController
                     'fecha_creacion' => date('Y-m-d H:i:s')
                 ];
                 $usuario = $this->modelUsuario->insertUsuario($datosUsuario);
-
-                if ($persona && $usuario) {
-                    $jsonResponse = $this->responseUtil->setResponse(201, 'success', 'Usuario guardado exitosamente!', true);
-                    return $this->response->setStatusCode(201)->setJSON($jsonResponse);
+                
+                if (!$persona && !$usuario) {
+                    $jsonResponse = $this->responseUtil->setResponse(500, 'server_error', 'Error al guardar usuario', false);
+                    return $this->response->setStatusCode(500)->setJSON($jsonResponse);
                 }
 
-                $jsonResponse = $this->responseUtil->setResponse(500, 'server_error', 'Error al guardar usuario', false);
-                return $this->response->setStatusCode(500)->setJSON($jsonResponse);
+                $jsonResponse = $this->responseUtil->setResponse(201, 'success', 'Usuario guardado exitosamente!', true);
+                return $this->response->setStatusCode(201)->setJSON($jsonResponse);
 
             } catch (\CodeIgniter\Database\Exceptions\DatabaseException $dbException) {
                 $mensaje      = 'Database error: ' . $dbException->getMessage();
@@ -326,19 +326,16 @@ class UsuarioController extends BaseController
                     return $this->response->setStatusCode(404)->setJSON($jsonResponse);
                 }
 
-                // Cambiar el estado
                 $nuevo_estado = !$estado['estado'];
                 $editar       = $this->modelUsuario->cambiarEstadoModel($id_usuario, $nuevo_estado);
-
-                // Devuelve la respuesta JSON
-                if ($editar) {
-                    $message      = $estado['estado'] == true ? 'Deshabilitado exitosamente!' : 'Habilitado exitosamente!';
-                    $jsonResponse = $this->responseUtil->setResponse(201, 'success', $message, true);
-                    return $this->response->setStatusCode(201)->setJSON($jsonResponse);
+                if (!$editar) {
+                    $jsonResponse = $this->responseUtil->setResponse(500, 'server_error', 'Error al cambiar el estado', false);
+                    return $this->response->setStatusCode(500)->setJSON($jsonResponse);
                 }
 
-                $jsonResponse = $this->responseUtil->setResponse(500, 'server_error', 'Error al cambiar el estado', false);
-                return $this->response->setStatusCode(500)->setJSON($jsonResponse);
+                $message      = $estado['estado'] == true ? 'Deshabilitado exitosamente!' : 'Habilitado exitosamente!';
+                $jsonResponse = $this->responseUtil->setResponse(201, 'success', $message, true);
+                return $this->response->setStatusCode(201)->setJSON($jsonResponse);
 
             } catch (\CodeIgniter\Database\Exceptions\DatabaseException $dbException) {
                 $mensaje      = 'Database error: ' . $dbException->getMessage();

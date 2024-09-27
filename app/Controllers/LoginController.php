@@ -133,6 +133,7 @@ class LoginController extends BaseController
             $this->session->setFlashdata('message', 'Error inesperado');
             return view('login/invalid_link');
         }
+
     }
 
 
@@ -228,13 +229,13 @@ class LoginController extends BaseController
                 }
 
                 $resultado = $this->loginModel->validateEmail($email);
-                if ($resultado) {
-                    $jsonResponse = $this->responseUtil->setResponse(200, 'success', 'Email encontrado', []);
-                    return $this->response->setStatusCode(200)->setJSON($jsonResponse);
+                if (!$resultado) {
+                    $jsonResponse = $this->responseUtil->setResponse(404, 'not_found', 'Email no existe en la base de datos', []);
+                    return $this->response->setStatusCode(404)->setJSON($jsonResponse);
                 }
 
-                $jsonResponse = $this->responseUtil->setResponse(404, 'not_found', 'Email no existe en la base de datos', []);
-                return $this->response->setStatusCode(404)->setJSON($jsonResponse);
+                $jsonResponse = $this->responseUtil->setResponse(200, 'success', 'Email encontrado', []);
+                return $this->response->setStatusCode(200)->setJSON($jsonResponse);
 
             } catch (\CodeIgniter\Database\Exceptions\DatabaseException $dbException) {
                 $mensaje      = 'Database error: ' . $dbException->getMessage();
@@ -297,16 +298,16 @@ class LoginController extends BaseController
                 // $sentStatus = $this->phpMailer->sendmail($email, $subject, file_get_contents(FCPATH . 'assets/templates/prueba_correo.html'));
                 // $sentStatus = $this->sendEmail($email, $subject, $body);
 
-                if ($sentStatus) {
-                    $this->loginModel->updatePasswordHash($data, $email);
-                    $jsonResponse = $this->responseUtil->setResponse(200, 'success', 'Correo de recuperación enviado', true);
-                    return $this->response->setStatusCode(200)->setJSON($jsonResponse);
-                    // return $this->response->setJSON(1);
+                if (!$sentStatus) {
+                    $jsonResponse = $this->responseUtil->setResponse(500, 'server_error', 'Error al enviar correo', false);
+                    return $this->response->setStatusCode(500)->setJSON($jsonResponse);
+                    // return $this->response->setJSON(2);
                 }
 
-                $jsonResponse = $this->responseUtil->setResponse(500, 'server_error', 'Error al enviar correo', false);
-                return $this->response->setStatusCode(500)->setJSON($jsonResponse);
-                // return $this->response->setJSON(2);
+                $this->loginModel->updatePasswordHash($data, $email);
+                $jsonResponse = $this->responseUtil->setResponse(200, 'success', 'Correo de recuperación enviado', true);
+                return $this->response->setStatusCode(200)->setJSON($jsonResponse);
+                // return $this->response->setJSON(1);
 
             } catch (\CodeIgniter\Database\Exceptions\DatabaseException $dbException) {
                 $mensaje      = 'Database error: ' . $dbException->getMessage();
@@ -388,6 +389,71 @@ class LoginController extends BaseController
                 // return redirect()->to(site_url('login/forgotPassword'));
                 $jsonResponse = $this->responseUtil->setResponse(400, 'error', 'Token no proporcionado', []);
                 return $this->response->setStatusCode(400)->setJSON($jsonResponse);
+
+            } catch (\CodeIgniter\Database\Exceptions\DatabaseException $dbException) {
+                $mensaje      = 'Database error: ' . $dbException->getMessage();
+                $jsonResponse = $this->responseUtil->setResponse(500, 'server_error', 'Error en la base de datos', []);
+                $this->responseUtil->logWithContext($this->responseUtil->setResponse(500, 'server_error', $mensaje, []));
+                return $this->response->setStatusCode(500)->setJSON($jsonResponse);
+    
+            } catch (\Exception $e) {
+                $mensaje      = 'Exception: ' . $e->getMessage();
+                $jsonResponse = $this->responseUtil->setResponse(500, 'server_error', 'Error al generar el PDF', []);
+                $this->responseUtil->logWithContext($this->responseUtil->setResponse(500, 'server_error', $mensaje, []));
+                return $this->response->setStatusCode(500)->setJSON($jsonResponse);
+            }
+
+        }
+
+        return redirect()->back();
+    }
+
+    public function _updatePassword()
+    {
+        if ($this->request->isAJAX()) {
+
+            try {
+
+                $hash = $this->request->getPost('hash');
+                if (!$hash) {
+                    $jsonResponse = $this->responseUtil->setResponse(400, 'error', 'Token no proporcionado', []);
+                    return $this->response->setStatusCode(400)->setJSON($jsonResponse);
+                }
+
+                $getHashDetails = $this->loginModel->getHashDetails($hash);
+                if (!$getHashDetails) {
+                    $jsonResponse = $this->responseUtil->setResponse(400, 'error', 'El link no es válido', []);
+                    return $this->response->setStatusCode(400)->setJSON($jsonResponse);
+                }
+
+                $hash_expiry = $getHashDetails['hash_expiry'];
+                $currentDate = date('Y-m-d H:i');
+                if ($currentDate >= $hash_expiry) {
+                    $jsonResponse = $this->responseUtil->setResponse(410, 'gone', 'El link ha expirado', []);
+                    return $this->response->setStatusCode(410)->setJSON($jsonResponse);
+                }
+
+                $data = $this->request->getPost();
+                if (!$this->validate($this->loginModel->validatorPassword)) {
+                    $errors       = $this->validator->getErrors();
+                    $firstError   = reset($errors);
+                    $jsonResponse = $this->responseUtil->setResponse(400, 'error', $errors, []);
+                    return $this->response->setStatusCode(400)->setJSON($jsonResponse);
+                }
+
+                $dataUpdate = [
+                    'password'    => sha1($this->request->getPost('password')),
+                    'hash_key'    => null,
+                    'hash_expiry' => null
+                ];
+                $resultado = $this->loginModel->updateNewPassword($dataUpdate, $hash);
+                if (!$resultado) {
+                    $jsonResponse = $this->responseUtil->setResponse(500, 'server_error', 'No se pudo actualizar la contraseña', []);
+                    return $this->response->setStatusCode(500)->setJSON($jsonResponse);
+                }
+
+                $jsonResponse = $this->responseUtil->setResponse(200, 'success', 'Contraseña actualizada', []);
+                return $this->response->setStatusCode(200)->setJSON($jsonResponse);
 
             } catch (\CodeIgniter\Database\Exceptions\DatabaseException $dbException) {
                 $mensaje      = 'Database error: ' . $dbException->getMessage();
