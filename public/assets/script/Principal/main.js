@@ -56,12 +56,12 @@ function loadDepartamentos() {
         dataType: 'json',
         cache: false,
         success: function (jsonResponse) {
-            var options = "<option selected disabled value=''>Seleccionar... </option>";
+            var options = '<option selected disabled value="">Seleccionar... </option>';
             // index es el numero de la iteracion
             $.each(jsonResponse.data, function (index, depa) {
                 options += `<option value="${depa.id_departamento}">${depa.nombre_departamento}</option>`;
             });
-            $("[name='departamento_residencia']").html(options);
+            $('[name="departamento_residencia"]').html(options);
         },
         error: function(jqXHR, textStatus, errorThrown) {
             let errorMessage = errorMsgEstandar;
@@ -75,7 +75,7 @@ function loadDepartamentos() {
 }
 
 // LLENAR SELECT MUNICIPIOS
-jQuery(document).ready(function () {
+$(document).ready(function () {
     $("[name='departamento_residencia']").on('change', function () {
         event.preventDefault();
         var id_departamento = $(this).val();
@@ -106,6 +106,62 @@ jQuery(document).ready(function () {
         });
     });
 });
+
+/********************************************************************************************************************************************************
+*!*     DECARGAR SOLICITUD MAYOR:
+********************************************************************************************************************************************************/
+function downloadSoliMayores(id_voluntario, dui, telefono) {
+    console.log(id_voluntario, dui, telefono)
+    const url_ajax = `${url}downloadSoliMayores/${id_voluntario}/${dui}/${telefono}`;
+    $.ajax({
+        url: url_ajax,
+        type: 'GET',
+        success: function () {
+            Swal.close();
+            window.location.href = url_ajax;
+        },
+        error: function (jqXHR, textStatus, errorThrown) {
+
+            let errorMessage = errorMsgEstandar;
+            let jsonResponse = jqXHR.responseJSON;
+            console.error(`Error en la solicitud AJAX:\nStatus: ${textStatus}\nError Thrown: ${errorThrown}`);
+
+            if (jsonResponse) {
+                errorMessage = jsonResponse.message;
+            }
+            Swal.close();
+            toastErrorMessage(`<p style="color: #fff; font-size: 1.27em; font-weight: 100;">${errorMessage}</p>`);
+        }
+    });
+}
+
+/********************************************************************************************************************************************************
+*!*     DECARGAR SOLICITUD MENOR:
+********************************************************************************************************************************************************/
+function downloadSoliMenores(id_voluntario, dui, telefono) {
+    console.log(id_voluntario, dui, telefono)
+    const url_ajax = `${url}downloadSoliMenores/${id_voluntario}/${dui}/${telefono}`;
+    $.ajax({
+        url: url_ajax,
+        type: 'GET',
+        success: function () {
+            Swal.close();
+            window.location.href = url_ajax;
+        },
+        error: function (jqXHR, textStatus, errorThrown) {
+            
+            let errorMessage = errorMsgEstandar;
+            let jsonResponse = jqXHR.responseJSON;
+            console.error(`Error en la solicitud AJAX:\nStatus: ${textStatus}\nError Thrown: ${errorThrown}`);
+
+            if (jsonResponse) {
+                errorMessage = jsonResponse.message;
+            }
+            Swal.close();
+            toastErrorMessage(`<p style="color: #fff; font-size: 1.27em; font-weight: 100;">${errorMessage}</p>`);
+        }
+    });
+}
 
 // Ventana Modal
 let modal = $("#modal");
@@ -245,10 +301,14 @@ $(function () {
                 async: false,
                 dataType: 'json',
                 success: function (jsonResponse) {
-                    toastSuccesMessageLong(`<p style="color: white; font-size: 1.18em; font-weight: 100;">${jsonResponse.message}\nEspere uno momento mientras se genera el PDF!</p>`);
-                    form.submit();
+                    modalSuccessChargeMessage(jsonResponse.message, 'Espere un momento mientras se genera el PDF');
+                    // toastSuccesMessageLong(`<p style="color: white; font-size: 1.18em; font-weight: 100;">${jsonResponse.message}\nEspere uno momento mientras se genera el PDF!</p>`);
+                    // form.submit();
                     closeModal();
                     $(form)[0].reset();
+                    setTimeout(function() {
+                        downloadSoliMayores(jsonResponse.data.id_voluntario, jsonResponse.data.dui, jsonResponse.data.telefono);
+                    }, 2500);
                     // modal.hide(300);
                     // $(form)[0].reset();
                     // form_mayores.hide(300);
@@ -345,10 +405,14 @@ $(function () {
                 async: false,
                 dataType: 'json',
                 success: function (jsonResponse) {
-                    toastSuccesMessageLong(`<p style="color: white; font-size: 1.18em; font-weight: 100;">${jsonResponse.message}\nEspere uno momento mientras se genera el PDF!</p>`);
-                    form.submit();
+                    modalSuccessChargeMessage(jsonResponse.message, 'Espere un momento mientras se genera el PDF');
+                    // toastSuccesMessageLong(`<p style="color: white; font-size: 1.18em; font-weight: 100;">${jsonResponse.message}\nEspere uno momento mientras se genera el PDF!</p>`);
+                    // form.submit();
                     closeModal();
                     $(form)[0].reset();
+                    setTimeout(function() {
+                        downloadSoliMenores(jsonResponse.data.id_voluntario, jsonResponse.data.dui, jsonResponse.data.telefono);
+                    }, 2500);
                     // modal.hide(300);
                     // form_menores.hide(300);
                     // input_form.eq(0).fadeIn();00000000-0

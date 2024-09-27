@@ -15,7 +15,7 @@
     <p></p><br><br><br><br>
     <p>Yo <b><?= $volMenor['nombre_completo_refe'] ?></b></p>
     <p>con numero de Dui <b><?= $volMenor['dui_refe'] ?></b> </p>
-    <p>Autorizo que mi hij@ <b><?= $volMenor['nombres'] ?></b> <b><?= $volMenor['apellidos'] ?></b></p>
+    <p>Autorizo que mi hij@ <b><?= $volMenor['nombre_completo'] ?></b></p>
     <p>Participe como voluntario de Green Thinking en sus actividades en pro del medio ambiente y la juventud del mismo
         modo también acepto y doy autorización que mi hij@ pueda aparecer en fotos de las redes sociales de Green
         Thinking teniendo conocimiento que es una buena causa la cual busca promover el cuido del medio ambiente y crear

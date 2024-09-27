@@ -341,14 +341,12 @@ class VoluntarioModel extends Model
     // ****************************************************************************************************************************
     // *!*   OBTIENE VOLUNTARIO MAYOR DE EDAD (PARA DESCARGAR PDF):
     // ****************************************************************************************************************************
-    public function getVoluntarioMayor($dui, $telefono)
+    public function getVoluntarioMayor($id_voluntario, $dui, $telefono)
     {
-        return $this->select('v.id_voluntario, p.nombres, p.apellidos, s.fecha_ingreso, s.fecha_finalizacion')
-                    ->from('voluntario v')
-                    ->join('persona p', 'v.id_persona = p.id_persona')
-                    ->join('solicitud s', 's.id_voluntario = v.id_voluntario')
-                    ->where('p.dui', $dui)
-                    ->where('p.telefono', $telefono)
+        return $this->db->table('vw_solicitud_mayor')
+                    ->where('id_voluntario', $id_voluntario, )
+                    ->where('dui', $dui)
+                    ->where('telefono', $telefono)
                     ->get()
                     ->getRowArray();
     }
@@ -356,17 +354,12 @@ class VoluntarioModel extends Model
     // ****************************************************************************************************************************
     // *!*   OBTIENE VOLUNTARIO MENOR DE EDAD (PARA DESCARGAR PDF):
     // ****************************************************************************************************************************
-    public function getVoluntarioMenor($dui, $telefono)
+    public function getVoluntarioMenor($id_voluntario, $dui, $telefono)
     {
-        return $this->select('v.id_voluntario, pv.nombres, pv.apellidos, pr.nombres AS nombre_parantesco,
-	                        pr.apellidos AS apellido_parantesco, pr.dui AS dui_refe, s.fecha_ingreso, s.fecha_finalizacion')
-                    ->from('solicitud s')
-                    ->join('voluntario v', 's.id_voluntario = v.id_voluntario')
-                    ->join('referencia_personal rp', 'rp.id_referencia = s.id_referencia')
-                    ->join('persona pv', 'pv.id_persona = v.id_persona')
-                    ->join('persona pr', 'pr.id_persona = rp.id_persona')
-                    ->where('pr.dui', $dui)
-                    ->where('pr.telefono', $telefono)
+        return $this->db->table('vw_solicitud_menor')
+                    ->where('id_voluntario', $id_voluntario, )
+                    ->where('dui_refe', $dui)
+                    ->where('telefono_refe', $telefono)
                     ->get()
                     ->getRowArray();
     }

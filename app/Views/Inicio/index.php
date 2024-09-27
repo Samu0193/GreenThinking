@@ -154,7 +154,7 @@
 
                 <!-- FORMULARIO MAYORES -->
                 <form action="<?= site_url('inicio/pdfMayor'); ?>" method="POST" autocomplete="off"
-                    class="form-modal" id="form-mayores"novalidate>
+                    class="form-modal" id="form-mayores" novalidate>
 
                     <div class="input-field">
                         <label for="nombres">Nombres: </label>
@@ -195,7 +195,7 @@
                         <input type="hidden" name="id_voluntario">
                     </div>
                     <button class="btn" type="submit" id="insert-mayor"><i class="fas fa-user-plus"></i>Registrar</button>
-
+                    <a class="btn" onclick="downloadSoliMayores(3, '05141558-8', '7898-5689');"><i class="fas fa-user-plus"></i>Download</a>
                 </form>
 
                 <!-- FORMULARIO MENORES -->

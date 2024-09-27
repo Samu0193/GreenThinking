@@ -44,27 +44,104 @@ class InicioController extends BaseController
         return view('inicio/index', $dataFiles);
     }
     
+    
+    // public function pdfMayor()
+    // {
+    //     try {
+
+    //         // Obtener datos
+    //         $datos['volMayor'] = $this->modelVol->getVoluntarioMayor($this->request->getPost('dui'), $this->request->getPost('telefono'));
+
+    //         // Generar el HTML
+    //         $html = view('pdf/pdf_mayores', $datos);
+
+    //         // Escribir el contenido HTML al PDF
+    //         $this->mpdf->WriteHTML($html, 2);
+
+    //         // Salida del archivo PDF directamente al navegador
+    //         $this->mpdf->Output('Solicitud ' . $datos['volMayor']['nombre_completo'] . '.pdf', 'D');
+
+    //         // Terminar la ejecución
+    //         exit;
+
+    //     } catch (\CodeIgniter\Database\Exceptions\DatabaseException $dbException) {
+    //         $mensaje      = 'Database error: ' . $dbException->getMessage();
+    //         $jsonResponse = $this->responseUtil->setResponse(500, 'server_error', 'Error en la base de datos', []);
+    //         $this->responseUtil->logWithContext($this->responseUtil->setResponse(500, 'server_error', $mensaje, []));
+    //         return $this->response->setStatusCode(500)->setJSON($jsonResponse);
+
+    //     } catch (\Exception $e) {
+    //         $mensaje      = 'Exception: ' . $e->getMessage();
+    //         $jsonResponse = $this->responseUtil->setResponse(500, 'server_error', 'Error al generar el PDF', []);
+    //         $this->responseUtil->logWithContext($this->responseUtil->setResponse(500, 'server_error', $mensaje, []));
+    //         return $this->response->setStatusCode(500)->setJSON($jsonResponse);
+    //     }
+    // }
+
+    
+    // public function pdfMenor()
+    // {
+    //     try {
+
+    //         // Obtener datos del modelo
+    //         $datos['volMenor'] = $this->modelVol->getVoluntarioMenor($this->request->getPost('dui_ref'), $this->request->getPost('telefono_ref'));
+
+    //         // Generar el HTML
+    //         $html = view('pdf/pdf_menores', $datos);
+
+    //         // Escribir el contenido HTML al PDF
+    //         $this->mpdf->WriteHTML($html, 2);
+
+    //         // Salida del archivo PDF directamente al navegador
+    //         $this->mpdf->Output('Solicitud ' . $datos['volMenor']['nombre_completo'] . '.pdf', 'D');
+
+    //         // Terminar la ejecución
+    //         exit;
+
+    //     } catch (\CodeIgniter\Database\Exceptions\DatabaseException $dbException) {
+    //         $mensaje      = 'Database error: ' . $dbException->getMessage();
+    //         $jsonResponse = $this->responseUtil->setResponse(500, 'server_error', 'Error en la base de datos', []);
+    //         $this->responseUtil->logWithContext($this->responseUtil->setResponse(500, 'server_error', $mensaje, []));
+    //         return $this->response->setStatusCode(500)->setJSON($jsonResponse);
+
+    //     } catch (\Exception $e) {
+    //         $mensaje      = 'Exception: ' . $e->getMessage();
+    //         $jsonResponse = $this->responseUtil->setResponse(500, 'server_error', 'Error al generar el PDF', []);
+    //         $this->responseUtil->logWithContext($this->responseUtil->setResponse(500, 'server_error', $mensaje, []));
+    //         return $this->response->setStatusCode(500)->setJSON($jsonResponse);
+    //     }
+    // }
+
     // ****************************************************************************************************************************
-    // *!*   DESCARGAR PDF VOLUNTARIO MAYOR DE EDAD:
+    // *!*   DESCARGAR PDF VOLUNTARIO MAYOR DE EDAD (AJAX):
     // ****************************************************************************************************************************
-    public function pdfMayor()
+    public function downloadSoliMayores($id_voluntario, $dui, $telefono)
     {
         try {
-            // Instanciar mPDF
-            // $mpdf = new Mpdf();
 
-            // Cargar el CSS
-            $stylesheet = file_get_contents('assets/css/pdf.css');
-            $this->mpdf->WriteHTML($stylesheet, 1);
+            if (!$id_voluntario) {
+                $jsonResponse = $this->responseUtil->setResponse(400, 'error', 'ID del voluntario no proporcionado', []);
+                return $this->response->setStatusCode(400)->setJSON($jsonResponse);
+            }
+
+            if (!$dui) {
+                $jsonResponse = $this->responseUtil->setResponse(400, 'error', 'DUI del voluntario no proporcionado', []);
+                return $this->response->setStatusCode(400)->setJSON($jsonResponse);
+            }
+
+            if (!$telefono) {
+                $jsonResponse = $this->responseUtil->setResponse(400, 'error', 'Teléfono del voluntario no proporcionado', []);
+                return $this->response->setStatusCode(400)->setJSON($jsonResponse);
+            }
+
+            $resultado = $this->modelVol->getVoluntarioMayor($id_voluntario, $dui, $telefono);
+            if (!$resultado) {
+                $jsonResponse = $this->responseUtil->setResponse(500, 'server_error', 'No se encontró la solicitud', []);
+                return $this->response->setStatusCode(500)->setJSON($jsonResponse);
+            }
 
             // Obtener datos
-            $datos['volMayor'] = $this->modelVol->getVoluntarioMayor($this->request->getPost('dui'), $this->request->getPost('telefono'));
-
-            // Preparar datos para la vista
-            $solicitud = [
-                'nombres'   => $this->request->getPost('nombres'),
-                'apellidos' => $this->request->getPost('apellidos')
-            ];
+            $datos['volMayor'] = $resultado;
 
             // Generar el HTML
             $html = view('pdf/pdf_mayores', $datos);
@@ -73,44 +150,62 @@ class InicioController extends BaseController
             $this->mpdf->WriteHTML($html, 2);
 
             // Salida del archivo PDF directamente al navegador
-            $this->mpdf->Output('Solicitud ' . $solicitud['nombres'] . '_' . $solicitud['apellidos'] . '.pdf', 'D');
+            $this->mpdf->Output('Solicitud ' . $datos['volMayor']['nombre_completo'] . '.pdf', 'D');
 
             // Terminar la ejecución
             exit;
 
         } catch (\CodeIgniter\Database\Exceptions\DatabaseException $dbException) {
+            $mensaje      = 'Database error: ' . $dbException->getMessage();
             $jsonResponse = $this->responseUtil->setResponse(500, 'server_error', 'Error en la base de datos', []);
-            $this->responseUtil->logWithContext($this->responseUtil->setResponse(500, 'server_error', 'Database error: ' . $dbException->getMessage(), []));
+            $this->responseUtil->logWithContext($this->responseUtil->setResponse(500, 'server_error', $mensaje, []));
+            return $this->response->setStatusCode(500)->setJSON($jsonResponse);
+
+        } catch (\Mpdf\MpdfException $e) {
+            $mensaje      = 'Error en mPDF: ' . $e->getMessage();
+            $jsonResponse = $this->responseUtil->setResponse(500, 'server_error', 'Error al generar el PDF', []);
+            $this->responseUtil->logWithContext($this->responseUtil->setResponse(500, 'server_error', $mensaje, []));
             return $this->response->setStatusCode(500)->setJSON($jsonResponse);
 
         } catch (\Exception $e) {
+            $mensaje      = 'Exception: ' . $e->getMessage();
             $jsonResponse = $this->responseUtil->setResponse(500, 'server_error', 'Error al generar el PDF', []);
-            $this->responseUtil->logWithContext($this->responseUtil->setResponse(500, 'server_error', 'Exception: ' . $e->getMessage(), []));
+            $this->responseUtil->logWithContext($this->responseUtil->setResponse(500, 'server_error', $mensaje, []));
             return $this->response->setStatusCode(500)->setJSON($jsonResponse);
         }
+        
     }
 
     // ****************************************************************************************************************************
-    // *!*   DESCARGAR PDF VOLUNTARIO MENOR DE EDAD:
+    // *!*   DESCARGAR PDF VOLUNTARIO MENOR DE EDAD (AJAX):
     // ****************************************************************************************************************************
-    public function pdfMenor()
+    public function downloadSoliMenores($id_voluntario, $dui, $telefono)
     {
         try {
-            // Instanciar mPDF
-            // $mpdf = new Mpdf();
 
-            // Cargar el CSS
-            $stylesheet = file_get_contents('assets/css/pdf.css');
-            $this->mpdf->WriteHTML($stylesheet, 1);
+            if (!$id_voluntario) {
+                $jsonResponse = $this->responseUtil->setResponse(400, 'error', 'ID del voluntario no proporcionado', []);
+                return $this->response->setStatusCode(400)->setJSON($jsonResponse);
+            }
 
-            // Obtener datos del formulario
-            $dato = [
-                'nombres'   => $this->request->getPost('nombres_menor'),
-                'apellidos' => $this->request->getPost('apellidos_menor')
-            ];
+            if (!$dui) {
+                $jsonResponse = $this->responseUtil->setResponse(400, 'error', 'DUI del responsable no proporcionado', []);
+                return $this->response->setStatusCode(400)->setJSON($jsonResponse);
+            }
 
-            // Obtener datos del modelo
-            $datos['volMenor'] = $this->modelVol->getVoluntarioMenor($this->request->getPost('dui_ref'), $this->request->getPost('telefono_ref'));
+            if (!$telefono) {
+                $jsonResponse = $this->responseUtil->setResponse(400, 'error', 'Teléfono del responsable no proporcionado', []);
+                return $this->response->setStatusCode(400)->setJSON($jsonResponse);
+            }
+
+            $resultado = $this->modelVol->getVoluntarioMenor($id_voluntario, $dui, $telefono);
+            if (!$resultado) {
+                $jsonResponse = $this->responseUtil->setResponse(500, 'server_error', 'No se encontró la solicitud', []);
+                return $this->response->setStatusCode(500)->setJSON($jsonResponse);
+            }
+
+            // Obtener datos
+            $datos['volMenor'] = $resultado;
 
             // Generar el HTML
             $html = view('pdf/pdf_menores', $datos);
@@ -119,22 +214,32 @@ class InicioController extends BaseController
             $this->mpdf->WriteHTML($html, 2);
 
             // Salida del archivo PDF directamente al navegador
-            $this->mpdf->Output('Solicitud ' . $dato['nombres'] . '_' . $dato['apellidos'] . '.pdf', 'D');
+            $this->mpdf->Output('Solicitud ' . $datos['volMenor']['nombre_completo'] . '.pdf', 'D');
 
             // Terminar la ejecución
             exit;
 
         } catch (\CodeIgniter\Database\Exceptions\DatabaseException $dbException) {
+            $mensaje      = 'Database error: ' . $dbException->getMessage();
             $jsonResponse = $this->responseUtil->setResponse(500, 'server_error', 'Error en la base de datos', []);
-            $this->responseUtil->logWithContext($this->responseUtil->setResponse(500, 'server_error', 'Database error: ' . $dbException->getMessage(), []));
+            $this->responseUtil->logWithContext($this->responseUtil->setResponse(500, 'server_error', $mensaje, []));
+            return $this->response->setStatusCode(500)->setJSON($jsonResponse);
+
+        } catch (\Mpdf\MpdfException $e) {
+            $mensaje      = 'Error en mPDF: ' . $e->getMessage();
+            $jsonResponse = $this->responseUtil->setResponse(500, 'server_error', 'Error al generar el PDF', []);
+            $this->responseUtil->logWithContext($this->responseUtil->setResponse(500, 'server_error', $mensaje, []));
             return $this->response->setStatusCode(500)->setJSON($jsonResponse);
 
         } catch (\Exception $e) {
+            $mensaje      = 'Exception: ' . $e->getMessage();
             $jsonResponse = $this->responseUtil->setResponse(500, 'server_error', 'Error al generar el PDF', []);
-            $this->responseUtil->logWithContext($this->responseUtil->setResponse(500, 'server_error', 'Exception: ' . $e->getMessage(), []));
+            $this->responseUtil->logWithContext($this->responseUtil->setResponse(500, 'server_error', $mensaje, []));
             return $this->response->setStatusCode(500)->setJSON($jsonResponse);
         }
+
     }
+
 
     // ****************************************************************************************************************************
     // ****************************************************************************************************************************
@@ -186,13 +291,15 @@ class InicioController extends BaseController
                 return $this->response->setStatusCode(200)->setJSON($jsonResponse);
 
             } catch (\CodeIgniter\Database\Exceptions\DatabaseException $dbException) {
+                $mensaje      = 'Database error: ' . $dbException->getMessage();
                 $jsonResponse = $this->responseUtil->setResponse(500, 'server_error', 'Error en la base de datos', []);
-                $this->responseUtil->logWithContext($this->responseUtil->setResponse(500, 'server_error', 'Database error: ' . $dbException->getMessage(), []));
+                $this->responseUtil->logWithContext($this->responseUtil->setResponse(500, 'server_error', $mensaje, []));
                 return $this->response->setStatusCode(500)->setJSON($jsonResponse);
-
+    
             } catch (\Exception $e) {
-                $jsonResponse = $this->responseUtil->setResponse(500, 'server_error', 'Error inesperado', []);
-                $this->responseUtil->logWithContext($this->responseUtil->setResponse(500, 'server_error', 'Exception: ' . $e->getMessage(), []));
+                $mensaje      = 'Exception: ' . $e->getMessage();
+                $jsonResponse = $this->responseUtil->setResponse(500, 'server_error', 'Error al generar el PDF', []);
+                $this->responseUtil->logWithContext($this->responseUtil->setResponse(500, 'server_error', $mensaje, []));
                 return $this->response->setStatusCode(500)->setJSON($jsonResponse);
             }
         }
@@ -232,13 +339,15 @@ class InicioController extends BaseController
                 // return $this->response->setBody($options);
 
             } catch (\CodeIgniter\Database\Exceptions\DatabaseException $dbException) {
+                $mensaje      = 'Database error: ' . $dbException->getMessage();
                 $jsonResponse = $this->responseUtil->setResponse(500, 'server_error', 'Error en la base de datos', []);
-                $this->responseUtil->logWithContext($this->responseUtil->setResponse(500, 'server_error', 'Database error: ' . $dbException->getMessage(), []));
+                $this->responseUtil->logWithContext($this->responseUtil->setResponse(500, 'server_error', $mensaje, []));
                 return $this->response->setStatusCode(500)->setJSON($jsonResponse);
-
+    
             } catch (\Exception $e) {
-                $jsonResponse = $this->responseUtil->setResponse(500, 'server_error', 'Error inesperado', []);
-                $this->responseUtil->logWithContext($this->responseUtil->setResponse(500, 'server_error', 'Exception: ' . $e->getMessage(), []));
+                $mensaje      = 'Exception: ' . $e->getMessage();
+                $jsonResponse = $this->responseUtil->setResponse(500, 'server_error', 'Error al generar el PDF', []);
+                $this->responseUtil->logWithContext($this->responseUtil->setResponse(500, 'server_error', $mensaje, []));
                 return $this->response->setStatusCode(500)->setJSON($jsonResponse);
             }
         }
@@ -301,13 +410,15 @@ class InicioController extends BaseController
                 // return $this->response->setJSON(['result' => $resultado ? 1 : 0]);
 
             } catch (\CodeIgniter\Database\Exceptions\DatabaseException $dbException) {
+                $mensaje      = 'Database error: ' . $dbException->getMessage();
                 $jsonResponse = $this->responseUtil->setResponse(500, 'server_error', 'Error en la base de datos', []);
-                $this->responseUtil->logWithContext($this->responseUtil->setResponse(500, 'server_error', 'Database error: ' . $dbException->getMessage(), []));
+                $this->responseUtil->logWithContext($this->responseUtil->setResponse(500, 'server_error', $mensaje, []));
                 return $this->response->setStatusCode(500)->setJSON($jsonResponse);
-
+    
             } catch (\Exception $e) {
-                $jsonResponse = $this->responseUtil->setResponse(500, 'server_error', 'Error inesperado', []);
-                $this->responseUtil->logWithContext($this->responseUtil->setResponse(500, 'server_error', 'Exception: ' . $e->getMessage(), []));
+                $mensaje      = 'Exception: ' . $e->getMessage();
+                $jsonResponse = $this->responseUtil->setResponse(500, 'server_error', 'Error al generar el PDF', []);
+                $this->responseUtil->logWithContext($this->responseUtil->setResponse(500, 'server_error', $mensaje, []));
                 return $this->response->setStatusCode(500)->setJSON($jsonResponse);
             }
 
@@ -341,13 +452,15 @@ class InicioController extends BaseController
                 return $this->response->setStatusCode(200)->setJSON($jsonResponse);
 
             } catch (\CodeIgniter\Database\Exceptions\DatabaseException $dbException) {
+                $mensaje      = 'Database error: ' . $dbException->getMessage();
                 $jsonResponse = $this->responseUtil->setResponse(500, 'server_error', 'Error en la base de datos', []);
-                $this->responseUtil->logWithContext($this->responseUtil->setResponse(500, 'server_error', 'Database error: ' . $dbException->getMessage(), []));
+                $this->responseUtil->logWithContext($this->responseUtil->setResponse(500, 'server_error', $mensaje, []));
                 return $this->response->setStatusCode(500)->setJSON($jsonResponse);
-
+    
             } catch (\Exception $e) {
-                $jsonResponse = $this->responseUtil->setResponse(500, 'server_error', 'Error inesperado', []);
-                $this->responseUtil->logWithContext($this->responseUtil->setResponse(500, 'server_error', 'Exception: ' . $e->getMessage(), []));
+                $mensaje      = 'Exception: ' . $e->getMessage();
+                $jsonResponse = $this->responseUtil->setResponse(500, 'server_error', 'Error al generar el PDF', []);
+                $this->responseUtil->logWithContext($this->responseUtil->setResponse(500, 'server_error', $mensaje, []));
                 return $this->response->setStatusCode(500)->setJSON($jsonResponse);
             }
 
@@ -381,13 +494,15 @@ class InicioController extends BaseController
                 return $this->response->setStatusCode(200)->setJSON($jsonResponse);
 
             } catch (\CodeIgniter\Database\Exceptions\DatabaseException $dbException) {
+                $mensaje      = 'Database error: ' . $dbException->getMessage();
                 $jsonResponse = $this->responseUtil->setResponse(500, 'server_error', 'Error en la base de datos', []);
-                $this->responseUtil->logWithContext($this->responseUtil->setResponse(500, 'server_error', 'Database error: ' . $dbException->getMessage(), []));
+                $this->responseUtil->logWithContext($this->responseUtil->setResponse(500, 'server_error', $mensaje, []));
                 return $this->response->setStatusCode(500)->setJSON($jsonResponse);
-
+    
             } catch (\Exception $e) {
-                $jsonResponse = $this->responseUtil->setResponse(500, 'server_error', 'Error inesperado', []);
-                $this->responseUtil->logWithContext($this->responseUtil->setResponse(500, 'server_error', 'Exception: ' . $e->getMessage(), []));
+                $mensaje      = 'Exception: ' . $e->getMessage();
+                $jsonResponse = $this->responseUtil->setResponse(500, 'server_error', 'Error al generar el PDF', []);
+                $this->responseUtil->logWithContext($this->responseUtil->setResponse(500, 'server_error', $mensaje, []));
                 return $this->response->setStatusCode(500)->setJSON($jsonResponse);
             }
 
@@ -460,22 +575,29 @@ class InicioController extends BaseController
 
                 // Devuelve la respuesta JSON
                 if ($persona && $voluntario && $solicitud) {
-                    $jsonResponse = $this->responseUtil->setResponse(201, 'success', 'Información guardada exitosamente!', true);
+                    $dataResponse = [
+                        'id_voluntario' => $datos_per_voluntario['id_voluntario'],
+                        'dui'           => $persona_voluntario['dui'],
+                        'telefono'      => $persona_voluntario['telefono']
+                    ];
+                    $jsonResponse = $this->responseUtil->setResponse(201, 'success', 'Información guardada exitosamente!', $dataResponse);
                     return $this->response->setStatusCode(201)->setJSON($jsonResponse);
                 }
 
-                $jsonResponse = $this->responseUtil->setResponse(500, 'server_error', 'Error al guardar la información', false);
+                $jsonResponse = $this->responseUtil->setResponse(500, 'server_error', 'Error al guardar la información', []);
                 return $this->response->setStatusCode(500)->setJSON($jsonResponse);
                 // return $this->response->setBody($persona && $voluntario && $solicitud ? 'true' : 'false');
 
             } catch (\CodeIgniter\Database\Exceptions\DatabaseException $dbException) {
+                $mensaje      = 'Database error: ' . $dbException->getMessage();
                 $jsonResponse = $this->responseUtil->setResponse(500, 'server_error', 'Error en la base de datos', []);
-                $this->responseUtil->logWithContext($this->responseUtil->setResponse(500, 'server_error', 'Database error: ' . $dbException->getMessage(), []));
+                $this->responseUtil->logWithContext($this->responseUtil->setResponse(500, 'server_error', $mensaje, []));
                 return $this->response->setStatusCode(500)->setJSON($jsonResponse);
-
+    
             } catch (\Exception $e) {
-                $jsonResponse = $this->responseUtil->setResponse(500, 'server_error', 'Error inesperado', []);
-                $this->responseUtil->logWithContext($this->responseUtil->setResponse(500, 'server_error', 'Exception: ' . $e->getMessage(), []));
+                $mensaje      = 'Exception: ' . $e->getMessage();
+                $jsonResponse = $this->responseUtil->setResponse(500, 'server_error', 'Error al generar el PDF', []);
+                $this->responseUtil->logWithContext($this->responseUtil->setResponse(500, 'server_error', $mensaje, []));
                 return $this->response->setStatusCode(500)->setJSON($jsonResponse);
             }
 
@@ -566,7 +688,12 @@ class InicioController extends BaseController
                 $insert_soli = $this->modelVol->insertSolicitud($datos_solicitud);
 
                 if ($insert_per_ref && $insert_referencia && $insert_per_vol && $insert_vol && $insert_soli) {
-                    $jsonResponse = $this->responseUtil->setResponse(201, 'success', 'Información guardada exitosamente!', true);
+                    $dataResponse = [
+                        'id_voluntario' => $datos_per_voluntario['id_voluntario'],
+                        'dui'           => $persona_referencia['dui'],
+                        'telefono'      => $persona_referencia['telefono']
+                    ];
+                    $jsonResponse = $this->responseUtil->setResponse(201, 'success', 'Información guardada exitosamente!', $dataResponse);
                     return $this->response->setStatusCode(201)->setJSON($jsonResponse);
                 }
 
@@ -586,13 +713,15 @@ class InicioController extends BaseController
                 //     ], 200);
 
             } catch (\CodeIgniter\Database\Exceptions\DatabaseException $dbException) {
+                $mensaje      = 'Database error: ' . $dbException->getMessage();
                 $jsonResponse = $this->responseUtil->setResponse(500, 'server_error', 'Error en la base de datos', []);
-                $this->responseUtil->logWithContext($this->responseUtil->setResponse(500, 'server_error', 'Database error: ' . $dbException->getMessage(), []));
+                $this->responseUtil->logWithContext($this->responseUtil->setResponse(500, 'server_error', $mensaje, []));
                 return $this->response->setStatusCode(500)->setJSON($jsonResponse);
-
+    
             } catch (\Exception $e) {
-                $jsonResponse = $this->responseUtil->setResponse(500, 'server_error', 'Error inesperado', []);
-                $this->responseUtil->logWithContext($this->responseUtil->setResponse(500, 'server_error', 'Exception: ' . $e->getMessage(), []));
+                $mensaje      = 'Exception: ' . $e->getMessage();
+                $jsonResponse = $this->responseUtil->setResponse(500, 'server_error', 'Error al generar el PDF', []);
+                $this->responseUtil->logWithContext($this->responseUtil->setResponse(500, 'server_error', $mensaje, []));
                 return $this->response->setStatusCode(500)->setJSON($jsonResponse);
             }
         }

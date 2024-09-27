@@ -3,6 +3,24 @@
 ********************************************************************************************************************************************************/
 let errorMsgEstandar = 'Ocurrió un problema al procesar su solicitud. Por favor, inténtelo de nuevo más tarde';
 
+function modalSuccessChargeMessage(titulo, mensaje) {
+    Swal.fire({
+        // toast: true,
+        // position: 'top-end',
+        background: '#3ca230',
+        title: `<p style="color: white;">${titulo}</p>`,
+        text: mensaje,
+        allowEscapeKey: false,
+        allowOutsideClick: false,
+        showConfirmButton: false,
+        didOpen: () => {
+            Swal.showLoading();
+        }
+    });
+    $('.swal2-html-container').css('color', '#fff');
+    $('.swal2-loader').css('border-color', '#fff transparent #fff transparent');
+}
+
 function toastSuccesMessageLong(mensaje) {
     Swal.fire({
         toast: true,

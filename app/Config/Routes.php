@@ -20,6 +20,8 @@ $routes->get('usuario',          'UsuarioController::index');
 $routes->get('galeria',          'GaleriaController::index');
 $routes->get('productos',        'ProductosController::index');
 $routes->get('solicitudes',      'SolicitudesController::index');
+$routes->get('downloadSoliMayores/(:num)/(:any)/(:any)', 'InicioController::downloadSoliMayores/$1/$2/$3');
+$routes->get('downloadSoliMenores/(:num)/(:any)/(:any)', 'InicioController::downloadSoliMenores/$1/$2/$3');
 
 
 /**************************************************************************************************************************************************
@@ -54,8 +56,8 @@ $routes->post('usuario/cambiarEstado', 'UsuarioController::cambiarEstado');
 
 // GALERIA CONTROLLER
 $routes->post('galeria/cargarImg',  'GaleriaController::cargarImg');
-$routes->post('galeria/cambiarImg', 'GaleriaController::cambiarImg');
 $routes->post('galeria/tblGaleria', 'GaleriaController::tblGaleria');
+$routes->post('galeria/cambiarImg', 'GaleriaController::cambiarImg');
 
 // PRODUCTOS CONTROLLER
 $routes->get('productos/verProductos',   'ProductosController::verProductos');
@@ -64,8 +66,8 @@ $routes->post('productos/guardar',       'ProductosController::guardar');
 $routes->post('productos/cambiarEstado', 'ProductosController::cambiarEstado');
 
 // SOLICITUDES CONTROLLER
-$routes->post('solicitudes/tblSoliMayores', 'SolicitudesController::tblSoliMayores');
-$routes->post('solicitudes/tblSoliMenores', 'SolicitudesController::tblSoliMenores');
+$routes->post('solicitudes/tblSoliMayores',   'SolicitudesController::tblSoliMayores');
+$routes->post('solicitudes/tblSoliMenores',   'SolicitudesController::tblSoliMenores');
 $routes->get('showSoliMayores/(:num)/(:num)', 'SolicitudesController::showSoliMayores/$1/$2');
 $routes->get('showSoliMenores/(:num)/(:num)', 'SolicitudesController::showSoliMenores/$1/$2');
 // $routes->get('showSoliMenores/(:num)/(:num)/(:any)/(:any)', 'SolicitudesController::showSoliMenores/$1/$2/$3/$4');

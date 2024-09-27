@@ -210,13 +210,15 @@ class ProductosController extends BaseController
                 return $this->response->setStatusCode(500)->setJSON($jsonResponse);
 
             } catch (\CodeIgniter\Database\Exceptions\DatabaseException $dbException) {
+                $mensaje      = 'Database error: ' . $dbException->getMessage();
                 $jsonResponse = $this->responseUtil->setResponse(500, 'server_error', 'Error en la base de datos', []);
-                $this->responseUtil->logWithContext($this->responseUtil->setResponse(500, 'server_error', 'Database error: ' . $dbException->getMessage(), []));
+                $this->responseUtil->logWithContext($this->responseUtil->setResponse(500, 'server_error', $mensaje, []));
                 return $this->response->setStatusCode(500)->setJSON($jsonResponse);
-
+    
             } catch (\Exception $e) {
-                $jsonResponse = $this->responseUtil->setResponse(500, 'server_error', 'Error inesperado', []);
-                $this->responseUtil->logWithContext($this->responseUtil->setResponse(500, 'server_error', 'Exception: ' . $e->getMessage(), []));
+                $mensaje      = 'Exception: ' . $e->getMessage();
+                $jsonResponse = $this->responseUtil->setResponse(500, 'server_error', 'Error al generar el PDF', []);
+                $this->responseUtil->logWithContext($this->responseUtil->setResponse(500, 'server_error', $mensaje, []));
                 return $this->response->setStatusCode(500)->setJSON($jsonResponse);
             }
 
@@ -233,6 +235,7 @@ class ProductosController extends BaseController
         if ($this->request->isAJAX()) {
 
             try {
+
                 $id_producto = $this->request->getPost('id_producto');
                 if (!$id_producto) {
                     $jsonResponse = $this->responseUtil->setResponse(400, 'error', 'ID de producto no proporcionado', $id_producto);
@@ -260,15 +263,18 @@ class ProductosController extends BaseController
                 return $this->response->setStatusCode(500)->setJSON($jsonResponse);
 
             } catch (\CodeIgniter\Database\Exceptions\DatabaseException $dbException) {
+                $mensaje      = 'Database error: ' . $dbException->getMessage();
                 $jsonResponse = $this->responseUtil->setResponse(500, 'server_error', 'Error en la base de datos', []);
-                $this->responseUtil->logWithContext($this->responseUtil->setResponse(500, 'server_error', 'Database error: ' . $dbException->getMessage(), []));
+                $this->responseUtil->logWithContext($this->responseUtil->setResponse(500, 'server_error', $mensaje, []));
                 return $this->response->setStatusCode(500)->setJSON($jsonResponse);
-
+    
             } catch (\Exception $e) {
-                $jsonResponse = $this->responseUtil->setResponse(500, 'server_error', 'Error inesperado', []);
-                $this->responseUtil->logWithContext($this->responseUtil->setResponse(500, 'server_error', 'Exception: ' . $e->getMessage(), []));
+                $mensaje      = 'Exception: ' . $e->getMessage();
+                $jsonResponse = $this->responseUtil->setResponse(500, 'server_error', 'Error al generar el PDF', []);
+                $this->responseUtil->logWithContext($this->responseUtil->setResponse(500, 'server_error', $mensaje, []));
                 return $this->response->setStatusCode(500)->setJSON($jsonResponse);
             }
+
         }
 
         return redirect()->back();

@@ -180,19 +180,19 @@ class SolicitudesController extends BaseController
             exit;
 
         } catch (\CodeIgniter\Database\Exceptions\DatabaseException $dbException) {
-            $mensaje = 'Database error: ' . $dbException->getMessage();
+            $mensaje      = 'Database error: ' . $dbException->getMessage();
             $jsonResponse = $this->responseUtil->setResponse(500, 'server_error', 'Error en la base de datos', []);
             $this->responseUtil->logWithContext($this->responseUtil->setResponse(500, 'server_error', $mensaje, []));
             return $this->response->setStatusCode(500)->setJSON($jsonResponse);
 
         } catch (\Mpdf\MpdfException $e) {
-            $mensaje = 'Error en mPDF: ' . $e->getMessage();
+            $mensaje      = 'Error en mPDF: ' . $e->getMessage();
             $jsonResponse = $this->responseUtil->setResponse(500, 'server_error', 'Error al generar el PDF', []);
             $this->responseUtil->logWithContext($this->responseUtil->setResponse(500, 'server_error', $mensaje, []));
             return $this->response->setStatusCode(500)->setJSON($jsonResponse);
 
         } catch (\Exception $e) {
-            $mensaje = 'Exception: ' . $e->getMessage();
+            $mensaje      = 'Exception: ' . $e->getMessage();
             $jsonResponse = $this->responseUtil->setResponse(500, 'server_error', 'Error al generar el PDF', []);
             $this->responseUtil->logWithContext($this->responseUtil->setResponse(500, 'server_error', $mensaje, []));
             return $this->response->setStatusCode(500)->setJSON($jsonResponse);
@@ -229,8 +229,8 @@ class SolicitudesController extends BaseController
                 return $this->response->setStatusCode(500)->setJSON($jsonResponse);
             }
 
-            $datos['volMayor'] = $resultado;
-            $nombre_archivo = 'Solicitud - ' . $datos['volMayor']['nombre_completo'] . '.pdf';
+            $datos['volMenor'] = $resultado;
+            $nombre_archivo = 'Solicitud - ' . $datos['volMenor']['nombre_completo'] . '.pdf';
             $html = view('pdf/pdf_menores', $datos);
             $this->mpdf->WriteHTML($html, 2);
             $this->mpdf->SetTitle($nombre_archivo);
@@ -239,19 +239,19 @@ class SolicitudesController extends BaseController
             exit;
 
         } catch (\CodeIgniter\Database\Exceptions\DatabaseException $dbException) {
-            $mensaje = 'Database error: ' . $dbException->getMessage();
+            $mensaje      = 'Database error: ' . $dbException->getMessage();
             $jsonResponse = $this->responseUtil->setResponse(500, 'server_error', 'Error en la base de datos', []);
             $this->responseUtil->logWithContext($this->responseUtil->setResponse(500, 'server_error', $mensaje, []));
             return $this->response->setStatusCode(500)->setJSON($jsonResponse);
 
         } catch (\Mpdf\MpdfException $e) {
-            $mensaje = 'Error en mPDF: ' . $e->getMessage();
+            $mensaje      = 'Error en mPDF: ' . $e->getMessage();
             $jsonResponse = $this->responseUtil->setResponse(500, 'server_error', 'Error al generar el PDF', []);
             $this->responseUtil->logWithContext($this->responseUtil->setResponse(500, 'server_error', $mensaje, []));
             return $this->response->setStatusCode(500)->setJSON($jsonResponse);
 
         } catch (\Exception $e) {
-            $mensaje = 'Exception: ' . $e->getMessage();
+            $mensaje      = 'Exception: ' . $e->getMessage();
             $jsonResponse = $this->responseUtil->setResponse(500, 'server_error', 'Error al generar el PDF', []);
             $this->responseUtil->logWithContext($this->responseUtil->setResponse(500, 'server_error', $mensaje, []));
             return $this->response->setStatusCode(500)->setJSON($jsonResponse);
