@@ -1037,20 +1037,21 @@ table thead th {
 #galeria td,
 #productos td,
 #ExpedienteVol td {
-    padding: 20px;
-    padding-left: 30px;
+    /* padding: 20px;
+    padding-left: 30px; */
 }
 
 #galeria td+td,
 #productos td+td,
 #ExpedienteVol td+td {
-    padding: 20px;
+    /* padding: 20px; */
 }
 
 #usuarios td,
-#solimayores td,
-#solim td {
-    padding: 5px;
+#soli-mayores td,
+#soli-menores td {
+    /* padding: 5px; */
+    padding: 15px 10px;
 }
 
 .img-tbl {
@@ -1387,7 +1388,7 @@ body.swal2-toast-shown .swal2-container {
     #galeria td,
     #productos td,
     #ExpedienteVol td {
-        padding: 20px;
+        /* padding: 20px; */
     }
 }
 
