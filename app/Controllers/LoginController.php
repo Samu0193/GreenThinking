@@ -230,11 +230,11 @@ class LoginController extends BaseController
 
                 $resultado = $this->loginModel->validateEmail($email);
                 if (!$resultado) {
-                    $jsonResponse = $this->responseUtil->setResponse(404, 'not_found', 'Email no existe en la base de datos', []);
-                    return $this->response->setStatusCode(404)->setJSON($jsonResponse);
+                    $jsonResponse = $this->responseUtil->setResponse(200, 'not_found', 'Email no existe en la base de datos', false);
+                    return $this->response->setStatusCode(200)->setJSON($jsonResponse);
                 }
 
-                $jsonResponse = $this->responseUtil->setResponse(200, 'success', 'Email encontrado', []);
+                $jsonResponse = $this->responseUtil->setResponse(200, 'success', 'Email encontrado', true);
                 return $this->response->setStatusCode(200)->setJSON($jsonResponse);
 
             } catch (\CodeIgniter\Database\Exceptions\DatabaseException $dbException) {

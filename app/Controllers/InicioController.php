@@ -112,134 +112,6 @@ class InicioController extends BaseController
     //     }
     // }
 
-    // ****************************************************************************************************************************
-    // *!*   DESCARGAR PDF VOLUNTARIO MAYOR DE EDAD:
-    // ****************************************************************************************************************************
-    public function downloadSoliMayores($id_voluntario, $dui, $telefono)
-    {
-        try {
-
-            if (!$id_voluntario) {
-                $jsonResponse = $this->responseUtil->setResponse(400, 'error', 'ID del voluntario no proporcionado', []);
-                return $this->response->setStatusCode(400)->setJSON($jsonResponse);
-            }
-
-            if (!$dui) {
-                $jsonResponse = $this->responseUtil->setResponse(400, 'error', 'DUI del voluntario no proporcionado', []);
-                return $this->response->setStatusCode(400)->setJSON($jsonResponse);
-            }
-
-            if (!$telefono) {
-                $jsonResponse = $this->responseUtil->setResponse(400, 'error', 'Teléfono del voluntario no proporcionado', []);
-                return $this->response->setStatusCode(400)->setJSON($jsonResponse);
-            }
-
-            $resultado = $this->modelVol->getVoluntarioMayor($id_voluntario, $dui, $telefono);
-            if (!$resultado) {
-                $jsonResponse = $this->responseUtil->setResponse(500, 'server_error', 'No se encontró la solicitud', []);
-                return $this->response->setStatusCode(500)->setJSON($jsonResponse);
-            }
-
-            // Obtener datos
-            $datos['volMayor'] = $resultado;
-
-            // Generar el HTML
-            $html = view('pdf/pdf_mayores', $datos);
-
-            // Escribir el contenido HTML al PDF
-            $this->mpdf->WriteHTML($html, 2);
-
-            // Salida del archivo PDF directamente al navegador
-            $this->mpdf->Output('Solicitud ' . $datos['volMayor']['nombre_completo'] . '.pdf', 'D');
-
-            // Terminar la ejecución
-            exit;
-
-        } catch (\CodeIgniter\Database\Exceptions\DatabaseException $dbException) {
-            $mensaje      = 'Database error: ' . $dbException->getMessage();
-            $jsonResponse = $this->responseUtil->setResponse(500, 'server_error', 'Error en la base de datos', []);
-            $this->responseUtil->logWithContext($this->responseUtil->setResponse(500, 'server_error', $mensaje, []));
-            return $this->response->setStatusCode(500)->setJSON($jsonResponse);
-
-        } catch (\Mpdf\MpdfException $e) {
-            $mensaje      = 'Error en mPDF: ' . $e->getMessage();
-            $jsonResponse = $this->responseUtil->setResponse(500, 'server_error', 'Error al generar el PDF', []);
-            $this->responseUtil->logWithContext($this->responseUtil->setResponse(500, 'server_error', $mensaje, []));
-            return $this->response->setStatusCode(500)->setJSON($jsonResponse);
-
-        } catch (\Exception $e) {
-            $mensaje      = 'Exception: ' . $e->getMessage();
-            $jsonResponse = $this->responseUtil->setResponse(500, 'server_error', 'Error al generar el PDF', []);
-            $this->responseUtil->logWithContext($this->responseUtil->setResponse(500, 'server_error', $mensaje, []));
-            return $this->response->setStatusCode(500)->setJSON($jsonResponse);
-        }
-        
-    }
-
-    // ****************************************************************************************************************************
-    // *!*   DESCARGAR PDF VOLUNTARIO MENOR DE EDAD:
-    // ****************************************************************************************************************************
-    public function downloadSoliMenores($id_voluntario, $dui, $telefono)
-    {
-        try {
-
-            if (!$id_voluntario) {
-                $jsonResponse = $this->responseUtil->setResponse(400, 'error', 'ID del voluntario no proporcionado', []);
-                return $this->response->setStatusCode(400)->setJSON($jsonResponse);
-            }
-
-            if (!$dui) {
-                $jsonResponse = $this->responseUtil->setResponse(400, 'error', 'DUI del responsable no proporcionado', []);
-                return $this->response->setStatusCode(400)->setJSON($jsonResponse);
-            }
-
-            if (!$telefono) {
-                $jsonResponse = $this->responseUtil->setResponse(400, 'error', 'Teléfono del responsable no proporcionado', []);
-                return $this->response->setStatusCode(400)->setJSON($jsonResponse);
-            }
-
-            $resultado = $this->modelVol->getVoluntarioMenor($id_voluntario, $dui, $telefono);
-            if (!$resultado) {
-                $jsonResponse = $this->responseUtil->setResponse(500, 'server_error', 'No se encontró la solicitud', []);
-                return $this->response->setStatusCode(500)->setJSON($jsonResponse);
-            }
-
-            // Obtener datos
-            $datos['volMenor'] = $resultado;
-
-            // Generar el HTML
-            $html = view('pdf/pdf_menores', $datos);
-
-            // Escribir el contenido HTML al PDF
-            $this->mpdf->WriteHTML($html, 2);
-
-            // Salida del archivo PDF directamente al navegador
-            $this->mpdf->Output('Solicitud ' . $datos['volMenor']['nombre_completo'] . '.pdf', 'D');
-
-            // Terminar la ejecución
-            exit;
-
-        } catch (\CodeIgniter\Database\Exceptions\DatabaseException $dbException) {
-            $mensaje      = 'Database error: ' . $dbException->getMessage();
-            $jsonResponse = $this->responseUtil->setResponse(500, 'server_error', 'Error en la base de datos', []);
-            $this->responseUtil->logWithContext($this->responseUtil->setResponse(500, 'server_error', $mensaje, []));
-            return $this->response->setStatusCode(500)->setJSON($jsonResponse);
-
-        } catch (\Mpdf\MpdfException $e) {
-            $mensaje      = 'Error en mPDF: ' . $e->getMessage();
-            $jsonResponse = $this->responseUtil->setResponse(500, 'server_error', 'Error al generar el PDF', []);
-            $this->responseUtil->logWithContext($this->responseUtil->setResponse(500, 'server_error', $mensaje, []));
-            return $this->response->setStatusCode(500)->setJSON($jsonResponse);
-
-        } catch (\Exception $e) {
-            $mensaje      = 'Exception: ' . $e->getMessage();
-            $jsonResponse = $this->responseUtil->setResponse(500, 'server_error', 'Error al generar el PDF', []);
-            $this->responseUtil->logWithContext($this->responseUtil->setResponse(500, 'server_error', $mensaje, []));
-            return $this->response->setStatusCode(500)->setJSON($jsonResponse);
-        }
-
-    }
-
 
     // ****************************************************************************************************************************
     // ****************************************************************************************************************************
@@ -401,11 +273,11 @@ class InicioController extends BaseController
 
                 $resultado = $this->modelVol->findDUI($dui);
                 if ($resultado) {
-                    $jsonResponse = $this->responseUtil->setResponse(400, 'error', 'Este DUI ya está registrado', false);
-                    return $this->response->setStatusCode(400)->setJSON($jsonResponse);
+                    $jsonResponse = $this->responseUtil->setResponse(200, 'error', 'Este DUI ya está registrado', false);
+                    return $this->response->setStatusCode(200)->setJSON($jsonResponse);
                     // return $this->response->setJSON(['result' => $resultado ? 1 : 0]);
                 }
-                
+
                 $jsonResponse = $this->responseUtil->setResponse(200, 'success', 'DUI disponible', true);
                 return $this->response->setStatusCode(200)->setJSON($jsonResponse);
 
@@ -444,8 +316,8 @@ class InicioController extends BaseController
 
                 $resultado = $this->modelVol->findTel($telefono);
                 if ($resultado) {
-                    $jsonResponse = $this->responseUtil->setResponse(400, 'error', 'Este teléfono ya está registrado', false);
-                    return $this->response->setStatusCode(400)->setJSON($jsonResponse);
+                    $jsonResponse = $this->responseUtil->setResponse(200, 'error', 'Este teléfono ya está registrado', false);
+                    return $this->response->setStatusCode(200)->setJSON($jsonResponse);
                 }
                 
                 $jsonResponse = $this->responseUtil->setResponse(200, 'success', 'Teléfono disponible', true);
@@ -486,8 +358,8 @@ class InicioController extends BaseController
 
                 $resultado = $this->modelVol->findEmail($email);
                 if ($resultado) {
-                    $jsonResponse = $this->responseUtil->setResponse(400, 'error', 'Este email ya está registrado', false);
-                    return $this->response->setStatusCode(400)->setJSON($jsonResponse);
+                    $jsonResponse = $this->responseUtil->setResponse(200, 'error', 'Este email ya está registrado', false);
+                    return $this->response->setStatusCode(200)->setJSON($jsonResponse);
                 }
                 
                 $jsonResponse = $this->responseUtil->setResponse(200, 'success', 'Email disponible', true);

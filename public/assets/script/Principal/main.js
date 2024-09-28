@@ -111,7 +111,7 @@ $(document).ready(function () {
 *!*     DECARGAR SOLICITUD MAYOR:
 ********************************************************************************************************************************************************/
 function downloadSoliMayores(id_voluntario, dui, telefono) {
-    console.log(id_voluntario, dui, telefono)
+    // console.log(id_voluntario, dui, telefono)
     const url_ajax = `${url}downloadSoliMayores/${id_voluntario}/${dui}/${telefono}`;
     $.ajax({
         url: url_ajax,
@@ -139,7 +139,7 @@ function downloadSoliMayores(id_voluntario, dui, telefono) {
 *!*     DECARGAR SOLICITUD MENOR:
 ********************************************************************************************************************************************************/
 function downloadSoliMenores(id_voluntario, dui, telefono) {
-    console.log(id_voluntario, dui, telefono)
+    // console.log(id_voluntario, dui, telefono)
     const url_ajax = `${url}downloadSoliMenores/${id_voluntario}/${dui}/${telefono}`;
     $.ajax({
         url: url_ajax,
@@ -261,12 +261,12 @@ $(function () {
             nombres: { required: true, alfaOespacio: true },
             apellidos: { required: true, alfaOespacio: true },
             f_nacimiento_mayor: { required: true, minEdadMay: true, maxEdadMay: true },
-            dui: { required: true, isDUI: true },
-            email: { required: true, correo: true },
+            dui: { required: true, isDUI: true, inDUI: true },
+            email: { required: true, correo: true, inEmailVoluntario: true },
             departamento_residencia: { required: true },
             municipio_residencia: { required: true },
             direccion: { required: true },
-            telefono: { required: true },
+            telefono: { required: true, inTelefono: true },
             fecha_finalizacion: { required: true, minFin: true, maxFin: true }
         },
         messages: {
@@ -282,7 +282,7 @@ $(function () {
             departamento_residencia: 'Departamento requerido',
             municipio_residencia: 'Municipio requerido',
             direccion: 'Direcci\u00f3n requerida',
-            telefono: 'Tel\u00f3fono requerido',
+            telefono: { required: 'Tel\u00f3fono requerido' },
             fecha_finalizacion: {
                 required: 'Fecha de finalizaci\u00f3n requerida',
                 min: `Debe ser mayor o igual a: ${f_MinFin(0)}`,
@@ -352,16 +352,16 @@ $(function () {
             nombres_ref: { required: true, alfaOespacio: true },
             apellidos_ref: { required: true, alfaOespacio: true },
             f_nacimiento_ref: { required: true, minEdadRes: true, maxEdadRes: true },
-            dui_ref: { required: true, isDUI: true },
-            telefono_ref: { required: true },
+            dui_ref: { required: true, isDUI: true, inDUI: true },
+            telefono_ref: { required: true, inTelefono: true },
             nombres_menor: { required: true, alfaOespacio: true },
             apellidos_menor: { required: true, alfaOespacio: true },
             f_nacimiento_menor: { required: true,  minEdadMen: true, maxEdadMen: true },
-            email: { required: true, correo: true },
+            email: { required: true, correo: true, inEmailVoluntario: true },
             departamento_residencia: { required: true },
             municipio_residencia: { required: true },
             direccion: { required: true },
-            telefono_menor: { required: true },
+            telefono_menor: { required: true, distinctTelefono: 'input[name="telefono_ref"]', inTelefono: true },
             fecha_finalizacion: { required: true, minFin: true, maxFin: true }
         },
         messages: {
@@ -374,7 +374,7 @@ $(function () {
                 max: 'Edad m\u00ednima 20 a\u00f1os'
             },
             dui_ref: { required: 'DUI requerido' },
-            telefono_ref: 'Tel\u00f3fono requerido',
+            telefono_ref: { required: 'Tel\u00f3fono requerido' },
             nombres_menor: { required: 'Nombres requeridos' },
             apellidos_menor: { required: 'Apellidos requeridos' },
             f_nacimiento_menor: {
@@ -386,7 +386,7 @@ $(function () {
             departamento_residencia: { required: 'Departamento requerido' },
             municipio_residencia: 'Municipio requerido',
             direccion: 'Direcci\u00f3n requerida',
-            telefono_menor: 'Tel\u00f3fono requerido',
+            telefono_menor: { required: 'Tel\u00f3fono requerido' },
             fecha_finalizacion: {
                 required: 'Fecha de finalizaci\u00f3n requerida',
                 min: `Debe ser mayor o igual a: ${f_MinFin(0)}`,

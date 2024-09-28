@@ -32,7 +32,7 @@ $(document).ready(function () {
         $('body').addClass('no-scroll'); // Deshabilitar el scroll
         loadRoles();
         modal.fadeIn();
-        title_form.html('Nuevo Usuario');
+        title_form.html('Nuevo usuario');
         $('#form-usuarios')[0].reset();
         $('input').removeClass('error');
         $('label[class="error"]').css('display', 'none');
@@ -468,9 +468,9 @@ $(function () {
                 apellidos: { required: true, alfaOespacio: true },
                 f_nacimiento_mayor: { required: true, minEdadMay: true, maxEdadMay: true },
                 dui: { required: true, isDUI: true },
-                email: { required: true, correo: true },
-                telefono: { required: true },
-                nombre_usuario: { required: true },
+                email: { required: true, correo: true, inEmailUsuario: true },
+                telefono: { required: true, inTelefono: true },
+                nombre_usuario: { required: true, inUsuario: true },
                 password: { required: true },
                 re_password: { required: true, equalPassword: password }
             },
@@ -484,10 +484,10 @@ $(function () {
                 },
                 dui: { required: 'DUI requerido' },
                 email: { required: 'Email requerido' },
-                telefono: 'Tel\u00f3fono requerido',
-                nombre_usuario: 'Usuario requerido',
+                telefono: { required: 'Tel\u00f3fono requerido' },
+                nombre_usuario: { required: 'Usuario requerido' },
                 password: 'Contrase\u00f1a requerida',
-                re_password: 'Repetir contrase\u00f1a requerido'
+                re_password: { required: 'Confirmar contrase\u00f1a requerido' }
             },
             invalidHandler: function (error, element) {
                 modalErrorMessage(`<p style="color: #fff; font-size: 1.18em; font-weight: 100;">Formulario inválido!</p>`);

@@ -9,7 +9,8 @@
     <link href="<?= base_url('assets/img/favicon.png'); ?>" rel="shortcut icon" type="image/x-icon">
     <link href="<?= base_url('assets/css/sweetalert2.css'); ?>" rel="stylesheet" type="text/css">
     <link href="<?= base_url('assets/css/style.css'); ?>" rel="stylesheet" type="text/css">
-    <link href="https://use.fontawesome.com/releases/v5.8.1/css/all.css" rel="stylesheet">
+    <!-- <link href="https://use.fontawesome.com/releases/v5.8.1/css/all.css" rel="stylesheet"> -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css?family=Roboto" rel="stylesheet">
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.7.1/gsap.min.js"></script>
@@ -164,10 +165,9 @@
                         <label for="f_nacimiento_mayor">Fecha de Nacimiento: </label>
                         <input type="date" name="f_nacimiento_mayor" id="f_nacimiento_mayor" required>
                         <label for="dui">DUI: </label>
-                        <input type="text" name="dui" id="" placeholder="99999999-9" onchange="valDui(this);" required>
+                        <input type="text" name="dui" id="" placeholder="99999999-9" required>
                         <label for="email">Email: </label>
-                        <input type="text" name="email" id="" placeholder="Ingrese Email" onchange="valEmail(this);"
-                            required>
+                        <input type="text" name="email" id="" placeholder="Ingrese Email" required>
                         <label for="departamento_residencia">Departamento Residencia: </label>
                         <select name="departamento_residencia" id="" required>
 
@@ -182,8 +182,7 @@
                         <textarea name="direccion" id="" rows="5" cols="" placeholder="Ingrese Dirección"
                             required></textarea>
                         <label for="telefono">Teléfono: </label>
-                        <input type="text" name="telefono" id="" placeholder="9999-9999" onchange="valTel(this);"
-                            required>
+                        <input type="text" name="telefono" id="" placeholder="9999-9999" required>
                         <label for="fecha_finalizacion">Fecha de Finalización: <i class="fas fa-info-circle"
                                 id="info-fecha1" style="color: #17a2b8; cursor: pointer; font-size: 1.5em;"></i></label>
                         <div class="info-fecha" style="background-color: #dfe0e0;">
@@ -195,7 +194,7 @@
                         <input type="hidden" name="id_voluntario">
                     </div>
                     <button class="btn" type="submit" id="insert-mayor"><i class="fas fa-user-plus"></i>Registrar</button>
-                    <a class="btn" onclick="downloadSoliMayores(3, '05141558-8', '7898-5689');"><i class="fas fa-user-plus"></i>Download</a>
+                    <!-- <a class="btn" onclick="downloadSoliMayores(3, '05141558-8', '7898-5689');"><i class="fas fa-user-plus"></i>Download</a> -->
                 </form>
 
                 <!-- FORMULARIO MENORES -->
@@ -225,11 +224,9 @@
                             <label for="f_nacimiento_ref">Fecha de Nacimiento: </label>
                             <input type="date" name="f_nacimiento_ref" id="f_nacimiento_ref" required>
                             <label for="dui_ref">DUI: </label>
-                            <input type="text" name="dui_ref" id="" placeholder="99999999-9" onchange="valDui(this);"
-                                required>
+                            <input type="text" name="dui_ref" id="" placeholder="99999999-9" required>
                             <label for="telefono_ref">Teléfono: </label>
-                            <input type="text" name="telefono_ref" id="" placeholder="9999-9999" onchange="valTel(this);"
-                                required>
+                            <input type="text" name="telefono_ref" id="" placeholder="9999-9999" required>
                         </div>
                     </div>
 
@@ -243,11 +240,9 @@
                             <label for="f_nacimiento_menor">Fecha de Nacimiento: </label>
                             <input type="date" name="f_nacimiento_menor" id="" required>
                             <label for="telefono_menor">Teléfono: </label>
-                            <input type="text" name="telefono_menor" id="" placeholder="9999-9999" onchange="valTel(this);"
-                                required>
+                            <input type="text" name="telefono_menor" id="" placeholder="9999-9999" required>
                             <label for="email">Email: </label>
-                            <input type="text" name="email" id="" placeholder="Ingrese Email" onchange="valEmail(this);"
-                                required>
+                            <input type="text" name="email" id="" placeholder="Ingrese Email" required>
                         </div>
                         <div class="input-field">
                             <label for="departamento_residencia">Departamento Residencia: </label>
@@ -605,14 +600,13 @@
                 <i class="fab fa-instagram"></i>
             </a>
             <a href="https://mobile.twitter.com/greenthinking19" target="_blank">
-                <i class="fab fa-twitter"></i>
+                <!-- <i class="fab fa-twitter"></i> -->
+                <i class="fa-brands fa-x-twitter"></i>
             </a>
-
-
         </div>
 
         <div class="footer-section">
-            <h2>Green Thinking &#169 El Salvador <?= date('Y'); ?></h2>
+            <h2>Green Thinking &#169; El Salvador <?= date('Y'); ?></h2>
         </div>
 
     </footer>

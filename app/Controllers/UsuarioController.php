@@ -107,8 +107,8 @@ class UsuarioController extends BaseController
 
                 $resultado = $this->modelUsuario->findEmail($email);
                 if ($resultado) {
-                    $jsonResponse = $this->responseUtil->setResponse(400, 'error', 'Este email ya está registrado', false);
-                    return $this->response->setStatusCode(400)->setJSON($jsonResponse);
+                    $jsonResponse = $this->responseUtil->setResponse(200, 'error', 'Este email ya está registrado', false);
+                    return $this->response->setStatusCode(200)->setJSON($jsonResponse);
                 }
                 
                 $jsonResponse = $this->responseUtil->setResponse(200, 'success', 'Email disponible', true);
@@ -149,8 +149,8 @@ class UsuarioController extends BaseController
 
                 $resultado = $this->modelUsuario->findUser($usuario);
                 if ($resultado) {
-                    $jsonResponse = $this->responseUtil->setResponse(400, 'error', 'Este usuario ya está registrado', false);
-                    return $this->response->setStatusCode(400)->setJSON($jsonResponse);
+                    $jsonResponse = $this->responseUtil->setResponse(200, 'error', 'Este usuario ya está registrado', false);
+                    return $this->response->setStatusCode(200)->setJSON($jsonResponse);
                 }
 
                 $jsonResponse = $this->responseUtil->setResponse(200, 'success', 'Usuario disponible', true);

@@ -173,10 +173,10 @@ class VoluntarioModel extends Model
         'telefono_menor' => [
             'rules'  => 'required|telefono|noRepeatTelefono[telefono_ref]|uniqueTelefono[telefono_menor]',
             'errors' => [
-                'required'  => 'Teléfono del voluntario requerido.',
-                'telefono'  => 'Teléfono del voluntario inválido.',
+                'required'          => 'Teléfono del voluntario requerido.',
+                'telefono'          => 'Teléfono del voluntario inválido.',
                 'noRepeatTelefono'  => 'Los telefonos no pueden ser iguales.',
-                'uniqueTelefono' => 'Este teléfono ya está registrado.'
+                'uniqueTelefono'    => 'Este teléfono ya está registrado.'
             ]
         ],
         'email' => [

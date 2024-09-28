@@ -36,6 +36,134 @@ class SolicitudesController extends BaseController
         return redirect()->to(site_url('login'))->with('message', 'Usted no se ha identificado');
     }
 
+    // ****************************************************************************************************************************
+    // *!*   DESCARGAR PDF VOLUNTARIO MAYOR DE EDAD:
+    // ****************************************************************************************************************************
+    public function downloadSoliMayores($id_voluntario, $dui, $telefono)
+    {
+        try {
+
+            if (!$id_voluntario) {
+                $jsonResponse = $this->responseUtil->setResponse(400, 'error', 'ID del voluntario no proporcionado', []);
+                return $this->response->setStatusCode(400)->setJSON($jsonResponse);
+            }
+
+            if (!$dui) {
+                $jsonResponse = $this->responseUtil->setResponse(400, 'error', 'DUI del voluntario no proporcionado', []);
+                return $this->response->setStatusCode(400)->setJSON($jsonResponse);
+            }
+
+            if (!$telefono) {
+                $jsonResponse = $this->responseUtil->setResponse(400, 'error', 'Teléfono del voluntario no proporcionado', []);
+                return $this->response->setStatusCode(400)->setJSON($jsonResponse);
+            }
+
+            $resultado = $this->modelVol->getVoluntarioMayor($id_voluntario, $dui, $telefono);
+            if (!$resultado) {
+                $jsonResponse = $this->responseUtil->setResponse(500, 'server_error', 'No se encontró la solicitud', []);
+                return $this->response->setStatusCode(500)->setJSON($jsonResponse);
+            }
+
+            // Obtener datos
+            $datos['volMayor'] = $resultado;
+
+            // Generar el HTML
+            $html = view('pdf/pdf_mayores', $datos);
+
+            // Escribir el contenido HTML al PDF
+            $this->mpdf->WriteHTML($html, 2);
+
+            // Salida del archivo PDF directamente al navegador
+            $this->mpdf->Output('Solicitud ' . $datos['volMayor']['nombre_completo'] . '.pdf', 'D');
+
+            // Terminar la ejecución
+            exit;
+
+        } catch (\CodeIgniter\Database\Exceptions\DatabaseException $dbException) {
+            $mensaje      = 'Database error: ' . $dbException->getMessage();
+            $jsonResponse = $this->responseUtil->setResponse(500, 'server_error', 'Error en la base de datos', []);
+            $this->responseUtil->logWithContext($this->responseUtil->setResponse(500, 'server_error', $mensaje, []));
+            return $this->response->setStatusCode(500)->setJSON($jsonResponse);
+
+        } catch (\Mpdf\MpdfException $e) {
+            $mensaje      = 'Error en mPDF: ' . $e->getMessage();
+            $jsonResponse = $this->responseUtil->setResponse(500, 'server_error', 'Error al generar el PDF', []);
+            $this->responseUtil->logWithContext($this->responseUtil->setResponse(500, 'server_error', $mensaje, []));
+            return $this->response->setStatusCode(500)->setJSON($jsonResponse);
+
+        } catch (\Exception $e) {
+            $mensaje      = 'Exception: ' . $e->getMessage();
+            $jsonResponse = $this->responseUtil->setResponse(500, 'server_error', 'Error al generar el PDF', []);
+            $this->responseUtil->logWithContext($this->responseUtil->setResponse(500, 'server_error', $mensaje, []));
+            return $this->response->setStatusCode(500)->setJSON($jsonResponse);
+        }
+        
+    }
+
+    // ****************************************************************************************************************************
+    // *!*   DESCARGAR PDF VOLUNTARIO MENOR DE EDAD:
+    // ****************************************************************************************************************************
+    public function downloadSoliMenores($id_voluntario, $dui, $telefono)
+    {
+        try {
+
+            if (!$id_voluntario) {
+                $jsonResponse = $this->responseUtil->setResponse(400, 'error', 'ID del voluntario no proporcionado', []);
+                return $this->response->setStatusCode(400)->setJSON($jsonResponse);
+            }
+
+            if (!$dui) {
+                $jsonResponse = $this->responseUtil->setResponse(400, 'error', 'DUI del responsable no proporcionado', []);
+                return $this->response->setStatusCode(400)->setJSON($jsonResponse);
+            }
+
+            if (!$telefono) {
+                $jsonResponse = $this->responseUtil->setResponse(400, 'error', 'Teléfono del responsable no proporcionado', []);
+                return $this->response->setStatusCode(400)->setJSON($jsonResponse);
+            }
+
+            $resultado = $this->modelVol->getVoluntarioMenor($id_voluntario, $dui, $telefono);
+            if (!$resultado) {
+                $jsonResponse = $this->responseUtil->setResponse(500, 'server_error', 'No se encontró la solicitud', []);
+                return $this->response->setStatusCode(500)->setJSON($jsonResponse);
+            }
+
+            // Obtener datos
+            $datos['volMenor'] = $resultado;
+
+            // Generar el HTML
+            $html = view('pdf/pdf_menores', $datos);
+
+            // Escribir el contenido HTML al PDF
+            $this->mpdf->WriteHTML($html, 2);
+
+            // Salida del archivo PDF directamente al navegador
+            $this->mpdf->Output('Solicitud ' . $datos['volMenor']['nombre_completo'] . '.pdf', 'D');
+
+            // Terminar la ejecución
+            exit;
+
+        } catch (\CodeIgniter\Database\Exceptions\DatabaseException $dbException) {
+            $mensaje      = 'Database error: ' . $dbException->getMessage();
+            $jsonResponse = $this->responseUtil->setResponse(500, 'server_error', 'Error en la base de datos', []);
+            $this->responseUtil->logWithContext($this->responseUtil->setResponse(500, 'server_error', $mensaje, []));
+            return $this->response->setStatusCode(500)->setJSON($jsonResponse);
+
+        } catch (\Mpdf\MpdfException $e) {
+            $mensaje      = 'Error en mPDF: ' . $e->getMessage();
+            $jsonResponse = $this->responseUtil->setResponse(500, 'server_error', 'Error al generar el PDF', []);
+            $this->responseUtil->logWithContext($this->responseUtil->setResponse(500, 'server_error', $mensaje, []));
+            return $this->response->setStatusCode(500)->setJSON($jsonResponse);
+
+        } catch (\Exception $e) {
+            $mensaje      = 'Exception: ' . $e->getMessage();
+            $jsonResponse = $this->responseUtil->setResponse(500, 'server_error', 'Error al generar el PDF', []);
+            $this->responseUtil->logWithContext($this->responseUtil->setResponse(500, 'server_error', $mensaje, []));
+            return $this->response->setStatusCode(500)->setJSON($jsonResponse);
+        }
+
+    }
+
 	/// ****************************************************************************************************************************
     // *!*   MOSTRAR TODAS LAS SOLICITUDES DE MAYORES EN LA VISTA DE ADMINISTRADOR (AJAX DATATABLE):
     // ****************************************************************************************************************************

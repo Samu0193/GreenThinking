@@ -47,16 +47,13 @@
                             <label for="f_nacimiento_mayor">Fecha de Nacimiento: </label>
                             <input type="date" name="f_nacimiento_mayor" id="f_nacimiento_mayor" required>
                             <label for="telefono">Teléfono: </label>
-                            <input type="text" name="telefono" id="telefono" placeholder="9999-9999"
-                                onchange="valTel(this);" required>
+                            <input type="text" name="telefono" id="telefono" placeholder="9999-9999" required>
                             <label for="email">Email: </label>
-                            <input type="text" name="email" id="email" placeholder="Ingrese Email"
-                                onchange="valEmailUser(this);" required>
+                            <input type="text" name="email" id="email" placeholder="Ingrese Email" required>
                         </div>
                         <div class="input-field">
                             <label for="dui">DUI: </label>
-                            <input type="text" name="dui" id="dui" placeholder="99999999-9" onchange="valDui(this);"
-                                required>
+                            <input type="text" name="dui" id="dui" placeholder="99999999-9" required>
                             </select>
                             <label for="nombre_usuario">Nombre Usuario: </label>
                             <input type="text" name="nombre_usuario" id="nombre_usuario" placeholder="Ingrese Usuario" required />

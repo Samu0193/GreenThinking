@@ -654,7 +654,8 @@ body::-webkit-scrollbar-thumb:hover,
 
 .contact-section .icons-section a:nth-child(5) {
     /* TWITTER */
-    color: #00acee;
+    /* color: #00acee; */
+    color: #000000;
 }
 
 .contact-section .icons-section a:nth-child(1):hover {

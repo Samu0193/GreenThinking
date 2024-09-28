@@ -187,130 +187,152 @@ $('[name="telefono_menor"]').mask('9999-9999');
 /********************************************************************************************************************************************************
 *!*     VALIDAR DUI EXISTENTE:
 ********************************************************************************************************************************************************/
-function valDui(input) {
+let response_msg = '';
+jQuery.validator.addMethod("inDUI", function(value) {
+    let response = false;
     $.ajax({
         type: 'POST',
         url: `${url}inicio/validarDUI`,
-        data: { 'dui': input.value },
-        success: function (jsonResponse) {
-            if (jsonResponse.data === false) {
-                // toastInfoMessage(`<p style="color: #fff; font-size: 1.18em; font-weight: 100;">${jsonResponse.message}</p>`);
-                // input.value = '';
-            }
+        data: { 'dui': value },
+        async: false,
+        success: function(jsonResponse) {
+            response     = jsonResponse.data;
+            response_msg = !response ? jsonResponse.message : '';
         },
         error: function(jqXHR, textStatus, errorThrown) {
             let errorMessage = errorMsgEstandar;
             let jsonResponse = jqXHR.responseJSON;
-            if (jsonResponse) {
-                errorMessage = jsonResponse.message;
-            }
+            if (jsonResponse) errorMessage = jsonResponse.message;
+            response_msg = 'Hubo un error al validar este campo';
             console.log(errorMessage);
         }
     });
-}
-
-/********************************************************************************************************************************************************
-*!*     VALIDAR TELEFONO EXISTENTE:
-********************************************************************************************************************************************************/
-function valTel(input) {
-    $.ajax({
-        type: 'POST',
-        url: `${url}inicio/validarTel`,        
-        data: { 'telefono': input.value },
-        success: function (jsonResponse) {
-            if (jsonResponse.data === false) {
-                // toastInfoMessage(`<p style="color: #fff; font-size: 1.18em; font-weight: 100;">${jsonResponse.message}</p>`);
-                // input.value = '';
-            }
-        },
-        error: function(jqXHR, textStatus, errorThrown) {
-            let errorMessage = errorMsgEstandar;
-            let jsonResponse = jqXHR.responseJSON;
-            if (jsonResponse) {
-                errorMessage = jsonResponse.message;
-            }
-            console.log(errorMessage);
-        }
-    });
-}
+    return response;
+}, function() {
+    return response_msg; // Esta función devuelve el valor actualizado de response_msg
+});
 
 /********************************************************************************************************************************************************
 *!*     VALIDAR CORREO EXISTENTE (VOLUNTARIO):
 ********************************************************************************************************************************************************/
-function valEmail(input) {
+response_msg = '';
+jQuery.validator.addMethod("inEmailVoluntario", function(value) {
+    let response = false;
     $.ajax({
         type: 'POST',
         url: `${url}inicio/validarEmail`,
-        data: { 'email': input.value },
-        success: function (jsonResponse) {
-            if (jsonResponse.data === false) {
-                // toastInfoMessage(`<p style="color: #fff; font-size: 1.18em; font-weight: 100;">${jsonResponse.message}</p>`);
-                // input.value = '';
-            }
+        data: { 'email': value },
+        async: false,
+        success: function(jsonResponse) {
+            response     = jsonResponse.data;
+            response_msg = !response ? jsonResponse.message : '';
         },
         error: function(jqXHR, textStatus, errorThrown) {
             let errorMessage = errorMsgEstandar;
             let jsonResponse = jqXHR.responseJSON;
-            if (jsonResponse) {
-                errorMessage = jsonResponse.message;
-            }
+            if (jsonResponse) errorMessage = jsonResponse.message;
+            response_msg = 'Hubo un error al validar este campo';
             console.log(errorMessage);
         }
     });
-}
+    return response;
+}, function() {
+    return response_msg;
+});
+
+/********************************************************************************************************************************************************
+*!*     VALIDAR COMPARAR TELEFONOS:
+********************************************************************************************************************************************************/
+response_msg = '';
+jQuery.validator.addMethod('distinctTelefono', function (value, element, param) {
+    response_msg = 'Los telefonos no pueden ser iguales';
+    return $(param).val() !== '' ? value !== $(param).val() : true;
+}, function() {
+    return response_msg;
+});
+
+/********************************************************************************************************************************************************
+*!*     VALIDAR TELEFONO EXISTENTE:
+********************************************************************************************************************************************************/
+response_msg = '';
+jQuery.validator.addMethod("inTelefono", function(value) {
+    let response = false;
+    $.ajax({
+        type: 'POST',
+        url: `${url}inicio/validarTel`,
+        data: { 'telefono': value },
+        async: false,
+        success: function(jsonResponse) {
+            response     = jsonResponse.data;
+            response_msg = !response ? jsonResponse.message : '';
+        },
+        error: function(jqXHR, textStatus, errorThrown) {
+            let errorMessage = errorMsgEstandar;
+            let jsonResponse = jqXHR.responseJSON;
+            if (jsonResponse) errorMessage = jsonResponse.message;
+            response_msg = 'Hubo un error al validar este campo';
+            console.log(errorMessage);
+        }
+    });
+    return response;
+}, function() {
+    return response_msg;
+});
 
 /********************************************************************************************************************************************************
 *!*     VALIDAR CORREO EXISTENTE (USUARIO):
 ********************************************************************************************************************************************************/
-function valEmailUser(input) {
+response_msg = '';
+jQuery.validator.addMethod("inEmailUsuario", function(value) {
+    let response = false;
     $.ajax({
         type: 'POST',
         url: `${url}usuario/validarEmail`,
-        data: { 'email': input.value },
-        success: function (jsonResponse) {
-            if (jsonResponse.data === false) {
-                // toastInfoMessage(`<p style="color: #fff; font-size: 1.18em; font-weight: 100;">${jsonResponse.message}</p>`);
-                // input.value = '';
-            }
+        data: { 'email': value },
+        async: false,
+        success: function(jsonResponse) {
+            response     = jsonResponse.data;
+            response_msg = !response ? jsonResponse.message : '';
         },
         error: function(jqXHR, textStatus, errorThrown) {
             let errorMessage = errorMsgEstandar;
             let jsonResponse = jqXHR.responseJSON;
-            if (jsonResponse) {
-                errorMessage = jsonResponse.message;
-            }
+            if (jsonResponse) errorMessage = jsonResponse.message;
+            response_msg = 'Hubo un error al validar este campo';
             console.log(errorMessage);
         }
     });
-}
+    return response;
+}, function() {
+    return response_msg;
+});
 
 /********************************************************************************************************************************************************
 *!*     VALIDAR USUARIO EXISTENTE:
 ********************************************************************************************************************************************************/
-$('[name="nombre_usuario"]').change(function () {
+response_msg = '';
+jQuery.validator.addMethod("inUsuario", function(value) {
+    let response = false;
     $.ajax({
         type: 'POST',
         url: `${url}usuario/validarUser`,
-        data: { 'nombre_usuario': $(this).val() },
-        success: function (jsonResponse) {
-            if (jsonResponse.data === false) {
-                // toastInfoMessage(`<p style="color: #fff; font-size: 1.18em; font-weight: 100;">${jsonResponse.message}</p>`);
-                // $('[name="nombre_usuario"]').val('');
-            }
+        data: { 'nombre_usuario': value },
+        async: false,
+        success: function(jsonResponse) {
+            response     = jsonResponse.data;
+            response_msg = !response ? jsonResponse.message : '';
         },
         error: function(jqXHR, textStatus, errorThrown) {
             let errorMessage = errorMsgEstandar;
             let jsonResponse = jqXHR.responseJSON;
-            if (jsonResponse) {
-                errorMessage = jsonResponse.message;
-                if (jsonResponse.code === 400) {
-                    toastInfoMessage(`<p style="color: #fff; font-size: 1.18em; font-weight: 100;">${jsonResponse.message}</p>`);
-                    // $(this).val('');
-                }
-            }
+            if (jsonResponse) errorMessage = jsonResponse.message;
+            response_msg = 'Hubo un error al validar este campo';
             console.log(errorMessage);
         }
     });
+    return response;
+}, function() {
+    return response_msg;
 });
 
 /********************************************************************************************************************************************************
