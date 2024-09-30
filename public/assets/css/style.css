@@ -1187,6 +1187,31 @@ body.swal2-toast-shown .swal2-container {
     box-shadow: 0 0 5px rgba(0,0,0,0.3);  /* Sombra */
 }
 
+.paginate_button.previous.disabled,
+.paginate_button.next.disabled {
+    box-shadow: none !important;
+    border: none !important;
+    font-weight: 100 !important;
+    background: transparent !important;
+}
+
+/* Personalización del estilo de los botones de datable */
+.paginate_button {
+    border-radius: 10px !important;
+    box-shadow: rgb(183, 183, 183) 0px 3px 11px 0px !important;
+}
+
+.paginate_button:hover {
+    color: #3ca230 !important;
+    border: none !important;
+    background: rgb(240, 240, 240) !important;
+}
+
+.paginate_button.current {
+    background: #3ca230 !important;
+    color: #fff !important;
+}
+
 /* Animación de giro */
 @keyframes spin {
     0% {
