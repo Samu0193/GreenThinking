@@ -1,4 +1,22 @@
 /********************************************************************************************************************************************************
+*!*     CONFIGURAR TOKEN:
+********************************************************************************************************************************************************/
+$.ajaxSetup({
+    headers: {
+        'X-CSRF-TOKEN-GREEN-THINKING': $('meta[name="csrf-token"]').attr('content') // Obtener el token desde la meta etiqueta
+    }
+});
+
+function updateCsrfToken(token) {
+    $('meta[name="csrf-token"]').attr('content', token);
+    $.ajaxSetup({
+        headers: {
+            'X-CSRF-TOKEN-GREEN-THINKING': token
+        }
+    });
+}
+
+/********************************************************************************************************************************************************
 *!*     MENSAJES:
 ********************************************************************************************************************************************************/
 let errorMsgEstandar = 'Ocurrió un problema al procesar su solicitud. Por favor, inténtelo de nuevo más tarde';
@@ -188,7 +206,7 @@ $('[name="telefono_menor"]').mask('9999-9999');
 *!*     VALIDAR DUI EXISTENTE:
 ********************************************************************************************************************************************************/
 let response_msg = '';
-jQuery.validator.addMethod("inDUI", function(value) {
+$.validator.addMethod("inDUI", function(value) {
     let response = false;
     $.ajax({
         type: 'POST',
@@ -216,7 +234,7 @@ jQuery.validator.addMethod("inDUI", function(value) {
 *!*     VALIDAR CORREO EXISTENTE (VOLUNTARIO):
 ********************************************************************************************************************************************************/
 response_msg = '';
-jQuery.validator.addMethod("inEmailVoluntario", function(value) {
+$.validator.addMethod("inEmailVoluntario", function(value) {
     let response = false;
     $.ajax({
         type: 'POST',
@@ -244,7 +262,7 @@ jQuery.validator.addMethod("inEmailVoluntario", function(value) {
 *!*     VALIDAR COMPARAR TELEFONOS:
 ********************************************************************************************************************************************************/
 response_msg = '';
-jQuery.validator.addMethod('distinctTelefono', function (value, element, param) {
+$.validator.addMethod('distinctTelefono', function (value, element, param) {
     response_msg = 'Los telefonos no pueden ser iguales';
     return $(param).val() !== '' ? value !== $(param).val() : true;
 }, function() {
@@ -255,7 +273,7 @@ jQuery.validator.addMethod('distinctTelefono', function (value, element, param) 
 *!*     VALIDAR TELEFONO EXISTENTE:
 ********************************************************************************************************************************************************/
 response_msg = '';
-jQuery.validator.addMethod("inTelefono", function(value) {
+$.validator.addMethod("inTelefono", function(value) {
     let response = false;
     $.ajax({
         type: 'POST',
@@ -283,7 +301,7 @@ jQuery.validator.addMethod("inTelefono", function(value) {
 *!*     VALIDAR CORREO EXISTENTE (USUARIO):
 ********************************************************************************************************************************************************/
 response_msg = '';
-jQuery.validator.addMethod("inEmailUsuario", function(value) {
+$.validator.addMethod("inEmailUsuario", function(value) {
     let response = false;
     $.ajax({
         type: 'POST',
@@ -311,7 +329,7 @@ jQuery.validator.addMethod("inEmailUsuario", function(value) {
 *!*     VALIDAR USUARIO EXISTENTE:
 ********************************************************************************************************************************************************/
 response_msg = '';
-jQuery.validator.addMethod("inUsuario", function(value) {
+$.validator.addMethod("inUsuario", function(value) {
     let response = false;
     $.ajax({
         type: 'POST',
@@ -426,53 +444,53 @@ $('[name="fecha_finalizacion"]').prop('max', f_MaxFin(1));
 /********************************************************************************************************************************************************
 *!*     VALIDAR FECHAS PARA MAYORES Y MENORES (CÁLCULO DE EDAD):
 ********************************************************************************************************************************************************/
-jQuery.validator.addMethod('minEdadMay', function (value, element) {
+$.validator.addMethod('minEdadMay', function (value, element) {
     return this.optional(element) || value >= f_MinEdadMayor(1);
 }, `Edad m\u00e1xima 40 a\u00f1os`);
 
-jQuery.validator.addMethod('maxEdadMay', function (value, element) {
+$.validator.addMethod('maxEdadMay', function (value, element) {
     return this.optional(element) || value <= f_MaxEdadMayor(1);
 }, `Edad m\u00ednima 18 a\u00f1os`);
 
-jQuery.validator.addMethod('minEdadRes', function (value, element) {
+$.validator.addMethod('minEdadRes', function (value, element) {
     return this.optional(element) || value >= f_MinEdadResponsable(1);
 }, `Edad m\u00e1xima 70 a\u00f1os`);
 
-jQuery.validator.addMethod('maxEdadRes', function (value, element) {
+$.validator.addMethod('maxEdadRes', function (value, element) {
     return this.optional(element) || value <= f_MaxEdadResponsable(1);
 }, `Edad m\u00ednima 20 a\u00f1os`);
 
-jQuery.validator.addMethod('minEdadMen', function (value, element) {
+$.validator.addMethod('minEdadMen', function (value, element) {
     return this.optional(element) || value >= f_MinEdadMenor(1);
 }, `Edad m\u00e1xima 17 a\u00f1os`);
 
-jQuery.validator.addMethod('maxEdadMen', function (value, element) {
+$.validator.addMethod('maxEdadMen', function (value, element) {
     return this.optional(element) || value <= f_MaxEdadMenor(1);
 }, `Edad m\u00ednima 12 a\u00f1os`);
 
-jQuery.validator.addMethod('minFin', function (value, element) {
+$.validator.addMethod('minFin', function (value, element) {
     return this.optional(element) || value >= f_MinFin(1);
 }, `Debe ser mayor o igual a: <br>${f_MinFin(0)}`);
 
-jQuery.validator.addMethod('maxFin', function (value, element) {
+$.validator.addMethod('maxFin', function (value, element) {
     return this.optional(element) || value <= f_MaxFin(1);
 }, `Debe ser menor o igual a: <br>${f_MaxFin(0)}`);
 
-jQuery.validator.addMethod('decimal', function (value, element) {
+$.validator.addMethod('decimal', function (value, element) {
     return this.optional(element) || /^\d{1,2}(\.\d{1,2})?$/i.test(value);
 }, `Precio debe ser un número con hasta dos decimales`);
 
 /********************************************************************************************************************************************************
 *!*     VALIDAR LETRAS Y ESPACIOS:
 ********************************************************************************************************************************************************/
-jQuery.validator.addMethod('alfaOespacio', function (value, element) {
+$.validator.addMethod('alfaOespacio', function (value, element) {
     return this.optional(element) || /^[ a-záéíóúüñ]*$/i.test(value);
 }, `S\u00f3lo letras o espacios`);
 
 /********************************************************************************************************************************************************
 *!*     VALIDAR FORMATO CORREO:
 ********************************************************************************************************************************************************/
-jQuery.validator.addMethod('correo', function (value, element) {
+$.validator.addMethod('correo', function (value, element) {
     return (
         this.optional(element) ||
         /^\b[A-Z0-9._%-]+@[A-Z0-9.-]+\.[A-Z]{2,4}\b$/i.test(value)
@@ -482,7 +500,7 @@ jQuery.validator.addMethod('correo', function (value, element) {
 /********************************************************************************************************************************************************
 *!*     VALIDAR FORMATO DUI:
 ********************************************************************************************************************************************************/
-jQuery.validator.addMethod('isDUI', function (value) {
+$.validator.addMethod('isDUI', function (value) {
     var regex = /(^\d{8})-(\d$)/,
         parts = value.match(regex);
     if (parts !== null) {
@@ -499,7 +517,7 @@ jQuery.validator.addMethod('isDUI', function (value) {
     }
 }, `DUI inv\u00e1lido`);
 
-// jQuery.validator.addMethod('isDUI', function (value) {
+// $.validator.addMethod('isDUI', function (value) {
 //     // Verificar si el valor es '00000000-0'
 //     if (value === '00000000-0') {
 //         return false; // Invalida si es '00000000-0'
@@ -529,7 +547,7 @@ jQuery.validator.addMethod('isDUI', function (value) {
 /********************************************************************************************************************************************************
 *!*     VALIDAR COMPARAR CONTRASEÑAS:
 ********************************************************************************************************************************************************/
-jQuery.validator.addMethod('equalPassword', function (value, element, param) {
+$.validator.addMethod('equalPassword', function (value, element, param) {
     return $(param).val() !== '' ? value === $(param).val() : true;
 }, 'Las contrase\u00f1as no coinciden');
 

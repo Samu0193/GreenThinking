@@ -301,6 +301,8 @@ $(function () {
                 async: false,
                 dataType: 'json',
                 success: function (jsonResponse) {
+                    
+                    updateCsrfToken(jsonResponse.data.csrfToken); // Actualiza el token CSRF
                     modalSuccessChargeMessage(jsonResponse.message, 'Espere un momento mientras se genera el PDF');
                     // toastSuccesMessageLong(`<p style="color: white; font-size: 1.18em; font-weight: 100;">${jsonResponse.message}\nEspere uno momento mientras se genera el PDF!</p>`);
                     // form.submit();

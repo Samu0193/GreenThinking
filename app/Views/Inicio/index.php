@@ -5,6 +5,7 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="csrf-token" content="<?= csrf_hash() ?>">
     <title>Green Thinking SV</title>
     <link href="<?= base_url('assets/img/favicon.png'); ?>" rel="shortcut icon" type="image/x-icon">
     <link href="<?= base_url('assets/css/sweetalert2.css'); ?>" rel="stylesheet" type="text/css">
@@ -154,8 +155,7 @@
                 </div>
 
                 <!-- FORMULARIO MAYORES -->
-                <form action="<?= site_url('inicio/pdfMayor'); ?>" method="POST" autocomplete="off"
-                    class="form-modal" id="form-mayores" novalidate>
+                <form autocomplete="off" class="form-modal" id="form-mayores" novalidate>
 
                     <div class="input-field">
                         <label for="nombres">Nombres: </label>
@@ -193,13 +193,13 @@
                         <input type="date" name="fecha_finalizacion" id="" required>
                         <input type="hidden" name="id_voluntario">
                     </div>
-                    <button class="btn" type="submit" id="insert-mayor"><i class="fas fa-user-plus"></i>Registrar</button>
-                    <!-- <a class="btn" onclick="downloadSoliMayores(3, '05141558-8', '7898-5689');"><i class="fas fa-user-plus"></i>Download</a> -->
+                    <button class="btn" type="submit" id="insert-mayor">
+                        <i class="fas fa-user-plus"></i>Registrar
+                    </button>
                 </form>
 
                 <!-- FORMULARIO MENORES -->
-                <form action="<?= site_url('inicio/pdfMenor'); ?>" method="POST" autocomplete="off"
-                    class="form-modal" id="form-menores" novalidate>
+                <form autocomplete="off" class="form-modal" id="form-menores" novalidate>
 
                     <h3 class="form-section" id="form-section">Referencia Personal</h3>
                     <div class="form-section-content">
@@ -267,8 +267,9 @@
                             <input type="date" name="fecha_finalizacion" id="" required>
                         </div>
                     </div>
-                    <button class="btn" type="submit" id="insert-menores" disabled><i class="fas fa-user-plus"></i>
-                        Registrar</button>
+                    <button class="btn" type="submit" id="insert-menores" disabled>
+                        <i class="fas fa-user-plus"></i>Registrar
+                    </button>
                 </form>
             </div>
         </div>
@@ -614,9 +615,11 @@
 
     <!-- URL PARA METODOS -->
     <script type="text/javascript">
-        // $('body').css('display', 'none')
-        var url = '<?= site_url(); ?>';
-        var files = <?= json_encode($files); ?>; // Convierte el array PHP $dataFiles a un JSON válido para usar en JavaScript
+
+        let url      = '<?= site_url(); ?>';
+        let files    = <?= json_encode($files); ?>; // Convierte el array PHP $dataFiles a un JSON válido para usar en JavaScript
+        let csrfName = '<?= csrf_token() ?>';
+        let csrfHash = '<?= csrf_hash() ?>';
 
         // $.each(files.galeria, function(index, imagen) {
         //     console.log(index, imagen);

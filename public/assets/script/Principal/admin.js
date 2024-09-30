@@ -243,7 +243,7 @@ $(document).ready(function () {
 /********************************************************************************************************************************************************
 *!*     COMPARAR CONTRASEÑAS:
 ********************************************************************************************************************************************************/
-jQuery.validator.addMethod('equalPassword', function (value, element, param) {
+$.validator.addMethod('equalPassword', function (value, element, param) {
     return $(param).val() !== '' ? value === $(param).val() : true;
 }, 'Las contrase\u00f1as no coinciden');
 

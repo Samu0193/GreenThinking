@@ -452,10 +452,13 @@ class InicioController extends BaseController
                     // return $this->response->setBody($persona && $voluntario && $solicitud ? 'true' : 'false');
                 }
 
+                // Regenerar el token CSRF
+                $newCsrfToken = csrf_hash();
                 $dataResponse = [
                     'id_voluntario' => $datos_per_voluntario['id_voluntario'],
                     'dui'           => $persona_voluntario['dui'],
-                    'telefono'      => $persona_voluntario['telefono']
+                    'telefono'      => $persona_voluntario['telefono'],
+                    'csrfToken'     => $newCsrfToken
                 ];
                 $jsonResponse = $this->responseUtil->setResponse(201, 'success', 'Información guardada exitosamente!', $dataResponse);
                 return $this->response->setStatusCode(201)->setJSON($jsonResponse);

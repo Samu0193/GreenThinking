@@ -6,6 +6,12 @@ use CodeIgniter\Config\BaseConfig;
 
 class Security extends BaseConfig
 {
+    // public $csrfProtection  = true;        // Habilitar protección CSRF
+    // public $csrfTokenName   = 'csrf_token_name';   // Nombre del token
+    // public $csrfHeaderName  = 'X-CSRF-TOKEN';      // Nombre del encabezado para CSRF
+    // public $csrfRegenerate  = true;        // Regenerar el token después de cada envío
+    // public $csrfExpire      = 7200;        // Duración del token en segundos (2 horas)
+
     /**
      * --------------------------------------------------------------------------
      * CSRF Protection Method
@@ -33,7 +39,7 @@ class Security extends BaseConfig
      *
      * Token name for Cross Site Request Forgery protection.
      */
-    public string $tokenName = 'csrf_test_name';
+    public string $tokenName = 'csrf_token_green_thinking';
 
     /**
      * --------------------------------------------------------------------------
@@ -42,7 +48,7 @@ class Security extends BaseConfig
      *
      * Header name for Cross Site Request Forgery protection.
      */
-    public string $headerName = 'X-CSRF-TOKEN';
+    public string $headerName = 'X-CSRF-TOKEN-GREEN-THINKING';
 
     /**
      * --------------------------------------------------------------------------
@@ -51,7 +57,7 @@ class Security extends BaseConfig
      *
      * Cookie name for Cross Site Request Forgery protection.
      */
-    public string $cookieName = 'csrf_cookie_name';
+    public string $cookieName = 'csrf_cookie_green_thinking'; // SOLO SE USA PARA $csrfProtection = 'cookie'
 
     /**
      * --------------------------------------------------------------------------
@@ -62,7 +68,7 @@ class Security extends BaseConfig
      *
      * Defaults to two hours (in seconds).
      */
-    public int $expires = 7200;
+    public int $expires = 7200; // SOLO SE USA PARA $csrfProtection = 'cookie'
 
     /**
      * --------------------------------------------------------------------------
@@ -99,5 +105,5 @@ class Security extends BaseConfig
      *
      * @deprecated `Config\Cookie` $samesite property is used.
      */
-    public string $samesite = 'Lax';
+    public string $samesite = 'Lax'; // SOLO SE USA PARA $csrfProtection = 'cookie'
 }
