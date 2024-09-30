@@ -205,7 +205,7 @@ $('[name="telefono_menor"]').mask('9999-9999');
 /********************************************************************************************************************************************************
 *!*     VALIDAR DUI EXISTENTE:
 ********************************************************************************************************************************************************/
-let response_msg = '';
+let msgResponse = '';
 $.validator.addMethod("inDUI", function(value) {
     let response = false;
     $.ajax({
@@ -214,26 +214,26 @@ $.validator.addMethod("inDUI", function(value) {
         data: { 'dui': value },
         async: false,
         success: function(jsonResponse) {
-            response     = jsonResponse.data;
-            response_msg = !response ? jsonResponse.message : '';
+            response    = jsonResponse.data;
+            msgResponse = !response ? jsonResponse.message : '';
         },
         error: function(jqXHR, textStatus, errorThrown) {
             let errorMessage = errorMsgEstandar;
             let jsonResponse = jqXHR.responseJSON;
             if (jsonResponse) errorMessage = jsonResponse.message;
-            response_msg = 'Hubo un error al validar este campo';
+            msgResponse = 'Hubo un error al validar este campo';
             console.log(errorMessage);
         }
     });
     return response;
 }, function() {
-    return response_msg; // Esta función devuelve el valor actualizado de response_msg
+    return msgResponse; // Esta función devuelve el valor actualizado de msgResponse
 });
 
 /********************************************************************************************************************************************************
 *!*     VALIDAR CORREO EXISTENTE (VOLUNTARIO):
 ********************************************************************************************************************************************************/
-response_msg = '';
+msgResponse = '';
 $.validator.addMethod("inEmailVoluntario", function(value) {
     let response = false;
     $.ajax({
@@ -242,37 +242,37 @@ $.validator.addMethod("inEmailVoluntario", function(value) {
         data: { 'email': value },
         async: false,
         success: function(jsonResponse) {
-            response     = jsonResponse.data;
-            response_msg = !response ? jsonResponse.message : '';
+            response    = jsonResponse.data;
+            msgResponse = !response ? jsonResponse.message : '';
         },
         error: function(jqXHR, textStatus, errorThrown) {
             let errorMessage = errorMsgEstandar;
             let jsonResponse = jqXHR.responseJSON;
             if (jsonResponse) errorMessage = jsonResponse.message;
-            response_msg = 'Hubo un error al validar este campo';
+            msgResponse = 'Hubo un error al validar este campo';
             console.log(errorMessage);
         }
     });
     return response;
 }, function() {
-    return response_msg;
+    return msgResponse;
 });
 
 /********************************************************************************************************************************************************
 *!*     VALIDAR COMPARAR TELEFONOS:
 ********************************************************************************************************************************************************/
-response_msg = '';
+msgResponse = '';
 $.validator.addMethod('distinctTelefono', function (value, element, param) {
-    response_msg = 'Los telefonos no pueden ser iguales';
+    msgResponse = 'Los telefonos no pueden ser iguales';
     return $(param).val() !== '' ? value !== $(param).val() : true;
 }, function() {
-    return response_msg;
+    return msgResponse;
 });
 
 /********************************************************************************************************************************************************
 *!*     VALIDAR TELEFONO EXISTENTE:
 ********************************************************************************************************************************************************/
-response_msg = '';
+msgResponse = '';
 $.validator.addMethod("inTelefono", function(value) {
     let response = false;
     $.ajax({
@@ -281,26 +281,26 @@ $.validator.addMethod("inTelefono", function(value) {
         data: { 'telefono': value },
         async: false,
         success: function(jsonResponse) {
-            response     = jsonResponse.data;
-            response_msg = !response ? jsonResponse.message : '';
+            response    = jsonResponse.data;
+            msgResponse = !response ? jsonResponse.message : '';
         },
         error: function(jqXHR, textStatus, errorThrown) {
             let errorMessage = errorMsgEstandar;
             let jsonResponse = jqXHR.responseJSON;
             if (jsonResponse) errorMessage = jsonResponse.message;
-            response_msg = 'Hubo un error al validar este campo';
+            msgResponse = 'Hubo un error al validar este campo';
             console.log(errorMessage);
         }
     });
     return response;
 }, function() {
-    return response_msg;
+    return msgResponse;
 });
 
 /********************************************************************************************************************************************************
 *!*     VALIDAR CORREO EXISTENTE (USUARIO):
 ********************************************************************************************************************************************************/
-response_msg = '';
+msgResponse = '';
 $.validator.addMethod("inEmailUsuario", function(value) {
     let response = false;
     $.ajax({
@@ -309,26 +309,26 @@ $.validator.addMethod("inEmailUsuario", function(value) {
         data: { 'email': value },
         async: false,
         success: function(jsonResponse) {
-            response     = jsonResponse.data;
-            response_msg = !response ? jsonResponse.message : '';
+            response    = jsonResponse.data;
+            msgResponse = !response ? jsonResponse.message : '';
         },
         error: function(jqXHR, textStatus, errorThrown) {
             let errorMessage = errorMsgEstandar;
             let jsonResponse = jqXHR.responseJSON;
             if (jsonResponse) errorMessage = jsonResponse.message;
-            response_msg = 'Hubo un error al validar este campo';
+            msgResponse = 'Hubo un error al validar este campo';
             console.log(errorMessage);
         }
     });
     return response;
 }, function() {
-    return response_msg;
+    return msgResponse;
 });
 
 /********************************************************************************************************************************************************
 *!*     VALIDAR USUARIO EXISTENTE:
 ********************************************************************************************************************************************************/
-response_msg = '';
+msgResponse = '';
 $.validator.addMethod("inUsuario", function(value) {
     let response = false;
     $.ajax({
@@ -337,20 +337,20 @@ $.validator.addMethod("inUsuario", function(value) {
         data: { 'nombre_usuario': value },
         async: false,
         success: function(jsonResponse) {
-            response     = jsonResponse.data;
-            response_msg = !response ? jsonResponse.message : '';
+            response    = jsonResponse.data;
+            msgResponse = !response ? jsonResponse.message : '';
         },
         error: function(jqXHR, textStatus, errorThrown) {
             let errorMessage = errorMsgEstandar;
             let jsonResponse = jqXHR.responseJSON;
             if (jsonResponse) errorMessage = jsonResponse.message;
-            response_msg = 'Hubo un error al validar este campo';
+            msgResponse = 'Hubo un error al validar este campo';
             console.log(errorMessage);
         }
     });
     return response;
 }, function() {
-    return response_msg;
+    return msgResponse;
 });
 
 /********************************************************************************************************************************************************
