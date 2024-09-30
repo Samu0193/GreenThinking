@@ -44,7 +44,7 @@ $RECYCLE.BIN/
 .env
 .vagrant
 Vagrantfile
-# public/assets/img/
+public/assets/img/
 
 #-------------------------
 # Temporary Files
