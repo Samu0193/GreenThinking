@@ -1187,8 +1187,8 @@ body.swal2-toast-shown .swal2-container {
     box-shadow: 0 0 5px rgba(0,0,0,0.3);  /* Sombra */
 }
 
-.paginate_button.previous.disabled,
-.paginate_button.next.disabled {
+.paginate_button_2.previous.disabled,
+.paginate_button_2.next.disabled {
     box-shadow: none !important;
     border: none !important;
     font-weight: 100 !important;
@@ -1196,20 +1196,49 @@ body.swal2-toast-shown .swal2-container {
 }
 
 /* Personalización del estilo de los botones de datable */
-.paginate_button {
-    border-radius: 10px !important;
-    box-shadow: rgb(183, 183, 183) 0px 3px 11px 0px !important;
+.paginate_button_2 {
+    box-sizing: border-box;
+    display: inline-block;
+    min-width: 1.5em;
+    padding: .5em 1em;
+    margin-left: 2px;
+    text-align: center;
+    text-decoration: none;
+    font-weight: bold;
+    cursor: pointer;
+    color: #333;
+    border: 1px solid transparent;
+    border-radius: 10px;
+    box-shadow: rgb(183, 183, 183) 0px 3px 11px 0px;
 }
 
-.paginate_button:hover {
-    color: #3ca230 !important;
-    border: none !important;
-    background: rgb(240, 240, 240) !important;
+.paginate_button_2.previous,
+.paginate_button_2.next {
+    box-shadow: none;
 }
 
-.paginate_button.current {
-    background: #3ca230 !important;
-    color: #fff !important;
+.paginate_button_2.previous:hover,
+.paginate_button_2.next:hover {
+    box-shadow: rgb(183, 183, 183) 0px 3px 11px 0px;
+}
+
+.dataTables_wrapper .dataTables_paginate .paginate_button_2.disabled,
+.dataTables_wrapper .dataTables_paginate .paginate_button_2.disabled:hover,
+.dataTables_wrapper .dataTables_paginate .paginate_button_2.disabled:active {
+    cursor: default;
+    color: #666 !important;
+    border: 1px solid transparent;
+    background: transparent;
+    box-shadow: none;
+}
+
+.paginate_button_2:hover {
+    color: #3ca230;
+}
+
+.paginate_button_2.current {
+    background: #3ca230;
+    color: #fff;
 }
 
 /* Animación de giro */

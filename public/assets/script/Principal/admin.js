@@ -65,6 +65,7 @@ $(document).ready(function () {
                 $('.dataTables_wrapper .dataTables_processing').css({ 'display': 'flex' });
             },
             "complete": function () {
+                dataTableFotterStyle();
                 // console.log('dataTables_processing: Terminado')
             }
         },
@@ -80,6 +81,10 @@ $(document).ready(function () {
             "type": "POST",
             "beforeSend": function () {
                 $('.dataTables_wrapper .dataTables_processing').css({ 'display': 'flex' });
+                
+            },
+            "complete": function () {
+                dataTableFotterStyle();
             }
         },
         "order": [],
@@ -94,6 +99,9 @@ $(document).ready(function () {
             "type": "POST",
             "beforeSend": function () {
                 $('.dataTables_wrapper .dataTables_processing').css({ 'display': 'flex' });
+            },
+            "complete": function () {
+                dataTableFotterStyle();
             }
         },
         "order": [],
@@ -108,6 +116,9 @@ $(document).ready(function () {
             "type": "POST",
             "beforeSend": function () {
                 $('.dataTables_wrapper .dataTables_processing').css({ 'display': 'flex' });
+            },
+            "complete": function () {
+                dataTableFotterStyle();
             }
         },
         "order": [],
@@ -123,6 +134,9 @@ $(document).ready(function () {
             "beforeSend": function () {
                 $('.dataTables_wrapper .dataTables_processing').css({ 'display': 'flex' });
             },
+            "complete": function () {
+                dataTableFotterStyle();
+            }
         },
         "order": [],
         "language": idioma_espanol,
@@ -138,6 +152,12 @@ $(document).ready(function () {
             $('#tbl-menores').css('visibility', 'visible');
         }
     });
+
+    function dataTableFotterStyle() {
+        let all_buttons = $('.paginate_button');
+        all_buttons.removeClass('paginate_button');
+        all_buttons.addClass('paginate_button_2');
+    }
 
     /********************************************************************************************************************************************************
     *!*     CARGA DE IMAGENES (PARA GALERIA & PRODUCTOS):
