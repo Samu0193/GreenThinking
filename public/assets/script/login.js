@@ -1,4 +1,22 @@
 /********************************************************************************************************************************************************
+*!*     CONFIGURAR TOKEN:
+********************************************************************************************************************************************************/
+$.ajaxSetup({
+    headers: {
+        'X-CSRF-TOKEN-GREEN-THINKING': $('meta[name="csrf-token"]').attr('content') // Obtener el token desde la meta etiqueta
+    }
+});
+
+function updateCsrfToken(token) {
+    $('meta[name="csrf-token"]').attr('content', token);
+    $.ajaxSetup({
+        headers: {
+            'X-CSRF-TOKEN-GREEN-THINKING': token
+        }
+    });
+}
+
+/********************************************************************************************************************************************************
 *!*     ESTILOS DE LOS INPUTS:
 ********************************************************************************************************************************************************/
 const inputs = document.querySelectorAll(".input");
@@ -25,7 +43,8 @@ inputs.forEach(input => {
 ********************************************************************************************************************************************************/
 function modalChargeMessage(titulo, mensaje) {
     Swal.fire({
-        title: `${titulo}`,
+        background: '#3ca230',
+        title: `<p style="color: white;">${titulo}</p>`,
         text: `${mensaje}`,
         allowEscapeKey: false,
         allowOutsideClick: false,
@@ -33,6 +52,8 @@ function modalChargeMessage(titulo, mensaje) {
             Swal.showLoading();
         }
     });
+    $('.swal2-html-container').css('color', '#fff');
+    $('.swal2-loader').css('border-color', '#fff transparent');
 }
 
 function toastSuccesMessageLong(mensaje) {

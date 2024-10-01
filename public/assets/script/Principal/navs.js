@@ -36,7 +36,7 @@ function modalSuccessChargeMessage(titulo, mensaje) {
         }
     });
     $('.swal2-html-container').css('color', '#fff');
-    $('.swal2-loader').css('border-color', '#fff transparent #fff transparent');
+    $('.swal2-loader').css('border-color', '#fff transparent');
 }
 
 function toastSuccesMessageLong(mensaje) {
