@@ -7,9 +7,9 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="csrf-token" content="<?= csrf_hash() ?>">
     <title>Green Thinking SV - Iniciar Sesion</title>
-    <link href="<?= base_url('assets/img/favicon.png'); ?>" rel="shortcut icon" type="image/x-icon">
-    <link href="<?= base_url('assets/css/login.css'); ?>" rel="stylesheet" type="text/css">
-    <link href="<?= base_url('assets/css/sweetalert2.css'); ?>" rel="stylesheet" type="text/css">
+    <link href="<?= base_url('public/assets/img/favicon.png'); ?>" rel="shortcut icon" type="image/x-icon">
+    <link href="<?= base_url('public/assets/css/login.css'); ?>" rel="stylesheet" type="text/css">
+    <link href="<?= base_url('public/assets/css/sweetalert2.css'); ?>" rel="stylesheet" type="text/css">
     <link href="https://fonts.googleapis.com/css?family=Poppins:600&display=swap" rel="stylesheet">
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
     <!-- <script src="https://kit.fontawesome.com/a81368914c.js"></script> -->
@@ -18,15 +18,15 @@
 
 <body>
 
-    <img class="wave" src="<?= base_url('assets/img/wave.png'); ?>">
+    <img class="wave" src="<?= base_url('public/assets/img/wave.png'); ?>">
     <div class="container">
         <div class="img">
-            <img src="<?= base_url('assets/img/hojinobg.png'); ?>">
+            <img src="<?= base_url('public/assets/img/hojinobg.png'); ?>">
         </div>
 
         <div class="login-content">
             <form id="form-login" novalidate>
-                <img src="<?= base_url('assets/img/avatar.svg'); ?>">
+                <img src="<?= base_url('public/assets/img/avatar.svg'); ?>">
                 <h2 class="title">Bienvenido</h2>
                 <div class="input-div one">
                     <div class="i">
@@ -58,14 +58,14 @@
     </script>
 
     <!-- ALERTAS JS -->
-    <script src="<?= base_url('assets/js/sweetalert2.js'); ?>" type="text/javascript"></script>
+    <script src="<?= base_url('public/assets/js/sweetalert2.js'); ?>" type="text/javascript"></script>
 
     <!-- VALIDACION DE CAMPOS-->
-    <script src="<?= base_url('assets/js/jquery.validate.min.js'); ?>" type="text/javascript"></script>
-    <script src="<?= base_url('assets/js/additional-methods.min.js'); ?>" type="text/javascript"></script>
+    <script src="<?= base_url('public/assets/js/jquery.validate.min.js'); ?>" type="text/javascript"></script>
+    <script src="<?= base_url('public/assets/js/additional-methods.min.js'); ?>" type="text/javascript"></script>
 
     <!-- MAIN JS -->
-    <script src="<?= base_url('assets/script/login.js'); ?>" type="text/javascript"></script>
+    <script src="<?= base_url('public/assets/script/login.js'); ?>" type="text/javascript"></script>
 
     <!-- MENSAJE DE ERROR -->
     <?php if (session()->getFlashdata('message') != null) : ?>

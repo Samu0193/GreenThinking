@@ -46,7 +46,7 @@ class ProductosController extends BaseController
         $extension     = strtolower($file->getExtension());
         $nombreArchivo = strtolower($id_producto . '_' . str_replace(' ', '_', $nombre) . '.' . $extension);
         $config = [
-            'upload_path'   => "assets/img/products/",
+            'upload_path'   => 'public/assets/img/products/',
             'file_name'     => $nombreArchivo,
             'allowed_types' => 'jpg|jpeg|png|svg|tiff', // Solo permitir jpg, jpeg y png
             'max_size'      => '50000',        // kb
@@ -60,7 +60,7 @@ class ProductosController extends BaseController
             if ($file->isValid() && !$file->hasMoved()) {
                 $file->move($config['upload_path'], $config['file_name']);
                 log_message('debug', 'Archivo subido correctamente.');
-                return 'assets/img/products/' . $nombreArchivo;
+                return "public/assets/img/products/$nombreArchivo";
             } else {
                 $mensaje = 'Error al subir la imagen' . $file->getErrorString();
                 $this->responseUtil->logWithContext($this->responseUtil->setResponse(500, 'server_error', $mensaje, []));

@@ -45,7 +45,7 @@ class GaleriaController extends BaseController
     //     $nombreArchivo = str_replace(' ', '_', $nombreArchivo) . '_' . $hash . '.' . $extension;
     //     $file->storeAs('public/assets/img/galery', $nombreArchivo);
 
-    //     return 'assets/img/galery/' . $nombreArchivo;
+    //     return 'public/assets/img/galery/' . $nombreArchivo;
     // }
 
     // ****************************************************************************************************************************
@@ -57,7 +57,7 @@ class GaleriaController extends BaseController
         $extension     = strtolower($file->getExtension());
         $nombreArchivo = strtolower($id_file . '_' . str_replace(' ', '_', $nombreArchivo) . '.' . $extension);
         $config = [
-            'upload_path'   => "assets/img/galery/",
+            'upload_path'   => 'public/assets/img/galery/',
             'file_name'     => $nombreArchivo,
             'allowed_types' => 'jpg|jpeg|png', // Solo permitir jpg, jpeg y png
             'max_size'      => '50000',        // kb
@@ -71,7 +71,7 @@ class GaleriaController extends BaseController
             if ($file->isValid() && !$file->hasMoved()) {
                 $file->move($config['upload_path'], $config['file_name']);
                 log_message('debug', 'Archivo subido correctamente.');
-                return 'assets/img/galery/' . $nombreArchivo;
+                return "public/assets/img/galery/$nombreArchivo";
             } else {
                 $mensaje = 'Error al subir la imagen' . $file->getErrorString();
                 $this->responseUtil->logWithContext($this->responseUtil->setResponse(500, 'server_error', $mensaje, []));
@@ -88,7 +88,7 @@ class GaleriaController extends BaseController
         // if ($file->isValid() && !$file->hasMoved()) {
         //     $file->move($config['upload_path'], $config['file_name']);
         //     log_message('debug', 'Archivo subido.');
-        //     return 'assets/img/galery/' . $nombreArchivo;
+        //     return 'public/assets/img/galery/' . $nombreArchivo;
         // } else {
         //     // Manejar el error en caso de que el archivo no sea válido o ya se haya movido
         //     log_message('debug', 'Error al subir el archivo.');
@@ -105,13 +105,13 @@ class GaleriaController extends BaseController
         $extension = pathinfo($img_name, PATHINFO_EXTENSION);
 
         // Elimina la imagen original
-        if (file_exists("assets/img/galery/$nom_last_img")) {
-            unlink("assets/img/galery/$nom_last_img");
+        if (file_exists("public/assets/img/galery/$nom_last_img")) {
+            unlink("public/assets/img/galery/$nom_last_img");
         }
 
         $mi_archivo = 'fileUpload'; // input file
         $config = [
-            'upload_path'   => "assets/img/galery/",
+            'upload_path'   => 'public/assets/img/galery/',
             'file_name'     => "galeria$id_galeria.$extension",
             'allowed_types' => '*',
             'max_size'      => '50000', // kb
@@ -123,7 +123,7 @@ class GaleriaController extends BaseController
         $file->move($config['upload_path'], $config['file_name']);
 
         $datos = [
-            'ruta_archivo'  => "assets/img/galery/galeria$id_galeria.$extension",
+            'ruta_archivo'  => "public/assets/img/galery/galeria$id_galeria.$extension",
             'usuario_crea'  => $this->session->get('id_usuario'),
             'fecha_creacion' => date('Y-m-d H:i:s')
         ];
@@ -279,7 +279,7 @@ class GaleriaController extends BaseController
                 }
 
                 // Elimina la imagen original
-                if (file_exists("assets/img/galery/$nom_last_img")) unlink("assets/img/galery/$nom_last_img");
+                if (file_exists("public/assets/img/galery/$nom_last_img")) unlink("public/assets/img/galery/$nom_last_img");
                 $jsonResponse = $this->responseUtil->setResponse(200, 'success', 'Imagen cambiada exitosamente', []);
                 return $this->response->setStatusCode(200)->setJSON($jsonResponse);
     

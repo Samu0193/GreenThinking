@@ -108,9 +108,9 @@ class UsuarioModel extends Model
     public function maxPersona()
     {
         $maxID = $this->db->table('persona')
-            ->selectMax('id_persona')
-            ->get()
-            ->getRowArray();
+                ->selectMax('id_persona')
+                ->get()
+                ->getRowArray();
         return $maxID['id_persona'] ? $maxID['id_persona'] + 1 : 1;
     }
 
@@ -121,9 +121,9 @@ class UsuarioModel extends Model
     {
         // $maxId = $this->selectMax('id_usuario')->get()->getRowArray();
         $maxID = $this->db->table('usuario')
-            ->selectMax('id_usuario')
-            ->get()
-            ->getRowArray();
+                ->selectMax('id_usuario')
+                ->get()
+                ->getRowArray();
         return $maxID['id_usuario'] ? $maxID['id_usuario'] + 1 : 1;
     }
 
@@ -157,12 +157,12 @@ class UsuarioModel extends Model
     public function tblUsuariosModel()
     {
         return $this->db->table('usuario AS u')
-                        ->select('u.id_usuario, u.id_persona, u.id_rol, u.usuario, u.email, u.fecha_creacion, u.estado, p.nombres, p.apellidos, p.telefono, r.rol')
-                        ->join('persona AS p', 'p.id_persona = u.id_persona')
-                        ->join('roles AS r', 'r.id_rol = u.id_rol')
-                        ->where('u.id_rol', 2)
-                        ->get()
-                        ->getResultArray();
+                    ->select('u.id_usuario, u.id_persona, u.id_rol, u.usuario, u.email, u.fecha_creacion, u.estado, p.nombres, p.apellidos, p.telefono, r.rol')
+                    ->join('persona AS p', 'p.id_persona = u.id_persona')
+                    ->join('roles AS r', 'r.id_rol = u.id_rol')
+                    ->where('u.id_rol', 2)
+                    ->get()
+                    ->getResultArray();
     }
 
     // ****************************************************************************************************************************
@@ -293,5 +293,5 @@ class UsuarioModel extends Model
     {
         return $this->delete($id_usuario);
     }
-    
+
 }

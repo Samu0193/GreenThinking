@@ -7,10 +7,10 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="csrf-token" content="<?= csrf_hash() ?>">
     <title>Green Thinking SV<?= $title; ?></title>
-    <link href="<?= base_url('assets/img/favicon.png'); ?>" rel="shortcut icon" type="image/x-icon">
-    <link href="<?= base_url('assets/css/sweetalert2.css'); ?>" rel="stylesheet" type="text/css">
+    <link href="<?= base_url('public/assets/img/favicon.png'); ?>" rel="shortcut icon" type="image/x-icon">
+    <link href="<?= base_url('public/assets/css/sweetalert2.css'); ?>" rel="stylesheet" type="text/css">
     <link href="https://code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css" rel="stylesheet" >
-    <link href="<?= base_url('assets/css/style.css'); ?>" rel="stylesheet" type="text/css">
+    <link href="<?= base_url('public/assets/css/style.css'); ?>" rel="stylesheet" type="text/css">
     <!-- <link href="https://use.fontawesome.com/releases/v5.8.1/css/all.css" rel="stylesheet"> -->
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css?family=Roboto" rel="stylesheet">
@@ -28,7 +28,7 @@
     <script src="https://cdn.datatables.net/1.11.3/js/jquery.dataTables.min.js" type="text/javascript"></script>
     <script src="https://cdn.datatables.net/responsive/2.2.9/js/dataTables.responsive.min.js" type="text/javascript"></script>
 
-    <script src="<?= base_url('assets/js/jquery.maskedinput.js'); ?>" type="text/javascript"></script>
+    <script src="<?= base_url('public/assets/js/jquery.maskedinput.js'); ?>" type="text/javascript"></script>
 </head>
 
 <body>

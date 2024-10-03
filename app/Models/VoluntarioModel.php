@@ -222,9 +222,9 @@ class VoluntarioModel extends Model
     public function maxPersona()
     {
         $maxID = $this->db->table('persona')
-                          ->selectMax('id_persona')
-                          ->get()
-                          ->getRowArray();
+                ->selectMax('id_persona')
+                ->get()
+                ->getRowArray();
         return $maxID['id_persona'] ? $maxID['id_persona'] + 1 : 1;
     }
 
@@ -234,9 +234,9 @@ class VoluntarioModel extends Model
     public function maxVoluntario()
     {
         $maxID = $this->db->table('voluntario')
-                          ->selectMax('id_voluntario')
-                          ->get()
-                          ->getRowArray();
+                ->selectMax('id_voluntario')
+                ->get()
+                ->getRowArray();
         return $maxID['id_voluntario'] ? $maxID['id_voluntario'] + 1 : 1;
     }
 
@@ -246,9 +246,9 @@ class VoluntarioModel extends Model
     public function maxReferenciaPersonal()
     {
         $maxID = $this->db->table('referencia_personal')
-                          ->selectMax('id_referencia')
-                          ->get()
-                          ->getRowArray();
+                ->selectMax('id_referencia')
+                ->get()
+                ->getRowArray();
         return $maxID['id_referencia'] ? $maxID['id_referencia'] + 1 : 1;
     }
 
@@ -258,8 +258,8 @@ class VoluntarioModel extends Model
     public function getDepartamentos()
     {
         return $this->db->table('departamento')
-                        ->get()
-                        ->getResultArray();
+                    ->get()
+                    ->getResultArray();
     }
 
     // ****************************************************************************************************************************
@@ -268,9 +268,9 @@ class VoluntarioModel extends Model
     public function getMunicipios($id_departamento)
     {
         return $this->db->table('municipio')
-                        ->where('id_departamento', $id_departamento)
-                        ->get()
-                        ->getResultArray();
+                    ->where('id_departamento', $id_departamento)
+                    ->get()
+                    ->getResultArray();
     }
 
     // ****************************************************************************************************************************
@@ -279,9 +279,9 @@ class VoluntarioModel extends Model
     public function findDUI($valor)
     {
         return $this->db->table('persona')
-                        ->where('dui', $valor)
-                        ->get()
-                        ->getResult();
+                    ->where('dui', $valor)
+                    ->get()
+                    ->getResult();
     }
 
     // ****************************************************************************************************************************
@@ -290,9 +290,9 @@ class VoluntarioModel extends Model
     public function findTel($valor)
     {
         return $this->db->table('persona')
-                        ->where('telefono', $valor)
-                        ->get()
-                        ->getResult();
+                    ->where('telefono', $valor)
+                    ->get()
+                    ->getResult();
     }
 
     // ****************************************************************************************************************************
@@ -301,9 +301,9 @@ class VoluntarioModel extends Model
     public function findEmail($valor)
     {
         return $this->db->table('voluntario')
-                        ->where('email', $valor)
-                        ->get()
-                        ->getResult();
+                    ->where('email', $valor)
+                    ->get()
+                    ->getResult();
     }
 
     // ****************************************************************************************************************************

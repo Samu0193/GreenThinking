@@ -69,3 +69,7 @@ $routes->get('showSoliMenores/(:num)/(:num)',            'SolicitudesController:
 $routes->get('downloadSoliMayores/(:num)/(:any)/(:any)', 'SolicitudesController::downloadSoliMayores/$1/$2/$3');
 $routes->get('downloadSoliMenores/(:num)/(:any)/(:any)', 'SolicitudesController::downloadSoliMenores/$1/$2/$3');
 // $routes->get('showSoliMenores/(:num)/(:num)/(:any)/(:any)', 'SolicitudesController::showSoliMenores/$1/$2/$3/$4');
+
+// EJECUTAR MIGRACIONES Y SEEDERS
+$routes->get('migrate(:any)', 'DatabaseController::migrate/$1');
+$routes->get('seed/(:any)',   'DatabaseController::seed/$1');
