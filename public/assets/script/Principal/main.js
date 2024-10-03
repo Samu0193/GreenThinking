@@ -5,17 +5,17 @@ $(document).ready(function () {
     let arriba = $(window).scrollTop();
     if (arriba >= 250) {
         navbar.addClass('bg-white');
-        logo.attr("src", url + "assets/img/logoletranegra.png");
+        logo.attr("src", url + "public/assets/img/logoletranegra.png");
         linksNavbar.css('color', '#000');
         hamburguesa.addClass('bg-black');
     } else {
         navbar.removeClass('bg-white');
-        logo.attr("src", url + "assets/img/logoletrablanca.png");
+        logo.attr("src", url + "public/assets/img/logoletrablanca.png");
         linksNavbar.css('color', '#fff');
         hamburguesa.removeClass('bg-black');
         if (sidebar.hasClass('sidebar-active') && $(window).width() < 1200) {
             navbar.addClass('bg-white');
-            logo.attr("src", url + "assets/img/logoletranegra.png");
+            logo.attr("src", url + "public/assets/img/logoletranegra.png");
             linksNavbar.css('color', '#000');
             hamburguesa.addClass('bg-black');
         }
@@ -26,17 +26,17 @@ $(window).on('scroll', function () {
     let top = $(window).scrollTop();
     if (top >= 250) {
         navbar.addClass('bg-white');
-        logo.attr("src", url + "assets/img/logoletranegra.png");
+        logo.attr("src", url + "public/assets/img/logoletranegra.png");
         linksNavbar.css('color', '#000');
         hamburguesa.addClass('bg-black');
     } else {
         navbar.removeClass('bg-white');
-        logo.attr("src", url + "assets/img/logoletrablanca.png");
+        logo.attr("src", url + "public/assets/img/logoletrablanca.png");
         linksNavbar.css('color', '#fff');
         hamburguesa.removeClass('bg-black');
         if (sidebar.hasClass('sidebar-active') && $(window).width() < 1200) {
             navbar.addClass('bg-white');
-            logo.attr("src", url + "assets/img/logoletranegra.png");
+            logo.attr("src", url + "public/assets/img/logoletranegra.png");
             linksNavbar.css('color', '#000');
             hamburguesa.addClass('bg-black');
         }
@@ -599,7 +599,7 @@ $(document).ready(function () {
     //         id: 'b' + i,
     //         class: 'photoBox pb-col' + column
     //     },
-    //     backgroundImage: 'url(' + url + 'assets/img/galery/galeria1.jpeg)',
+    //     backgroundImage: 'url(' + url + 'public/assets/img/galery/galeria1.jpeg)',
     //     backgroundSize: 'cover',
     //     backgroundPosition: 'center',
     //     overflow: 'hidden',

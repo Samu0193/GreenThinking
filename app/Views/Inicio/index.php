@@ -7,15 +7,15 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="csrf-token" content="<?= csrf_hash() ?>">
     <title>Green Thinking SV</title>
-    <link href="<?= base_url('assets/img/favicon.png'); ?>" rel="shortcut icon" type="image/x-icon">
-    <link href="<?= base_url('assets/css/sweetalert2.css'); ?>" rel="stylesheet" type="text/css">
-    <link href="<?= base_url('assets/css/style.css'); ?>" rel="stylesheet" type="text/css">
+    <link href="<?= base_url('public/assets/img/favicon.png'); ?>" rel="shortcut icon" type="image/x-icon">
+    <link href="<?= base_url('public/assets/css/sweetalert2.css'); ?>" rel="stylesheet" type="text/css">
+    <link href="<?= base_url('public/assets/css/style.css'); ?>" rel="stylesheet" type="text/css">
     <!-- <link href="https://use.fontawesome.com/releases/v5.8.1/css/all.css" rel="stylesheet"> -->
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css?family=Roboto" rel="stylesheet">
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.7.1/gsap.min.js"></script>
-    <script src="<?= base_url('assets/js/jquery.maskedinput.js'); ?>" type="text/javascript"></script>
+    <script src="<?= base_url('public/assets/js/jquery.maskedinput.js'); ?>" type="text/javascript"></script>
 </head>
 
 <body>
@@ -25,7 +25,7 @@
         <!-- NavBar Desktop -->
         <nav class="navbar" id="navbar">
             <a href="<?= site_url(); ?>">
-                <img src="<?= base_url('assets/img/logoletrablanca.png'); ?>" class="logo-green-thinking" alt="" id="logo">
+                <img src="<?= base_url('public/assets/img/logoletrablanca.png'); ?>" class="logo-green-thinking" alt="" id="logo">
             </a>
             <ul>
                 <li>
@@ -132,7 +132,7 @@
 
                 <div class="header-modal">
                     <div class="logo">
-                        <img src="<?= base_url('assets/img/hojinobg.png'); ?>" alt="Green-Thinking" />
+                        <img src="<?= base_url('public/assets/img/hojinobg.png'); ?>" alt="Green-Thinking" />
                     </div>
                     <h2 class="title-form" id="title-form"></h2>
                     <i class="fa fa-times" id="close"></i>
@@ -278,7 +278,7 @@
     <!-- Seccion Inicio -->
     <section class="begin-section" id="begin">
         <video autoplay muted loop>
-            <source src="<?= base_url('assets/img/Black Lava Field.mp4'); ?>" type="video/mp4">
+            <source src="<?= base_url('public/assets/img/Black_Lava_Field.mp4'); ?>" type="video/mp4">
         </video>
 
         <article class="banner">
@@ -568,7 +568,7 @@
         <div class="contact-container" id="contact-container">
             <div class="footer-card">
                 <figure>
-                    <img src="<?= base_url('assets/img/fundador1.jpeg'); ?>">
+                    <img src="<?= base_url('public/assets/img/fundador1.jpeg'); ?>">
                 </figure>
                 <div class="footer-card-content">
                     <h2>Fundador</h2>
@@ -578,7 +578,7 @@
 
             <div class="footer-card">
                 <figure>
-                    <img src="<?= base_url('assets/img/fundador2.jpeg'); ?>">
+                    <img src="<?= base_url('public/assets/img/fundador2.jpeg'); ?>">
                 </figure>
                 <div class="footer-card-content">
                     <h2>Fundadora</h2>
@@ -637,15 +637,15 @@
     </script>
 
     <!-- ALERTAS JS -->
-    <script src="<?= base_url('assets/js/sweetalert2.js'); ?>" type="text/javascript"></script>
+    <script src="<?= base_url('public/assets/js/sweetalert2.js'); ?>" type="text/javascript"></script>
 
     <!-- VALIDACION DE CAMPOS-->
-    <script src="<?= base_url('assets/js/jquery.validate.min.js'); ?>" type="text/javascript"></script>
-    <script src="<?= base_url('assets/js/additional-methods.min.js'); ?>" type="text/javascript"></script>
+    <script src="<?= base_url('public/assets/js/jquery.validate.min.js'); ?>" type="text/javascript"></script>
+    <script src="<?= base_url('public/assets/js/additional-methods.min.js'); ?>" type="text/javascript"></script>
 
     <!-- MAIN JS -->
-    <script src="<?= base_url('assets/script/Principal/navs.js'); ?>" type="text/javascript"></script>
-    <script src="<?= base_url('assets/script/Principal/main.js'); ?>" type="text/javascript"></script>
+    <script src="<?= base_url('public/assets/script/Principal/navs.js'); ?>" type="text/javascript"></script>
+    <script src="<?= base_url('public/assets/script/Principal/main.js'); ?>" type="text/javascript"></script>
 
 </body>
 

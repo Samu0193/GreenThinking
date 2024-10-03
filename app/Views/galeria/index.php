@@ -21,7 +21,7 @@
 
                     <div class="header-modal" style="margin: 0;">
                         <div class="logo">
-                            <img src="<?= base_url('assets/img/hojinobg.png'); ?>" alt="Green-Thinking" />
+                            <img src="<?= base_url('public/assets/img/hojinobg.png'); ?>" alt="Green-Thinking" />
                         </div>
                         <h2 class="title-form" id="title-form"></h2>
                         <i class="fa fa-times" id="close"></i>

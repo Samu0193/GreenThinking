@@ -20,7 +20,7 @@ class InicioController extends BaseController
     public function index()
     {
         // Usa FCPATH para obtener la ruta física completa al directorio de imágenes
-        $galeriaDirectorio = FCPATH . 'assets/img/galery';
+        $galeriaDirectorio = FCPATH . 'public/assets/img/galery';
         $galeriaFiles = array_diff(scandir($galeriaDirectorio), array('.', '..'));
 
         natsort($galeriaFiles);
@@ -28,7 +28,7 @@ class InicioController extends BaseController
         $galeriaFiles = array_combine(range(1, count($galeriaFiles)), $galeriaFiles); // Reindexar comenzando desde 1
 
         $galeriaFiles = array_map(function($file) {
-            return base_url('assets/img/galery/' . $file);
+            return base_url('public/assets/img/galery/' . $file);
         }, $galeriaFiles); // Añadir la ruta completa para cada archivo de galería
 
         $dataFiles = [
@@ -170,7 +170,7 @@ class InicioController extends BaseController
     
             } catch (\Exception $e) {
                 $mensaje      = 'Exception: ' . $e->getMessage();
-                $jsonResponse = $this->responseUtil->setResponse(500, 'server_error', 'Error al generar el PDF', []);
+                $jsonResponse = $this->responseUtil->setResponse(500, 'server_error', 'Error inesperado', []);
                 $this->responseUtil->logWithContext($this->responseUtil->setResponse(500, 'server_error', $mensaje, []));
                 return $this->response->setStatusCode(500)->setJSON($jsonResponse);
             }
@@ -218,7 +218,7 @@ class InicioController extends BaseController
     
             } catch (\Exception $e) {
                 $mensaje      = 'Exception: ' . $e->getMessage();
-                $jsonResponse = $this->responseUtil->setResponse(500, 'server_error', 'Error al generar el PDF', []);
+                $jsonResponse = $this->responseUtil->setResponse(500, 'server_error', 'Error inesperado', []);
                 $this->responseUtil->logWithContext($this->responseUtil->setResponse(500, 'server_error', $mensaje, []));
                 return $this->response->setStatusCode(500)->setJSON($jsonResponse);
             }
@@ -289,7 +289,7 @@ class InicioController extends BaseController
     
             } catch (\Exception $e) {
                 $mensaje      = 'Exception: ' . $e->getMessage();
-                $jsonResponse = $this->responseUtil->setResponse(500, 'server_error', 'Error al generar el PDF', []);
+                $jsonResponse = $this->responseUtil->setResponse(500, 'server_error', 'Error inesperado', []);
                 $this->responseUtil->logWithContext($this->responseUtil->setResponse(500, 'server_error', $mensaje, []));
                 return $this->response->setStatusCode(500)->setJSON($jsonResponse);
             }
@@ -331,7 +331,7 @@ class InicioController extends BaseController
     
             } catch (\Exception $e) {
                 $mensaje      = 'Exception: ' . $e->getMessage();
-                $jsonResponse = $this->responseUtil->setResponse(500, 'server_error', 'Error al generar el PDF', []);
+                $jsonResponse = $this->responseUtil->setResponse(500, 'server_error', 'Error inesperado', []);
                 $this->responseUtil->logWithContext($this->responseUtil->setResponse(500, 'server_error', $mensaje, []));
                 return $this->response->setStatusCode(500)->setJSON($jsonResponse);
             }
@@ -373,7 +373,7 @@ class InicioController extends BaseController
     
             } catch (\Exception $e) {
                 $mensaje      = 'Exception: ' . $e->getMessage();
-                $jsonResponse = $this->responseUtil->setResponse(500, 'server_error', 'Error al generar el PDF', []);
+                $jsonResponse = $this->responseUtil->setResponse(500, 'server_error', 'Error inesperado', []);
                 $this->responseUtil->logWithContext($this->responseUtil->setResponse(500, 'server_error', $mensaje, []));
                 return $this->response->setStatusCode(500)->setJSON($jsonResponse);
             }
@@ -471,7 +471,7 @@ class InicioController extends BaseController
     
             } catch (\Exception $e) {
                 $mensaje      = 'Exception: ' . $e->getMessage();
-                $jsonResponse = $this->responseUtil->setResponse(500, 'server_error', 'Error al generar el PDF', []);
+                $jsonResponse = $this->responseUtil->setResponse(500, 'server_error', 'Error inesperado', []);
                 $this->responseUtil->logWithContext($this->responseUtil->setResponse(500, 'server_error', $mensaje, []));
                 return $this->response->setStatusCode(500)->setJSON($jsonResponse);
             }
@@ -595,7 +595,7 @@ class InicioController extends BaseController
     
             } catch (\Exception $e) {
                 $mensaje      = 'Exception: ' . $e->getMessage();
-                $jsonResponse = $this->responseUtil->setResponse(500, 'server_error', 'Error al generar el PDF', []);
+                $jsonResponse = $this->responseUtil->setResponse(500, 'server_error', 'Error inesperado', []);
                 $this->responseUtil->logWithContext($this->responseUtil->setResponse(500, 'server_error', $mensaje, []));
                 return $this->response->setStatusCode(500)->setJSON($jsonResponse);
             }

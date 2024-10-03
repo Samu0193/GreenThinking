@@ -8,7 +8,7 @@
     <header>
         <nav class="navbar navbar-dashboard" id="navbar" style="background: #f8f9fa;">
             <a href="<?= site_url('dashboard'); ?>">
-                <img src="<?= base_url('assets/img/logoletranegra.png'); ?>" class="logo-green-thinking" alt="" id="">
+                <img src="<?= base_url('public/assets/img/logoletranegra.png'); ?>" class="logo-green-thinking" alt="" id="">
             </a>
             <ul>
                 <?php if (isset($session_data['id_rol']) && $session_data['id_rol'] == 1): ?>
@@ -50,7 +50,7 @@
 
         <!-- Info Usuario -->
         <div class="user-info">
-            <img src="<?= base_url('assets/img/user.png'); ?>">
+            <img src="<?= base_url('public/assets/img/user.png'); ?>">
             <p><?= $session_data['usuario']; ?></p>
         </div>
 

@@ -133,11 +133,11 @@ let linksSidebar = $('.sidebar ul li a');
 $(window).resize(function () {
     if ($(window).width() < 1200 && sidebar.hasClass('sidebar-active')) {
         navbar.addClass('bg-white');
-        logo.attr('src', `${url}assets/img/logoletranegra.png`);
+        logo.attr('src', `${url}public/assets/img/logoletranegra.png`);
         hamburguesa.addClass('bg-black');
     } else if (sidebar.hasClass('sidebar-active') && $(window).scrollTop() < 250) {
         navbar.removeClass('bg-white');
-        logo.attr('src', `${url}assets/img/logoletrablanca.png`);
+        logo.attr('src', `${url}public/assets/img/logoletrablanca.png`);
         hamburguesa.removeClass('bg-black');
     }
 });
@@ -164,9 +164,9 @@ menu.click(function () {
         navbar.toggleClass('bg-white');
         hamburguesa.toggleClass('bg-black');
         if (sidebar.hasClass('sidebar-active')) {
-            logo.attr('src', `${url}assets/img/logoletranegra.png`);
+            logo.attr('src', `${url}public/assets/img/logoletranegra.png`);
         } else {
-            logo.attr('src', `${url}assets/img/logoletrablanca.png`);
+            logo.attr('src', `${url}public/assets/img/logoletrablanca.png`);
         }
     }
 });
@@ -181,9 +181,9 @@ linksSidebar.click(function () {
         navbar.toggleClass('bg-white');
         hamburguesa.toggleClass('bg-black');
         if (sidebar.hasClass('sidebar-active')) {
-            logo.attr('src', `${url}assets/img/logoletranegra.png`);
+            logo.attr('src', `${url}public/assets/img/logoletranegra.png`);
         } else {
-            logo.attr('src', `${url}assets/img/logoletrablanca.png`);
+            logo.attr('src', `${url}public/assets/img/logoletrablanca.png`);
         }
     }
 });

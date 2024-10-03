@@ -144,6 +144,7 @@ $.validator.addMethod('equalPassword', function (value, element, param) {
 *!*     VALIDAR CORREO EXISTENTE EN BASE DE DATOS:
 ********************************************************************************************************************************************************/
 let response_msg = '';
+let errorMsgEstandar = 'Ocurrió un problema al procesar su solicitud. Por favor, inténtelo de nuevo más tarde';
 $.validator.addMethod("inEmailUsuario", function(value) {
     let response = false;
     $.ajax({

@@ -2,12 +2,12 @@
 <html>
 
 <head>
-    <link href="<?= base_url('assets/css/pdf.css'); ?>" rel="stylesheet" type="text/css">
+    <link href="<?= base_url('public/assets/css/pdf.css'); ?>" rel="stylesheet" type="text/css">
 </head>
 
 <body>
 
-    <img src="<?= base_url('assets/img/logoGT.jpeg'); ?>" style="float: left;" width="150px" hidden="150px">
+    <img src="<?= base_url('public/assets/img/logoGT.jpeg'); ?>" style="float: left;" width="150px" hidden="150px">
     <h1 style="position: absolute;margin-top: 25px; left: 275px;">Green Thinking SV</h1>
 
     <p style="position: absolute;margin-top: 75px; left: 260px;"><b>Carta permiso voluntarios menores de edad</b></p>

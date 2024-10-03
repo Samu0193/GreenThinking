@@ -55,11 +55,11 @@ class LoginController extends BaseController
         $emailService->setMessage($body);
 
         // Adjuntar la imagen usando CID
-        // $emailService->attach(FCPATH . 'assets/images/logo.png', 'inline', 'logo.png', 'image/png');
-        // $cid = $emailService->setAttachmentCid(FCPATH . 'assets/images/logo.png');
+        // $emailService->attach(FCPATH . 'public/assets/img/logo.png', 'inline', 'logo.png', 'image/png');
+        // $cid = $emailService->setAttachmentCid(FCPATH . 'public/assets/img/logo.png');
 
-        $emailService->attach(FCPATH . 'assets/images/logoGT.jpeg', 'inline', 'logoGT.jpeg', 'image/jpeg');
-        $cid = $emailService->setAttachmentCid(FCPATH . 'assets/images/logoGT.jpeg');
+        $emailService->attach(FCPATH . 'public/assets/img/logoGT.jpeg', 'inline', 'logoGT.jpeg', 'image/jpeg');
+        $cid = $emailService->setAttachmentCid(FCPATH . 'public/assets/img/logoGT.jpeg');
         $body = str_replace('../img/logoGT.jpeg', "cid:$cid", $body);
 
         // log_message('debug', $body);
@@ -203,7 +203,7 @@ class LoginController extends BaseController
     
             } catch (\Exception $e) {
                 $mensaje      = 'Exception: ' . $e->getMessage();
-                $jsonResponse = $this->responseUtil->setResponse(500, 'server_error', 'Error al generar el PDF', []);
+                $jsonResponse = $this->responseUtil->setResponse(500, 'server_error', 'Error inesperado', []);
                 $this->responseUtil->logWithContext($this->responseUtil->setResponse(500, 'server_error', $mensaje, []));
                 return $this->response->setStatusCode(500)->setJSON($jsonResponse);
             }
@@ -245,7 +245,7 @@ class LoginController extends BaseController
     
             } catch (\Exception $e) {
                 $mensaje      = 'Exception: ' . $e->getMessage();
-                $jsonResponse = $this->responseUtil->setResponse(500, 'server_error', 'Error al generar el PDF', []);
+                $jsonResponse = $this->responseUtil->setResponse(500, 'server_error', 'Error inesperado', []);
                 $this->responseUtil->logWithContext($this->responseUtil->setResponse(500, 'server_error', $mensaje, []));
                 return $this->response->setStatusCode(500)->setJSON($jsonResponse);
             }
@@ -290,12 +290,12 @@ class LoginController extends BaseController
                 ];
 
                 $resetLink  = site_url('changePassword?hash=' . $hash_string);
-                $html       = file_get_contents(FCPATH . 'assets/templates/correo.html');
+                $html       = file_get_contents(FCPATH . 'public/assets/templates/correo.html');
                 $body       = str_replace('@USUARIO', $user, $html);
                 $body       = str_replace('@LINK', $resetLink, $body);
                 $subject    = 'Restablecer contraseña';
                 $sentStatus = $this->phpMailer->sendmail($email, $subject, $body);
-                // $sentStatus = $this->phpMailer->sendmail($email, $subject, file_get_contents(FCPATH . 'assets/templates/prueba_correo.html'));
+                // $sentStatus = $this->phpMailer->sendmail($email, $subject, file_get_contents(FCPATH . 'public/assets/templates/prueba_correo.html'));
                 // $sentStatus = $this->sendEmail($email, $subject, $body);
 
                 if (!$sentStatus) {
@@ -317,7 +317,7 @@ class LoginController extends BaseController
     
             } catch (\Exception $e) {
                 $mensaje      = 'Exception: ' . $e->getMessage();
-                $jsonResponse = $this->responseUtil->setResponse(500, 'server_error', 'Error al generar el PDF', []);
+                $jsonResponse = $this->responseUtil->setResponse(500, 'server_error', 'Error inesperado', []);
                 $this->responseUtil->logWithContext($this->responseUtil->setResponse(500, 'server_error', $mensaje, []));
                 return $this->response->setStatusCode(500)->setJSON($jsonResponse);
             }
@@ -398,7 +398,7 @@ class LoginController extends BaseController
     
             } catch (\Exception $e) {
                 $mensaje      = 'Exception: ' . $e->getMessage();
-                $jsonResponse = $this->responseUtil->setResponse(500, 'server_error', 'Error al generar el PDF', []);
+                $jsonResponse = $this->responseUtil->setResponse(500, 'server_error', 'Error inesperado', []);
                 $this->responseUtil->logWithContext($this->responseUtil->setResponse(500, 'server_error', $mensaje, []));
                 return $this->response->setStatusCode(500)->setJSON($jsonResponse);
             }
@@ -463,7 +463,7 @@ class LoginController extends BaseController
     
             } catch (\Exception $e) {
                 $mensaje      = 'Exception: ' . $e->getMessage();
-                $jsonResponse = $this->responseUtil->setResponse(500, 'server_error', 'Error al generar el PDF', []);
+                $jsonResponse = $this->responseUtil->setResponse(500, 'server_error', 'Error inesperado', []);
                 $this->responseUtil->logWithContext($this->responseUtil->setResponse(500, 'server_error', $mensaje, []));
                 return $this->response->setStatusCode(500)->setJSON($jsonResponse);
             }

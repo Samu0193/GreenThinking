@@ -217,7 +217,7 @@ class ProductosController extends BaseController
     
             } catch (\Exception $e) {
                 $mensaje      = 'Exception: ' . $e->getMessage();
-                $jsonResponse = $this->responseUtil->setResponse(500, 'server_error', 'Error al generar el PDF', []);
+                $jsonResponse = $this->responseUtil->setResponse(500, 'server_error', 'Error inesperado', []);
                 $this->responseUtil->logWithContext($this->responseUtil->setResponse(500, 'server_error', $mensaje, []));
                 return $this->response->setStatusCode(500)->setJSON($jsonResponse);
             }
@@ -267,7 +267,7 @@ class ProductosController extends BaseController
     
             } catch (\Exception $e) {
                 $mensaje      = 'Exception: ' . $e->getMessage();
-                $jsonResponse = $this->responseUtil->setResponse(500, 'server_error', 'Error al generar el PDF', []);
+                $jsonResponse = $this->responseUtil->setResponse(500, 'server_error', 'Error inesperado', []);
                 $this->responseUtil->logWithContext($this->responseUtil->setResponse(500, 'server_error', $mensaje, []));
                 return $this->response->setStatusCode(500)->setJSON($jsonResponse);
             }
